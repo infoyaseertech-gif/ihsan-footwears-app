@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>IHSAN Footwears</title>
+  <meta name="description" content="Business accounting & stock management for IHSAN Footwears and General Enterprises" />
+  <meta name="theme-color" content="#1a3c1a" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="IHSAN" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ══════════════ PWA INSTALL POPUP ══════════════ -->
+<div id="pwa-overlay" class="pwa-overlay hidden">
+  <div class="pwa-popup">
+    <div class="pwa-logo-wrap">
+      <div class="pwa-logo">
+        <i class="ti ti-shoe"></i>
+      </div>
+    </div>
+    <h2 class="pwa-title">IHSAN Footwears</h2>
+    <p class="pwa-brand">& General Enterprises</p>
+    <p class="pwa-desc">Install this app on your phone for quick access — works offline, no app store needed.</p>
+    <div class="pwa-steps" id="pwa-ios-steps" style="display:none;">
+      <p class="pwa-step-label">To install on iPhone/iPad:</p>
+      <div class="pwa-step"><span class="step-num">1</span> Tap the <strong>Share</strong> button <i class="ti ti-share"></i> at the bottom of Safari</div>
+      <div class="pwa-step"><span class="step-num">2</span> Scroll and tap <strong>"Add to Home Screen"</strong></div>
+      <div class="pwa-step"><span class="step-num">3</span> Tap <strong>"Add"</strong> to confirm</div>
+    </div>
+    <div class="pwa-actions" id="pwa-android-actions">
+      <button class="btn-install" id="pwa-install-btn"><i class="ti ti-download"></i> Install App</button>
+      <button class="btn-later" id="pwa-later-btn">Maybe Later</button>
+    </div>
+    <div class="pwa-actions" id="pwa-ios-actions" style="display:none;">
+      <button class="btn-later" id="pwa-ios-close-btn">Got it, Thanks</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ PIN LOCK SCREEN ══════════════ -->
+<div id="pin-screen" class="pin-screen">
+  <div class="pin-wrap">
+    <div class="pin-logo"><i class="ti ti-shoe"></i></div>
+    <h1 class="pin-title">IHSAN Footwears</h1>
+    <p class="pin-sub">& General Enterprises</p>
+    <p class="pin-label" id="pin-label">Enter your PIN to continue</p>
+    <div class="pin-dots">
+      <span class="pin-dot" id="d1"></span>
+      <span class="pin-dot" id="d2"></span>
+      <span class="pin-dot" id="d3"></span>
+      <span class="pin-dot" id="d4"></span>
+    </div>
+    <div class="pin-error" id="pin-error"></div>
+    <div class="pin-pad">
+      <button class="pin-key" onclick="pinInput('1')">1</button>
+      <button class="pin-key" onclick="pinInput('2')">2</button>
+      <button class="pin-key" onclick="pinInput('3')">3</button>
+      <button class="pin-key" onclick="pinInput('4')">4</button>
+      <button class="pin-key" onclick="pinInput('5')">5</button>
+      <button class="pin-key" onclick="pinInput('6')">6</button>
+      <button class="pin-key" onclick="pinInput('7')">7</button>
+      <button class="pin-key" onclick="pinInput('8')">8</button>
+      <button class="pin-key" onclick="pinInput('9')">9</button>
+      <button class="pin-key pin-key--blank"></button>
+      <button class="pin-key" onclick="pinInput('0')">0</button>
+      <button class="pin-key pin-key--del" onclick="pinDel()"><i class="ti ti-backspace"></i></button>
+    </div>
+    <p class="pin-hint" id="pin-hint">Default PIN: <strong>1234</strong> &nbsp;|&nbsp; Change in Settings</p>
+  </div>
+</div>
+
+<!-- ══════════════ MAIN APP ══════════════ -->
+<div id="app" class="app hidden">
+
+  <!-- TOP HEADER -->
+  <header class="app-header">
+    <div class="header-left">
+      <div class="header-logo"><i class="ti ti-shoe"></i></div>
+      <div>
+        <div class="header-title">IHSAN Footwears</div>
+        <div class="header-sub" id="header-date"></div>
+      </div>
+    </div>
+    <button class="header-notify" id="notify-btn" onclick="showNotifications()">
+      <i class="ti ti-bell"></i>
+      <span class="notify-badge" id="notify-badge" style="display:none;"></span>
+    </button>
+  </header>
+
+  <!-- PAGE CONTAINER -->
+  <main class="page-container" id="page-container">
+
+    <!-- ── PAGE: DASHBOARD ── -->
+    <section class="page active" id="page-dashboard">
+      <div class="dash-greeting" id="dash-greeting"></div>
+
+      <div class="stat-grid">
+        <div class="stat-card green" onclick="navigate('sales')">
+          <div class="stat-icon"><i class="ti ti-cash"></i></div>
+          <div class="stat-val" id="stat-today-sales">₦0</div>
+          <div class="stat-label">Today's Sales</div>
+        </div>
+        <div class="stat-card amber" onclick="navigate('expenses')">
+          <div class="stat-icon"><i class="ti ti-minus-circle"></i></div>
+          <div class="stat-val" id="stat-today-exp">₦0</div>
+          <div class="stat-label">Today's Expenses</div>
+        </div>
+        <div class="stat-card blue" onclick="navigate('stock')">
+          <div class="stat-icon"><i class="ti ti-packages"></i></div>
+          <div class="stat-val" id="stat-stock">0</div>
+          <div class="stat-label">Stock Items</div>
+        </div>
+        <div class="stat-card red" onclick="navigate('credit')">
+          <div class="stat-icon"><i class="ti ti-user-dollar"></i></div>
+          <div class="stat-val" id="stat-credit">₦0</div>
+          <div class="stat-label">Total Credit Owed</div>
+        </div>
+      </div>
+
+      <div class="section-head">
+        <span>Today's Summary</span>
+      </div>
+      <div class="summary-card" id="dash-summary">
+        <div class="summary-row"><span>Total Revenue</span><strong id="sum-revenue">₦0</strong></div>
+        <div class="summary-row"><span>Cost of Goods Sold</span><strong id="sum-cogs" class="red-text">₦0</strong></div>
+        <div class="summary-row"><span>Gross Profit</span><strong id="sum-gross" class="green-text">₦0</strong></div>
+        <div class="summary-row"><span>Expenses</span><strong id="sum-expenses" class="red-text">₦0</strong></div>
+        <div class="summary-row border-top"><span><strong>Net Profit</strong></span><strong id="sum-net" class="green-text">₦0</strong></div>
+        <div class="summary-row"><span>Cash Received</span><strong id="sum-cash">₦0</strong></div>
+        <div class="summary-row"><span>Transfer Received</span><strong id="sum-transfer">₦0</strong></div>
+        <div class="summary-row"><span>Credit Given Today</span><strong id="sum-credit-today" class="amber-text">₦0</strong></div>
+      </div>
+
+      <div class="section-head"><span>Recent Sales</span><button class="see-all" onclick="navigate('sales')">See All</button></div>
+      <div id="dash-recent-sales" class="recent-list">
+        <div class="empty-state"><i class="ti ti-receipt-off"></i><p>No sales yet today</p></div>
+      </div>
+
+      <div class="section-head"><span>Low Stock Alert</span></div>
+      <div id="dash-low-stock" class="recent-list">
+        <div class="empty-state"><i class="ti ti-package-off"></i><p>All stock levels are fine</p></div>
+      </div>
+    </section>
+
+    <!-- ── PAGE: SALES ── -->
+    <section class="page" id="page-sales">
+      <div class="page-toolbar">
+        <div class="filter-tabs" id="sales-filter">
+          <button class="ftab active" onclick="filterSales('today',this)">Today</button>
+          <button class="ftab" onclick="filterSales('week',this)">This Week</button>
+          <button class="ftab" onclick="filterSales('month',this)">This Month</button>
+          <button class="ftab" onclick="filterSales('all',this)">All</button>
+        </div>
+        <button class="fab-inline" onclick="openModal('modal-sale')"><i class="ti ti-plus"></i> New Sale</button>
+      </div>
+      <div class="period-total" id="sales-period-total">Total: ₦0 &nbsp;|&nbsp; 0 sales</div>
+      <div id="sales-list" class="record-list"></div>
+    </section>
+
+    <!-- ── PAGE: STOCK ── -->
+    <section class="page" id="page-stock">
+      <div class="page-toolbar">
+        <input class="search-box" type="text" placeholder="Search stock…" oninput="filterStock(this.value)" />
+        <div class="toolbar-btns">
+          <button class="fab-inline" onclick="openModal('modal-restock')"><i class="ti ti-truck"></i> Restock</button>
+          <button class="fab-inline fab-green" onclick="openModal('modal-stock-item')"><i class="ti ti-plus"></i> Add Item</button>
+        </div>
+      </div>
+      <div id="stock-list" class="record-list"></div>
+    </section>
+
+    <!-- ── PAGE: EXPENSES ── -->
+    <section class="page" id="page-expenses">
+      <div class="page-toolbar">
+        <div class="filter-tabs" id="exp-filter">
+          <button class="ftab active" onclick="filterExp('today',this)">Today</button>
+          <button class="ftab" onclick="filterExp('week',this)">Week</button>
+          <button class="ftab" onclick="filterExp('month',this)">Month</button>
+          <button class="ftab" onclick="filterExp('all',this)">All</button>
+        </div>
+        <button class="fab-inline" onclick="openModal('modal-expense')"><i class="ti ti-plus"></i> Add</button>
+      </div>
+      <div class="period-total" id="exp-period-total">Total: ₦0</div>
+      <div id="expense-list" class="record-list"></div>
+    </section>
+
+    <!-- ── PAGE: CREDIT ── -->
+    <section class="page" id="page-credit">
+      <div class="page-toolbar">
+        <input class="search-box" type="text" placeholder="Search customer…" oninput="filterCredit(this.value)" />
+        <button class="fab-inline" onclick="openModal('modal-credit')"><i class="ti ti-plus"></i> Add Credit</button>
+      </div>
+      <div class="period-total" id="credit-total">Total Outstanding: ₦0</div>
+      <div id="credit-list" class="record-list"></div>
+    </section>
+
+    <!-- ── PAGE: REPORTS ── -->
+    <section class="page" id="page-reports">
+      <div class="report-period">
+        <label>From</label><input type="date" id="rpt-from" />
+        <label>To</label><input type="date" id="rpt-to" />
+        <button class="fab-inline" onclick="generateReport()">Generate</button>
+      </div>
+      <div id="report-output" class="report-output">
+        <div class="empty-state"><i class="ti ti-chart-bar-off"></i><p>Select a date range and tap Generate</p></div>
+      </div>
+      <div class="report-export-row" id="report-export-row" style="display:none;">
+        <button class="export-btn" onclick="exportReport('pdf')"><i class="ti ti-file-type-pdf"></i> Export PDF</button>
+        <button class="export-btn" onclick="exportReport('csv')"><i class="ti ti-file-spreadsheet"></i> Export CSV</button>
+      </div>
+    </section>
+
+    <!-- ── PAGE: CUSTOMERS ── -->
+    <section class="page" id="page-customers">
+      <div class="page-toolbar">
+        <input class="search-box" type="text" placeholder="Search customer…" oninput="filterCustomers(this.value)" />
+        <button class="fab-inline" onclick="openModal('modal-customer')"><i class="ti ti-plus"></i> Add</button>
+      </div>
+      <div id="customer-list" class="record-list"></div>
+    </section>
+
+    <!-- ── PAGE: SUPPLIERS ── -->
+    <section class="page" id="page-suppliers">
+      <div class="page-toolbar">
+        <input class="search-box" type="text" placeholder="Search supplier…" oninput="filterSuppliers(this.value)" />
+        <button class="fab-inline" onclick="openModal('modal-supplier')"><i class="ti ti-plus"></i> Add</button>
+      </div>
+      <div id="supplier-list" class="record-list"></div>
+    </section>
+
+    <!-- ── PAGE: SETTINGS ── -->
+    <section class="page" id="page-settings">
+      <div class="settings-group">
+        <div class="settings-label">Business Info</div>
+        <div class="settings-item">
+          <label>Business Name</label>
+          <input type="text" id="set-biz-name" value="IHSAN Footwears & General Enterprises" />
+        </div>
+        <div class="settings-item">
+          <label>Owner Name</label>
+          <input type="text" id="set-owner" placeholder="Owner / Manager name" />
+        </div>
+        <div class="settings-item">
+          <label>Phone Number</label>
+          <input type="tel" id="set-phone" placeholder="+234..." />
+        </div>
+        <div class="settings-item">
+          <label>Address</label>
+          <input type="text" id="set-address" placeholder="Shop address" />
+        </div>
+      </div>
+      <div class="settings-group">
+        <div class="settings-label">Security</div>
+        <div class="settings-item">
+          <label>Current PIN</label>
+          <input type="password" maxlength="4" id="set-old-pin" placeholder="••••" />
+        </div>
+        <div class="settings-item">
+          <label>New PIN</label>
+          <input type="password" maxlength="4" id="set-new-pin" placeholder="••••" />
+        </div>
+        <div class="settings-item">
+          <label>Confirm New PIN</label>
+          <input type="password" maxlength="4" id="set-confirm-pin" placeholder="••••" />
+        </div>
+        <button class="settings-save-btn" onclick="changePin()">Update PIN</button>
+      </div>
+      <div class="settings-group">
+        <div class="settings-label">Low Stock Threshold</div>
+        <div class="settings-item">
+          <label>Alert when quantity drops below</label>
+          <input type="number" id="set-low-stock" value="5" min="1" />
+        </div>
+      </div>
+      <div class="settings-group">
+        <div class="settings-label">App</div>
+        <button class="settings-save-btn" onclick="saveSettings()">Save Settings</button>
+        <button class="settings-danger-btn" onclick="installPWA()"><i class="ti ti-download"></i> Install App on Phone</button>
+        <button class="settings-danger-btn red" onclick="confirmClearData()"><i class="ti ti-trash"></i> Clear All Data</button>
+      </div>
+      <div class="app-version">IHSAN Footwears v1.0 &nbsp;·&nbsp; Built by YaseerTech</div>
+    </section>
+
+  </main>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active" onclick="navigate('dashboard')" id="nav-dashboard">
+      <i class="ti ti-home"></i><span>Home</span>
+    </button>
+    <button class="nav-btn" onclick="navigate('sales')" id="nav-sales">
+      <i class="ti ti-shopping-cart"></i><span>Sales</span>
+    </button>
+    <button class="nav-btn" onclick="navigate('stock')" id="nav-stock">
+      <i class="ti ti-packages"></i><span>Stock</span>
+    </button>
+    <button class="nav-btn" onclick="navigate('expenses')" id="nav-expenses">
+      <i class="ti ti-minus-circle"></i><span>Expenses</span>
+    </button>
+    <button class="nav-btn" onclick="showMoreMenu()" id="nav-more">
+      <i class="ti ti-dots"></i><span>More</span>
+    </button>
+  </nav>
+
+  <!-- MORE MENU -->
+  <div class="more-menu hidden" id="more-menu">
+    <div class="more-menu-backdrop" onclick="hideMoreMenu()"></div>
+    <div class="more-menu-sheet">
+      <div class="more-menu-title">More Options</div>
+      <div class="more-grid">
+        <button class="more-item" onclick="navigate('credit');hideMoreMenu()">
+          <i class="ti ti-user-dollar"></i><span>Credit</span>
+        </button>
+        <button class="more-item" onclick="navigate('reports');hideMoreMenu()">
+          <i class="ti ti-chart-bar"></i><span>Reports</span>
+        </button>
+        <button class="more-item" onclick="navigate('customers');hideMoreMenu()">
+          <i class="ti ti-users"></i><span>Customers</span>
+        </button>
+        <button class="more-item" onclick="navigate('suppliers');hideMoreMenu()">
+          <i class="ti ti-building-store"></i><span>Suppliers</span>
+        </button>
+        <button class="more-item" onclick="navigate('settings');hideMoreMenu()">
+          <i class="ti ti-settings"></i><span>Settings</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end #app -->
+
+<!-- ══════════════ MODALS ══════════════ -->
+
+<!-- MODAL: Record Sale -->
+<div class="modal-overlay hidden" id="modal-sale">
+  <div class="modal">
+    <div class="modal-header"><span>Record a Sale</span><button onclick="closeModal('modal-sale')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body">
+      <label>Item / Product Name *</label>
+      <input type="text" id="sale-item" placeholder="e.g. Men's Oxford Size 43" list="stock-datalist" />
+      <datalist id="stock-datalist"></datalist>
+      <label>Quantity Sold *</label>
+      <input type="number" id="sale-qty" value="1" min="1" />
+      <label>Selling Price (per unit) ₦ *</label>
+      <input type="number" id="sale-price" placeholder="0.00" />
+      <label>Buying/Cost Price (per unit) ₦ *</label>
+      <input type="number" id="sale-cost" placeholder="0.00" />
+      <label>Payment Method *</label>
+      <select id="sale-payment">
+        <option value="cash">Cash</option>
+        <option value="transfer">Bank Transfer</option>
+        <option value="credit">Credit (Pay Later)</option>
+        <option value="part">Part Payment</option>
+      </select>
+      <div id="part-pay-row" style="display:none;">
+        <label>Amount Paid Now ₦</label>
+        <input type="number" id="sale-part-paid" placeholder="0.00" />
+      </div>
+      <label>Customer Name (optional)</label>
+      <input type="text" id="sale-customer" placeholder="Customer name" list="customer-datalist" />
+      <datalist id="customer-datalist"></datalist>
+      <label>Customer Phone (optional)</label>
+      <input type="tel" id="sale-cust-phone" placeholder="+234..." />
+      <label>Note (optional)</label>
+      <input type="text" id="sale-note" placeholder="Any note about this sale" />
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('modal-sale')">Cancel</button>
+      <button class="btn-save" onclick="recordSale()"><i class="ti ti-check"></i> Save Sale</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Add Stock Item -->
+<div class="modal-overlay hidden" id="modal-stock-item">
+  <div class="modal">
+    <div class="modal-header"><span>Add Stock Item</span><button onclick="closeModal('modal-stock-item')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body">
+      <label>Item Name *</label>
+      <input type="text" id="si-name" placeholder="e.g. Men's Oxford" />
+      <label>Brand / Type</label>
+      <input type="text" id="si-brand" placeholder="e.g. Clarks, Bata, School Shoe" />
+      <label>Category</label>
+      <select id="si-category">
+        <option value="men">Men's</option>
+        <option value="women">Women's</option>
+        <option value="kids">Kids'</option>
+        <option value="unisex">Unisex</option>
+        <option value="other">Other</option>
+      </select>
+      <label>Size</label>
+      <input type="text" id="si-size" placeholder="e.g. 43 or 37-42" />
+      <label>Colour</label>
+      <input type="text" id="si-colour" placeholder="e.g. Black, Brown" />
+      <label>Quantity in Stock *</label>
+      <input type="number" id="si-qty" value="1" min="0" />
+      <label>Buying Price (per unit) ₦ *</label>
+      <input type="number" id="si-buy" placeholder="0.00" />
+      <label>Selling Price (per unit) ₦ *</label>
+      <input type="number" id="si-sell" placeholder="0.00" />
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('modal-stock-item')">Cancel</button>
+      <button class="btn-save" onclick="addStockItem()"><i class="ti ti-check"></i> Add Item</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Restock -->
+<div class="modal-overlay hidden" id="modal-restock">
+  <div class="modal">
+    <div class="modal-header"><span>Record Restock / Purchase</span><button onclick="closeModal('modal-restock')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body">
+      <label>Item Name *</label>
+      <input type="text" id="rs-item" placeholder="Item restocked" list="stock-datalist2" />
+      <datalist id="stock-datalist2"></datalist>
+      <label>Quantity Received *</label>
+      <input type="number" id="rs-qty" value="1" min="1" />
+      <label>Cost Paid ₦ (total batch) *</label>
+      <input type="number" id="rs-cost" placeholder="0.00" />
+      <label>Supplier Name</label>
+      <input type="text" id="rs-supplier" placeholder="Supplier name" list="supplier-datalist" />
+      <datalist id="supplier-datalist"></datalist>
+      <label>Note</label>
+      <input type="text" id="rs-note" placeholder="Any note" />
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('modal-restock')">Cancel</button>
+      <button class="btn-save" onclick="recordRestock()"><i class="ti ti-check"></i> Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Add Expense -->
+<div class="modal-overlay hidden" id="modal-expense">
+  <div class="modal">
+    <div class="modal-header"><span>Add Expense</span><button onclick="closeModal('modal-expense')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body">
+      <label>Description *</label>
+      <input type="text" id="exp-desc" placeholder="e.g. Shop Rent, Transport" />
+      <label>Category *</label>
+      <select id="exp-cat">
+        <option value="rent">Rent</option>
+        <option value="transport">Transport</option>
+        <option value="wages">Staff Wages</option>
+        <option value="electricity">Electricity / NEPA</option>
+        <option value="packaging">Packaging</option>
+        <option value="restock">Stock Purchase</option>
+        <option value="maintenance">Maintenance</option>
+        <option value="other">Other</option>
+      </select>
+      <label>Amount ₦ *</label>
+      <input type="number" id="exp-amount" placeholder="0.00" />
+      <label>Payment Method</label>
+      <select id="exp-payment">
+        <option value="cash">Cash</option>
+        <option value="transfer">Transfer</option>
+      </select>
+      <label>Note (optional)</label>
+      <input type="text" id="exp-note" placeholder="Additional note" />
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('modal-expense')">Cancel</button>
+      <button class="btn-save" onclick="addExpense()"><i class="ti ti-check"></i> Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Add Credit -->
+<div class="modal-overlay hidden" id="modal-credit">
+  <div class="modal">
+    <div class="modal-header"><span>Record Credit Sale</span><button onclick="closeModal('modal-credit')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body">
+      <label>Customer Name *</label>
+      <input type="text" id="cr-name" placeholder="Full name" />
+      <label>Phone Number *</label>
+      <input type="tel" id="cr-phone" placeholder="+234..." />
+      <label>Item Bought</label>
+      <input type="text" id="cr-item" placeholder="What did they buy?" />
+      <label>Total Amount Owed ₦ *</label>
+      <input type="number" id="cr-total" placeholder="0.00" />
+      <label>Amount Paid Now ₦</label>
+      <input type="number" id="cr-paid" value="0" />
+      <label>Expected Payment Date</label>
+      <input type="date" id="cr-due" />
+      <label>Note</label>
+      <input type="text" id="cr-note" placeholder="Any note" />
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('modal-credit')">Cancel</button>
+      <button class="btn-save" onclick="addCredit()"><i class="ti ti-check"></i> Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Add Customer -->
+<div class="modal-overlay hidden" id="modal-customer">
+  <div class="modal">
+    <div class="modal-header"><span>Add Customer</span><button onclick="closeModal('modal-customer')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body">
+      <label>Full Name *</label>
+      <input type="text" id="cust-name" placeholder="Customer full name" />
+      <label>Phone Number</label>
+      <input type="tel" id="cust-phone" placeholder="+234..." />
+      <label>Address</label>
+      <input type="text" id="cust-address" placeholder="Customer address" />
+      <label>Note</label>
+      <input type="text" id="cust-note" placeholder="Foot size, preferences, etc." />
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('modal-customer')">Cancel</button>
+      <button class="btn-save" onclick="addCustomer()"><i class="ti ti-check"></i> Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Add Supplier -->
+<div class="modal-overlay hidden" id="modal-supplier">
+  <div class="modal">
+    <div class="modal-header"><span>Add Supplier</span><button onclick="closeModal('modal-supplier')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body">
+      <label>Supplier Name *</label>
+      <input type="text" id="sup-name" placeholder="Supplier / Company name" />
+      <label>Phone Number</label>
+      <input type="tel" id="sup-phone" placeholder="+234..." />
+      <label>What They Supply</label>
+      <input type="text" id="sup-items" placeholder="e.g. Men's shoes, Kids shoes" />
+      <label>Location</label>
+      <input type="text" id="sup-location" placeholder="City / Market" />
+      <label>Note</label>
+      <input type="text" id="sup-note" placeholder="Any note" />
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('modal-supplier')">Cancel</button>
+      <button class="btn-save" onclick="addSupplier()"><i class="ti ti-check"></i> Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Receipt -->
+<div class="modal-overlay hidden" id="modal-receipt">
+  <div class="modal">
+    <div class="modal-header"><span>Receipt</span><button onclick="closeModal('modal-receipt')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body" id="receipt-body"></div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('modal-receipt')">Close</button>
+      <button class="btn-save" onclick="shareReceipt()"><i class="ti ti-brand-whatsapp"></i> Share</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Credit Payment -->
+<div class="modal-overlay hidden" id="modal-credit-pay">
+  <div class="modal">
+    <div class="modal-header"><span>Record Payment</span><button onclick="closeModal('modal-credit-pay')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body">
+      <p id="credit-pay-info" style="margin-bottom:12px;font-size:14px;color:var(--text-2);"></p>
+      <label>Amount Paid ₦ *</label>
+      <input type="number" id="credit-pay-amount" placeholder="0.00" />
+      <label>Payment Method</label>
+      <select id="credit-pay-method">
+        <option value="cash">Cash</option>
+        <option value="transfer">Transfer</option>
+      </select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('modal-credit-pay')">Cancel</button>
+      <button class="btn-save" onclick="recordCreditPayment()"><i class="ti ti-check"></i> Record</button>
+    </div>
+  </div>
+</div>
+
+<!-- NOTIFICATIONS PANEL -->
+<div class="notif-panel hidden" id="notif-panel">
+  <div class="notif-backdrop" onclick="hideNotifications()"></div>
+  <div class="notif-sheet">
+    <div class="notif-header"><span>Notifications</span><button onclick="hideNotifications()"><i class="ti ti-x"></i></button></div>
+    <div id="notif-list"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast hidden" id="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
