@@ -1123,7 +1123,7 @@ html,body{height:100%;overflow:hidden;font-family:'Inter',system-ui,sans-serif;f
         <option value="manure">Manure / Droppings</option>
         <option value="other">Other</option>
       </select>
-      <label>Quantity *</label><input type="number" id="ps-qty" placeholder="e.g. 50 birds or 10 crates" min="1" />
+      <label>Quantity *</label><input type="number" id="ps-qty" placeholder="e.g. 50 birds or 10 crates" min="1" oninput="updatePSaleTotal()" />
       <label>Unit Price ₦ *</label><input type="number" id="ps-price" placeholder="Price per unit" oninput="updatePSaleTotal()" />
       <div id="ps-total-preview" style="background:var(--green-light);border-radius:8px;padding:10px 14px;font-size:14px;font-weight:600;color:var(--green-text);display:none"></div>
       <label>Payment Method</label>
@@ -1442,11 +1442,23 @@ function changePin() {
 function navigate(page) {
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('page-'+page).classList.add('active');
+  const pageEl = document.getElementById('page-'+page);
+  if (!pageEl) return;
+  pageEl.classList.add('active');
   const nav=document.getElementById('nav-'+page);
   if (nav) nav.classList.add('active');
   currentPage=page;
-  const map={dashboard:refreshDashboard,sales:()=>renderSales(currentSaleFilter),stock:()=>renderStock(''),expenses:()=>renderExpenses(currentExpFilter),credit:()=>renderCredit(''),customers:()=>renderCustomers(''),suppliers:()=>renderSuppliers(''),settings:loadSettingsUI};
+  const map={
+    dashboard:  refreshDashboard,
+    sales:      ()=>renderSales(currentSaleFilter),
+    stock:      ()=>renderStock(''),
+    expenses:   ()=>renderExpenses(currentExpFilter),
+    credit:     ()=>renderCredit(''),
+    customers:  ()=>renderCustomers(''),
+    suppliers:  ()=>renderSuppliers(''),
+    settings:   loadSettingsUI,
+    poultry:    navigatePoultry,
+  };
   if (map[page]) map[page]();
 }
 function showMoreMenu(){ document.getElementById('nav-more').classList.add('active'); document.getElementById('more-menu').classList.remove('hidden'); }
@@ -1459,6 +1471,9 @@ function openModal(id) {
   document.getElementById(id).classList.remove('hidden');
   refreshDataLists();
   if (id==='modal-sale') buildSaleItemPicker();
+  if (['modal-flock','modal-mortality','modal-egg','modal-feed','modal-health','modal-psale','modal-pexpense'].includes(id)) {
+    populateFlockDropdowns();
+  }
 }
 function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
@@ -2716,11 +2731,6 @@ function updatePSaleTotal() {
   el.textContent = `Total: ${fmtNGN(qty*price)}`;
   el.style.display = 'block';
 }
-// also wire qty input
-document.addEventListener('DOMContentLoaded', () => {
-  const qtyEl = document.getElementById('ps-qty');
-  if (qtyEl) qtyEl.addEventListener('input', updatePSaleTotal);
-});
 
 async function recordPoultrySale() {
   const flockId = document.getElementById('ps-flock').value;
@@ -2836,56 +2846,26 @@ async function deletePoultryRecord(table, id, rerenderFn) {
   } catch(e) { showToast('❌ Delete failed'); }
 }
 
-// ── HOOK POULTRY INTO NAVIGATE ─────────────
-const _origNavigate = navigate;
-// Patch openModal to populate flock dropdowns
-const _origOpenModal = openModal;
-window.openModal = function(id) {
-  _origOpenModal(id);
-  if (['modal-flock','modal-mortality','modal-egg','modal-feed','modal-health','modal-psale','modal-pexpense'].includes(id)) {
-    populateFlockDropdowns();
-  }
-};
-
-// Patch navigate to init poultry on first visit
+// ══════════════════════════════════════════
+// POULTRY NAVIGATION
+// ══════════════════════════════════════════
 let _poultryLoaded = false;
-window.navigate = function(page) {
-  _origNavigate(page);
-  if (page==='poultry') {
-    if (!_poultryLoaded) {
-      _poultryLoaded = true;
-      initPoultryPage();
-    } else {
-      refreshPoultryStats();
-      renderFlocks();
-    }
+
+async function navigatePoultry() {
+  if (!_poultryLoaded) {
+    _poultryLoaded = true;
+    await initPoultryPage();
+  } else {
+    refreshPoultryStats();
+    renderFlocks();
   }
-};
+}
 
-// ── POULTRY SQL NOTE (shown in console) ────
-console.log('%c IHSAN Poultry — Run this SQL in Supabase dashboard:\n'+
-'create table ihsan_p_flocks (id text primary key, name text, type text, count int, current_count int, age text, purchase_date date, cost numeric, supplier text, pen text, note text, mortality_log jsonb default \'[]\', created_at timestamptz default now());\n'+
-'create table ihsan_p_eggs (id text primary key, flock_id text, flock_name text, count int, good_eggs int, bad_eggs int, collection_time text, note text, created_at timestamptz default now());\n'+
-'create table ihsan_p_feed (id text primary key, flock_id text, flock_name text, type text, qty numeric, cost numeric, supplier text, note text, created_at timestamptz default now());\n'+
-'create table ihsan_p_health (id text primary key, flock_id text, flock_name text, type text, description text, birds_affected int, cost numeric, status text, vet text, note text, created_at timestamptz default now());\n'+
-'create table ihsan_p_psales (id text primary key, flock_id text, flock_name text, type text, qty numeric, price numeric, total numeric, payment text, buyer text, phone text, note text, created_at timestamptz default now());\n'+
-'create table ihsan_p_pexpenses (id text primary key, flock_id text, flock_name text, desc text, cat text, amount numeric, note text, created_at timestamptz default now());\n'+
-'create policy "allow all" on ihsan_p_flocks for all using (true) with check (true);\n'+
-'create policy "allow all" on ihsan_p_eggs for all using (true) with check (true);\n'+
-'create policy "allow all" on ihsan_p_feed for all using (true) with check (true);\n'+
-'create policy "allow all" on ihsan_p_health for all using (true) with check (true);\n'+
-'create policy "allow all" on ihsan_p_psales for all using (true) with check (true);\n'+
-'create policy "allow all" on ihsan_p_pexpenses for all using (true) with check (true);\n'+
-'alter table ihsan_p_flocks enable row level security;\n'+
-'alter table ihsan_p_eggs enable row level security;\n'+
-'alter table ihsan_p_feed enable row level security;\n'+
-'alter table ihsan_p_health enable row level security;\n'+
-'alter table ihsan_p_psales enable row level security;\n'+
-'alter table ihsan_p_pexpenses enable row level security;',
-'color:#7b4f21;font-weight:bold;font-size:12px');
-
-// ── SERVICE WORKER ─────────────────────────
+// ── SERVICE WORKER (force update) ──────────
 if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(regs => {
+    regs.forEach(reg => reg.update());
+  });
   navigator.serviceWorker.register('sw.js').catch(()=>{});
 }
 </script>
