@@ -1,596 +1,2209 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>IHSAN Footwears</title>
-  <meta name="description" content="Business accounting & stock management for IHSAN Footwears and General Enterprises" />
-  <meta name="theme-color" content="#1a3c1a" />
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="IHSAN" />
-  <link rel="manifest" href="manifest.json" />
-  <link rel="apple-touch-icon" href="icons/icon-192.png" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<title>IHSAN Business App</title>
+<meta name="theme-color" content="#1a3c1a"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-title" content="IHSAN"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --gd:#1a3c1a;--gm:#2d5a2d;--g:#3b7a3b;--gl:#e8f5e8;--gt:#1f5c1f;
+  --am:#d4860e;--al:#fef3e2;--ad:#7a4f0d;
+  --rm:#c0392b;--rl:#fdecea;
+  --bm:#1565c0;--bl:#e3f2fd;
+  --bwm:#7b4f21;--bwl:#f5ede3;--bwd:#5a3615;
+  --tm:#0d7377;--tl:#e0f5f5;
+  --bg:#f4f6f4;--sf:#fff;--br:#e0e8e0;
+  --t1:#1a2e1a;--t2:#4a664a;--t3:#8aaa8a;
+  --r:14px;--rs:8px;--nh:62px;--hh:68px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;font-family:'Inter',sans-serif;font-size:15px;background:var(--bg);color:var(--t1)}
+.hidden{display:none!important}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:var(--br);border-radius:4px}
+
+/* SCREENS */
+#scr-loading,#scr-setup,#scr-pin{position:fixed;inset:0;z-index:1000;background:linear-gradient(160deg,var(--gd),#0d200d);display:flex;align-items:center;justify-content:center;padding:20px}
+.ld-wrap{display:flex;flex-direction:column;align-items:center;gap:14px;color:#fff}
+.ld-logo{width:80px;height:80px;background:rgba(255,255,255,.12);border-radius:22px;display:flex;align-items:center;justify-content:center;font-size:38px}
+.ld-title{font-size:20px;font-weight:700}
+.ld-sub{font-size:13px;opacity:.6}
+.spinner{width:32px;height:32px;border:3px solid rgba(255,255,255,.2);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* SETUP */
+.setup-box{background:#fff;border-radius:22px;padding:24px 20px;width:100%;max-width:420px;overflow-y:auto;max-height:96vh}
+.setup-logo{width:56px;height:56px;background:linear-gradient(135deg,var(--g),var(--gd));border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;color:#fff;margin:0 auto 12px}
+.setup-title{font-size:19px;font-weight:700;text-align:center;margin-bottom:4px}
+.setup-sub{font-size:13px;color:var(--t2);text-align:center;margin-bottom:14px;line-height:1.6}
+.setup-guide{background:var(--gl);border-radius:10px;padding:12px;margin-bottom:14px;font-size:13px;color:var(--gt);line-height:1.9}
+.setup-guide b{display:block;margin-bottom:2px}
+.sf{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
+.sf label{font-size:13px;font-weight:600;color:var(--t2)}
+.sf input{padding:11px 13px;border-radius:10px;border:1.5px solid var(--br);font-size:14px;outline:none;width:100%}
+.sf input:focus{border-color:var(--g)}
+.setup-btn{width:100%;padding:14px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--g),var(--gd));color:#fff;font-size:15px;font-weight:700;cursor:pointer}
+.setup-err{color:var(--rm);font-size:13px;text-align:center;min-height:18px;margin-top:8px}
+.setup-note{font-size:12px;color:var(--t3);text-align:center;margin-top:10px}
+.setup-note a{color:var(--g);font-weight:600;text-decoration:none}
+
+/* PIN */
+.pin-wrap{text-align:center;width:100%;max-width:320px}
+.pin-logo{width:76px;height:76px;margin:0 auto 14px;background:rgba(255,255,255,.12);border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:36px;color:#fff}
+.pin-title{font-size:21px;font-weight:700;color:#fff}
+.pin-biz{font-size:13px;color:rgba(255,255,255,.5);margin-bottom:28px}
+.pin-lbl{font-size:14px;color:rgba(255,255,255,.7);margin-bottom:16px}
+.pin-dots{display:flex;justify-content:center;gap:16px;margin-bottom:8px}
+.dot{width:15px;height:15px;border-radius:50%;border:2px solid rgba(255,255,255,.4);transition:.15s}
+.dot.on{background:#fff;border-color:#fff}
+.dot.err{background:var(--rm);border-color:var(--rm);animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%,75%{transform:translateX(-6px)}50%{transform:translateX(6px)}}
+.pin-err{color:#ff8a80;font-size:13px;min-height:18px;margin-bottom:8px}
+.pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin:14px auto 0;max-width:256px}
+.pk{height:60px;border-radius:13px;border:1.5px solid rgba(255,255,255,.18);background:rgba(255,255,255,.1);color:#fff;font-size:22px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.1s}
+.pk:active{background:rgba(255,255,255,.25);transform:scale(.93)}
+.pk.blank{background:transparent!important;border-color:transparent!important;cursor:default}
+.pin-hint{font-size:12px;color:rgba(255,255,255,.28);margin-top:20px}
+
+/* APP SHELL */
+#app{position:fixed;inset:0;display:flex;flex-direction:column;background:var(--bg)}
+.off-bar{background:var(--rm);color:#fff;font-size:12px;font-weight:600;text-align:center;padding:5px;display:none}
+.off-bar.on{display:block}
+.app-hdr{background:linear-gradient(135deg,var(--gd),var(--gm));flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+.hdr-main{display:flex;align-items:center;justify-content:space-between;padding:0 14px;height:52px}
+.hdr-left{display:flex;align-items:center;gap:10px}
+.hdr-icon{width:36px;height:36px;background:rgba(255,255,255,.15);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff}
+.hdr-title{font-size:15px;font-weight:700;color:#fff}
+.hdr-sub{font-size:11px;color:rgba(255,255,255,.6)}
+.hdr-btn{width:36px;height:36px;background:rgba(255,255,255,.12);border-radius:10px;border:1px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;cursor:pointer;position:relative}
+.nbadge{position:absolute;top:5px;right:5px;width:8px;height:8px;border-radius:50%;background:var(--am);border:1.5px solid var(--gd)}
+.sync-bar{display:flex;align-items:center;gap:6px;padding:3px 14px 7px;font-size:11px;color:rgba(255,255,255,.65)}
+.sdot{width:7px;height:7px;border-radius:50%;background:#4caf50;flex-shrink:0;transition:.3s}
+.sdot.syncing{background:var(--am);animation:pulse 1s infinite}
+.sdot.err{background:var(--rm)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* PAGES */
+.pgc{flex:1;overflow-y:auto;overflow-x:hidden;padding-bottom:calc(var(--nh)+6px)}
+.pg{display:none;padding:14px 14px 0;animation:fi .2s ease}
+.pg.active{display:block}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+/* BOTTOM NAV */
+.bnav{height:var(--nh);background:var(--sf);border-top:1px solid var(--br);display:flex;flex-shrink:0;box-shadow:0 -2px 8px rgba(0,0,0,.06)}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:none;border:none;cursor:pointer;color:var(--t3);font-size:10px;font-weight:500}
+.nb i{font-size:22px}
+.nb.active{color:var(--g)}
+
+/* MORE SHEET */
+.more-overlay{position:fixed;inset:0;z-index:400}
+.more-bg{position:absolute;inset:0;background:rgba(0,0,0,.4)}
+.more-sheet{position:absolute;bottom:0;left:0;right:0;background:var(--sf);border-radius:22px 22px 0 0;padding:18px 14px 34px;animation:su .3s ease}
+@keyframes su{from{transform:translateY(100%)}to{transform:none}}
+.more-lbl{font-size:12px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:14px}
+.more-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.mi{display:flex;flex-direction:column;align-items:center;gap:7px;padding:14px 8px;border-radius:var(--r);background:var(--bg);border:1px solid var(--br);font-size:12px;font-weight:600;color:var(--t2);cursor:pointer}
+.mi i{font-size:24px;color:var(--g)}
+.mi.poultry-mi i{color:var(--bwm)}
+.mi.poultry-mi{border-color:var(--bwl)}
+
+/* DASHBOARD */
+.greet{font-size:15px;font-weight:600;color:var(--t2);margin-bottom:14px}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.sc{border-radius:var(--r);padding:13px 12px;display:flex;flex-direction:column;gap:5px;cursor:pointer;transition:.1s}
+.sc:active{transform:scale(.96)}
+.sc.g{background:var(--gl)}.sc.a{background:var(--al)}.sc.b{background:var(--bl)}.sc.r{background:var(--rl)}
+.sc-icon{font-size:21px}
+.sc.g .sc-icon{color:var(--g)}.sc.a .sc-icon{color:var(--am)}.sc.b .sc-icon{color:var(--bm)}.sc.r .sc-icon{color:var(--rm)}
+.sc-val{font-size:19px;font-weight:700;color:var(--t1)}
+.sc-lbl{font-size:11px;color:var(--t2);font-weight:500}
+.sec-hd{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;margin-top:4px}
+.see-all{font-size:12px;color:var(--g);background:none;border:none;cursor:pointer;font-weight:600}
+.sum-card{background:var(--sf);border-radius:var(--r);padding:2px 16px;margin-bottom:16px;border:1px solid var(--br)}
+.sum-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--bg);font-size:14px}
+.sum-row:last-child{border-bottom:none}
+.sum-row.bt{border-top:2px solid var(--br);margin-top:2px}
+.gt{color:var(--gt)}.rt{color:var(--rm)}.at{color:var(--ad)}
+.empty{background:var(--sf);border-radius:var(--r);padding:30px 16px;text-align:center;border:1px solid var(--br);color:var(--t3)}
+.empty i{font-size:32px;display:block;margin-bottom:8px}
+.empty p{font-size:13px}
+
+/* RECORDS */
+.rlist{display:flex;flex-direction:column;gap:8px;padding-bottom:8px}
+.rc{background:var(--sf);border-radius:var(--r);border:1px solid var(--br);padding:12px 14px;display:flex;align-items:flex-start;gap:10px}
+.ri{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.ri.g{background:var(--gl);color:var(--g)}.ri.a{background:var(--al);color:var(--am)}.ri.r{background:var(--rl);color:var(--rm)}.ri.b{background:var(--bl);color:var(--bm)}
+.rb{flex:1;min-width:0}
+.rtitle{font-size:14px;font-weight:600;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rmeta{font-size:12px;color:var(--t2);margin-top:2px}
+.rright{text-align:right;flex-shrink:0}
+.ramt{font-size:15px;font-weight:700}
+.ramt.g{color:var(--gt)}.ramt.r{color:var(--rm)}.ramt.a{color:var(--ad)}.ramt.b{color:var(--bm)}
+.rtime{font-size:11px;color:var(--t3);margin-top:2px}
+.ract{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.btn{font-size:12px;padding:5px 10px;border-radius:6px;border:1px solid var(--br);background:none;cursor:pointer;color:var(--t2);display:flex;align-items:center;gap:4px}
+.btn.g{background:var(--gl);color:var(--gt);border-color:var(--gl)}
+.btn.r{background:var(--rl);color:var(--rm);border-color:var(--rl)}
+.btn.b{background:var(--bl);color:var(--bm);border-color:var(--bl)}
+.btn.a{background:var(--al);color:var(--ad);border-color:var(--al)}
+.thumb{width:40px;height:40px;border-radius:8px;object-fit:cover;flex-shrink:0}
+
+/* STOCK */
+.stock-card{background:var(--sf);border-radius:var(--r);border:1px solid var(--br);padding:12px 14px;margin-bottom:8px}
+.sth{display:flex;align-items:flex-start;gap:10px}
+.sthumb{width:54px;height:54px;border-radius:10px;object-fit:cover;flex-shrink:0;border:1px solid var(--br)}
+.sthumb-ph{width:54px;height:54px;border-radius:10px;background:var(--gl);color:var(--g);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.sb{flex:1;min-width:0}
+.sname{font-size:14px;font-weight:600;color:var(--t1)}
+.smeta{font-size:12px;color:var(--t2);margin-top:2px}
+.sr{text-align:right;flex-shrink:0}
+.sqty{font-size:18px;font-weight:700}.sqty.low{color:var(--rm)}
+.sqty-lbl{font-size:10px;color:var(--t3)}
+.low-badge{font-size:10px;background:var(--rl);color:var(--rm);border-radius:20px;padding:2px 8px;font-weight:600;margin-top:2px;display:inline-block}
+.sprices{display:flex;gap:10px;margin-top:10px;padding-top:10px;border-top:1px solid var(--bg);flex-wrap:wrap;align-items:center}
+.spi{display:flex;flex-direction:column}
+.spl{font-size:10px;color:var(--t3)}.spv{font-size:13px;font-weight:600;color:var(--t1)}
+.pchip{font-size:11px;padding:3px 8px;border-radius:20px;background:var(--gl);color:var(--gt);font-weight:600;margin-left:auto}
+
+/* TOOLBAR */
+.toolbar{display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap}
+.sbox{flex:1;min-width:120px;padding:10px 14px;border-radius:10px;border:1.5px solid var(--br);background:var(--sf);font-size:14px;color:var(--t1);outline:none}
+.sbox:focus{border-color:var(--g)}
+.ftabs{display:flex;gap:4px;flex:1}
+.ft{flex:1;padding:8px 4px;border-radius:8px;border:1.5px solid var(--br);background:var(--sf);font-size:11px;font-weight:500;color:var(--t2);cursor:pointer}
+.ft.active{background:var(--g);color:#fff;border-color:var(--g)}
+.fab{padding:9px 13px;border-radius:10px;background:var(--gd);color:#fff;border:none;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:5px}
+.fab.sec{background:var(--g)}
+.ptotal{font-size:13px;color:var(--t2);font-weight:500;margin-bottom:12px;padding:10px 14px;background:var(--sf);border-radius:var(--rs);border:1px solid var(--br)}
+
+/* CREDIT */
+.cr-card{background:var(--sf);border-radius:var(--r);border:1px solid var(--br);padding:14px;margin-bottom:8px}
+.cr-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.cr-av{width:40px;height:40px;border-radius:50%;background:var(--al);color:var(--ad);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;flex-shrink:0}
+.cr-name{font-size:14px;font-weight:600;color:var(--t1)}
+.cr-phone{font-size:12px;color:var(--t2)}
+.cr-bal{font-size:18px;font-weight:700;color:var(--rm)}
+.cr-bal.paid{color:var(--g)}
+.pbar-bg{height:6px;background:var(--bg);border-radius:3px;overflow:hidden;margin-bottom:4px}
+.pbar-fill{height:100%;background:var(--g);border-radius:3px;transition:.4s}
+.cr-amts{display:flex;justify-content:space-between;font-size:11px;color:var(--t2)}
+
+/* REPORTS */
+.rpt-period{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px;background:var(--sf);border-radius:var(--r);padding:12px 14px;border:1px solid var(--br)}
+.rpt-period label{font-size:12px;color:var(--t2);font-weight:500}
+.rpt-period input{flex:1;padding:8px;border-radius:8px;border:1.5px solid var(--br);font-size:13px;min-width:120px;color:var(--t1);background:var(--bg)}
+.rpt-sec{background:var(--sf);border-radius:var(--r);border:1px solid var(--br);padding:16px;margin-bottom:10px}
+.rpt-sec-t{font-size:12px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px}
+.rpt-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--bg);font-size:14px}
+.rpt-row:last-child{border-bottom:none}
+.rpt-total{font-size:16px;font-weight:700}
+.exp-row{display:flex;gap:10px;margin-top:14px}
+.exp-btn{flex:1;padding:12px;border-radius:10px;border:1.5px solid var(--br);background:var(--sf);color:var(--t2);font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+
+/* CONTACTS */
+.ct-card{background:var(--sf);border-radius:var(--r);border:1px solid var(--br);padding:14px;display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.ct-av{width:44px;height:44px;border-radius:12px;background:var(--gl);color:var(--gt);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex-shrink:0}
+.ct-body{flex:1;min-width:0}
+.ct-name{font-size:14px;font-weight:600;color:var(--t1)}
+.ct-meta{font-size:12px;color:var(--t2);margin-top:2px}
+.ct-acts{display:flex;gap:8px}
+.ct-btn{width:34px;height:34px;border-radius:8px;border:1px solid var(--br);background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--t2)}
+
+/* SETTINGS */
+.set-grp{background:var(--sf);border-radius:var(--r);border:1px solid var(--br);padding:16px;margin-bottom:14px;display:flex;flex-direction:column;gap:12px}
+.set-lbl{font-size:12px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.5px}
+.set-item{display:flex;flex-direction:column;gap:5px}
+.set-item label{font-size:13px;color:var(--t2);font-weight:500}
+.set-item input,.set-item select{padding:10px 13px;border-radius:9px;border:1.5px solid var(--br);background:var(--bg);font-size:14px;color:var(--t1);outline:none;width:100%}
+.set-item input:focus{border-color:var(--g)}
+.set-btn{padding:13px;border-radius:10px;border:none;background:var(--gd);color:#fff;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+.set-btn.danger{background:none;border:1.5px solid var(--rl);color:var(--rm)}
+.set-btn.warn{background:none;border:1.5px solid var(--br);color:var(--t2)}
+.cloud-ok{background:var(--gl);border-radius:var(--r);padding:14px;display:flex;align-items:center;gap:12px;margin-bottom:14px;border:1px solid var(--br)}
+.cloud-ok i{font-size:26px;color:var(--g)}
+.cloud-ok-text{font-size:13px;font-weight:600;color:var(--gt)}
+.cloud-ok-sub{font-size:12px;color:var(--gt);opacity:.7;margin-top:2px}
+.app-ver{text-align:center;font-size:12px;color:var(--t3);margin:8px 0 20px}
+
+/* POULTRY */
+.p-hero{background:linear-gradient(135deg,var(--bwm),var(--bwd));border-radius:var(--r);padding:16px;margin-bottom:14px;display:flex;align-items:center;gap:14px}
+.p-hero-icon{width:52px;height:52px;background:rgba(255,255,255,.15);border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:26px;color:#fff;flex-shrink:0}
+.p-hero-title{font-size:16px;font-weight:700;color:#fff}
+.p-hero-sub{font-size:12px;color:rgba(255,255,255,.7);margin-top:2px}
+.p-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.psc{border-radius:var(--r);padding:13px 12px;display:flex;flex-direction:column;gap:5px}
+.psc.bw{background:var(--bwl)}.psc.t{background:var(--tl)}.psc.g{background:var(--gl)}.psc.r{background:var(--rl)}.psc.a{background:var(--al)}
+.psc-icon{font-size:20px}
+.psc.bw .psc-icon{color:var(--bwm)}.psc.t .psc-icon{color:var(--tm)}.psc.g .psc-icon{color:var(--g)}.psc.r .psc-icon{color:var(--rm)}.psc.a .psc-icon{color:var(--am)}
+.psc-val{font-size:18px;font-weight:700;color:var(--t1)}
+.psc-lbl{font-size:11px;color:var(--t2);font-weight:500}
+.p-tabs{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;padding-bottom:2px;-ms-overflow-style:none;scrollbar-width:none}
+.p-tabs::-webkit-scrollbar{display:none}
+.ptab{padding:8px 14px;border-radius:20px;border:1.5px solid var(--br);background:var(--sf);font-size:12px;font-weight:600;color:var(--t2);cursor:pointer;white-space:nowrap;flex-shrink:0}
+.ptab.active{background:var(--bwm);color:#fff;border-color:var(--bwm)}
+.ptab-content{display:none}.ptab-content.active{display:block}
+.p-fab-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.pfab{padding:9px 13px;border-radius:10px;border:none;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;color:#fff}
+.pfab.bw{background:var(--bwm)}.pfab.r{background:var(--rm)}.pfab.a{background:var(--am)}.pfab.g{background:var(--g)}.pfab.t{background:var(--tm)}
+.flock-card{background:var(--sf);border-radius:var(--r);border:1px solid var(--br);padding:14px;margin-bottom:8px}
+.flock-top{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.flock-icon{width:44px;height:44px;border-radius:12px;background:var(--bwl);color:var(--bwm);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.flock-name{font-size:14px;font-weight:700;color:var(--t1)}
+.flock-meta{font-size:12px;color:var(--t2);margin-top:2px}
+.flock-count{font-size:20px;font-weight:700;color:var(--bwm)}
+.flock-count-lbl{font-size:10px;color:var(--t3)}
+.flock-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+.fg-item{background:var(--bg);border-radius:8px;padding:8px;text-align:center}
+.fg-num{font-size:15px;font-weight:700;color:var(--t1)}
+.fg-lbl{font-size:10px;color:var(--t3);margin-top:1px}
+.mort-badge{font-size:10px;background:var(--rl);color:var(--rm);border-radius:20px;padding:2px 8px;font-weight:600;margin-top:2px;display:inline-block}
+.p-rec{background:var(--sf);border-radius:var(--r);border:1px solid var(--br);padding:12px 14px;display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.p-rec-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.p-rec-icon.egg{background:var(--al);color:var(--am)}
+.p-rec-icon.feed{background:var(--bwl);color:var(--bwm)}
+.p-rec-icon.health{background:var(--rl);color:var(--rm)}
+.p-rec-icon.sale{background:var(--gl);color:var(--g)}
+.p-rec-icon.exp{background:var(--rl);color:var(--rm)}
+.hbadge{font-size:11px;padding:3px 9px;border-radius:20px;font-weight:600;display:inline-block;margin-top:3px}
+.hbadge.good{background:var(--gl);color:var(--gt)}
+.hbadge.sick{background:var(--rl);color:var(--rm)}
+.hbadge.watch{background:var(--al);color:var(--ad)}
+.hbadge.treated{background:var(--bl);color:var(--bm)}
+
+/* MODALS */
+.mov{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.5);display:flex;align-items:flex-end;backdrop-filter:blur(2px)}
+.modal{width:100%;background:var(--sf);border-radius:22px 22px 0 0;max-height:92vh;display:flex;flex-direction:column;animation:su .3s cubic-bezier(.22,.9,.36,1)}
+.mhdr{display:flex;justify-content:space-between;align-items:center;padding:18px 18px 0;font-size:17px;font-weight:700;color:var(--t1);flex-shrink:0}
+.mhdr button{background:none;border:none;font-size:22px;color:var(--t3);cursor:pointer}
+.mbody{flex:1;overflow-y:auto;padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.mbody label{font-size:13px;font-weight:500;color:var(--t2);margin-bottom:-4px}
+.mbody input,.mbody select,.mbody textarea{padding:11px 13px;border-radius:10px;border:1.5px solid var(--br);background:var(--bg);font-size:14px;color:var(--t1);outline:none;width:100%}
+.mbody input:focus,.mbody select:focus{border-color:var(--g)}
+.mfoot{display:flex;gap:10px;padding:14px 18px 28px;flex-shrink:0;border-top:1px solid var(--br)}
+.mc{flex:1;padding:13px;border-radius:10px;border:1.5px solid var(--br);background:none;color:var(--t2);font-size:14px;font-weight:600;cursor:pointer}
+.ms{flex:2;padding:13px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--g),var(--gd));color:#fff;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+.ms:disabled{opacity:.6;cursor:not-allowed}
+.ms.bw{background:linear-gradient(135deg,var(--bwm),var(--bwd))}
+.ms.rm{background:var(--rm)}
+.ms.am{background:var(--am)}
+.ms.tm{background:var(--tm)}
+
+/* IMAGE UPLOAD */
+.img-box{border:2px dashed var(--br);border-radius:12px;padding:16px;text-align:center;cursor:pointer;background:var(--bg)}
+.img-box i{font-size:28px;color:var(--t3);display:block;margin-bottom:6px}
+.img-box p{font-size:12px;color:var(--t3)}
+.img-wrap{position:relative}
+.img-prev{width:100%;max-height:150px;object-fit:cover;border-radius:10px;display:block}
+.img-del{position:absolute;top:6px;right:6px;width:28px;height:28px;border-radius:50%;background:var(--rm);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px}
+
+/* SALE PICKER */
+.spicker{max-height:200px;overflow-y:auto;border:1.5px solid var(--br);border-radius:10px;padding:6px;background:var(--bg);display:flex;flex-direction:column;gap:4px}
+.sopt{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;cursor:pointer;background:var(--sf)}
+.sopt.sel{background:var(--gl);outline:1px solid var(--g)}
+.sopt-thumb{width:36px;height:36px;border-radius:6px;object-fit:cover;flex-shrink:0}
+.sopt-ph{width:36px;height:36px;border-radius:6px;background:var(--gl);color:var(--g);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.sopt-info{flex:1;min-width:0}
+.sopt-name{font-size:13px;font-weight:600;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sopt-sub{font-size:11px;color:var(--t2)}
+.sopt-price{font-size:13px;font-weight:700;color:var(--gt);white-space:nowrap}
+.sel-badge{background:var(--gl);border:1px solid var(--g);border-radius:8px;padding:8px 12px;font-size:13px;font-weight:600;color:var(--gt);display:flex;justify-content:space-between;align-items:center}
+.total-prev{background:var(--gl);border-radius:8px;padding:10px 14px;font-size:14px;font-weight:600;color:var(--gt)}
+
+/* RECEIPT */
+.receipt{font-family:'Courier New',monospace;font-size:13px}
+.r-hdr{text-align:center;padding-bottom:10px;border-bottom:1px dashed var(--br);margin-bottom:10px}
+.r-biz{font-size:15px;font-weight:700}
+.r-row{display:flex;justify-content:space-between;padding:5px 0}
+.r-div{border:none;border-top:1px dashed var(--br);margin:8px 0}
+.r-total{font-weight:700;font-size:15px}
+
+/* NOTIF PANEL */
+.notif-panel{position:fixed;inset:0;z-index:600}
+.notif-bg{position:absolute;inset:0;background:rgba(0,0,0,.4)}
+.notif-sheet{position:absolute;top:0;right:0;left:0;max-height:70vh;background:var(--sf);overflow-y:auto;border-radius:0 0 var(--r) var(--r);box-shadow:0 4px 24px rgba(0,0,0,.14);animation:fi .2s ease}
+.notif-hdr{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;font-size:15px;font-weight:700;border-bottom:1px solid var(--br);position:sticky;top:0;background:var(--sf)}
+.notif-hdr button{background:none;border:none;font-size:20px;color:var(--t3);cursor:pointer}
+.notif-item{display:flex;gap:12px;padding:12px 18px;border-bottom:1px solid var(--bg);align-items:flex-start}
+.ni-icon{width:36px;height:36px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px}
+.ni-text{font-size:13px;color:var(--t1);line-height:1.5}
+.ni-time{font-size:11px;color:var(--t3);margin-top:2px}
+
+/* TOAST */
+.toast{position:fixed;bottom:calc(var(--nh)+14px);left:50%;transform:translateX(-50%);background:#1a2e1a;color:#fff;padding:12px 22px;border-radius:50px;font-size:14px;font-weight:500;z-index:9000;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.2);animation:toastIn .25s ease}
+@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(8px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+</style>
 </head>
 <body>
 
-<!-- ══════════════ PWA INSTALL POPUP ══════════════ -->
-<div id="pwa-overlay" class="pwa-overlay hidden">
-  <div class="pwa-popup">
-    <div class="pwa-logo-wrap">
-      <div class="pwa-logo">
-        <i class="ti ti-shoe"></i>
-      </div>
-    </div>
-    <h2 class="pwa-title">IHSAN Footwears</h2>
-    <p class="pwa-brand">& General Enterprises</p>
-    <p class="pwa-desc">Install this app on your phone for quick access — works offline, no app store needed.</p>
-    <div class="pwa-steps" id="pwa-ios-steps" style="display:none;">
-      <p class="pwa-step-label">To install on iPhone/iPad:</p>
-      <div class="pwa-step"><span class="step-num">1</span> Tap the <strong>Share</strong> button <i class="ti ti-share"></i> at the bottom of Safari</div>
-      <div class="pwa-step"><span class="step-num">2</span> Scroll and tap <strong>"Add to Home Screen"</strong></div>
-      <div class="pwa-step"><span class="step-num">3</span> Tap <strong>"Add"</strong> to confirm</div>
-    </div>
-    <div class="pwa-actions" id="pwa-android-actions">
-      <button class="btn-install" id="pwa-install-btn"><i class="ti ti-download"></i> Install App</button>
-      <button class="btn-later" id="pwa-later-btn">Maybe Later</button>
-    </div>
-    <div class="pwa-actions" id="pwa-ios-actions" style="display:none;">
-      <button class="btn-later" id="pwa-ios-close-btn">Got it, Thanks</button>
-    </div>
+<!-- LOADING -->
+<div id="scr-loading">
+  <div class="ld-wrap">
+    <div class="ld-logo"><i class="ti ti-shoe"></i></div>
+    <div class="ld-title">IHSAN Business App</div>
+    <div class="ld-sub">Loading your data…</div>
+    <div class="spinner"></div>
   </div>
 </div>
 
-<!-- ══════════════ PIN LOCK SCREEN ══════════════ -->
-<div id="pin-screen" class="pin-screen">
+<!-- SETUP -->
+<div id="scr-setup" class="hidden">
+  <div class="setup-box">
+    <div class="setup-logo"><i class="ti ti-shoe"></i></div>
+    <div class="setup-title">Connect to Cloud</div>
+    <div class="setup-sub">Enter your Supabase details once. All data saves permanently to the cloud.</div>
+    <div class="setup-guide">
+      <b>How to get your credentials:</b>
+      1. Go to <b>supabase.com</b> → Sign up free<br>
+      2. Click <b>New Project</b> → wait ~2 mins<br>
+      3. Go to <b>Settings → API</b><br>
+      4. Copy <b>Project URL</b> and <b>anon public key</b>
+    </div>
+    <div class="sf"><label>Supabase Project URL</label><input type="url" id="su-url" placeholder="https://xxxx.supabase.co"/></div>
+    <div class="sf"><label>Supabase Anon Key</label><input type="text" id="su-key" placeholder="eyJhbGci..."/></div>
+    <button class="setup-btn" onclick="saveConfig()">Connect &amp; Start</button>
+    <div class="setup-err" id="su-err"></div>
+    <div class="setup-note">Need help? Contact YaseerTech &nbsp;|&nbsp; <a href="https://supabase.com" target="_blank">supabase.com</a></div>
+  </div>
+</div>
+
+<!-- PIN -->
+<div id="scr-pin" class="hidden">
   <div class="pin-wrap">
     <div class="pin-logo"><i class="ti ti-shoe"></i></div>
-    <h1 class="pin-title">IHSAN Footwears</h1>
-    <p class="pin-sub">& General Enterprises</p>
-    <p class="pin-label" id="pin-label">Enter your PIN to continue</p>
+    <div class="pin-title">IHSAN Business App</div>
+    <div class="pin-biz">Footwears &amp; General Enterprises</div>
+    <div class="pin-lbl">Enter your PIN</div>
     <div class="pin-dots">
-      <span class="pin-dot" id="d1"></span>
-      <span class="pin-dot" id="d2"></span>
-      <span class="pin-dot" id="d3"></span>
-      <span class="pin-dot" id="d4"></span>
+      <span class="dot" id="d1"></span><span class="dot" id="d2"></span>
+      <span class="dot" id="d3"></span><span class="dot" id="d4"></span>
     </div>
-    <div class="pin-error" id="pin-error"></div>
+    <div class="pin-err" id="pin-err"></div>
     <div class="pin-pad">
-      <button class="pin-key" onclick="pinInput('1')">1</button>
-      <button class="pin-key" onclick="pinInput('2')">2</button>
-      <button class="pin-key" onclick="pinInput('3')">3</button>
-      <button class="pin-key" onclick="pinInput('4')">4</button>
-      <button class="pin-key" onclick="pinInput('5')">5</button>
-      <button class="pin-key" onclick="pinInput('6')">6</button>
-      <button class="pin-key" onclick="pinInput('7')">7</button>
-      <button class="pin-key" onclick="pinInput('8')">8</button>
-      <button class="pin-key" onclick="pinInput('9')">9</button>
-      <button class="pin-key pin-key--blank"></button>
-      <button class="pin-key" onclick="pinInput('0')">0</button>
-      <button class="pin-key pin-key--del" onclick="pinDel()"><i class="ti ti-backspace"></i></button>
+      <button class="pk" onclick="pk('1')">1</button><button class="pk" onclick="pk('2')">2</button><button class="pk" onclick="pk('3')">3</button>
+      <button class="pk" onclick="pk('4')">4</button><button class="pk" onclick="pk('5')">5</button><button class="pk" onclick="pk('6')">6</button>
+      <button class="pk" onclick="pk('7')">7</button><button class="pk" onclick="pk('8')">8</button><button class="pk" onclick="pk('9')">9</button>
+      <button class="pk blank"></button><button class="pk" onclick="pk('0')">0</button>
+      <button class="pk" onclick="pdel()"><i class="ti ti-backspace"></i></button>
     </div>
-    <p class="pin-hint" id="pin-hint">Default PIN: <strong>1234</strong> &nbsp;|&nbsp; Change in Settings</p>
+    <div class="pin-hint">Default PIN: 1234 &nbsp;|&nbsp; Change in Settings</div>
   </div>
 </div>
 
-<!-- ══════════════ MAIN APP ══════════════ -->
-<div id="app" class="app hidden">
+<!-- APP -->
+<div id="app" class="hidden">
+  <div class="off-bar" id="off-bar">⚠️ Offline — showing cached data</div>
+  <div class="app-hdr">
+    <div class="hdr-main">
+      <div class="hdr-left">
+        <div class="hdr-icon"><i class="ti ti-shoe"></i></div>
+        <div><div class="hdr-title">IHSAN Business App</div><div class="hdr-sub" id="hdr-date"></div></div>
+      </div>
+      <button class="hdr-btn" onclick="showNotif()">
+        <i class="ti ti-bell"></i>
+        <span class="nbadge" id="nbadge" style="display:none"></span>
+      </button>
+    </div>
+    <div class="sync-bar"><span class="sdot" id="sdot"></span><span id="slbl">Connecting…</span></div>
+  </div>
 
-  <!-- TOP HEADER -->
-  <header class="app-header">
-    <div class="header-left">
-      <div class="header-logo"><i class="ti ti-shoe"></i></div>
-      <div>
-        <div class="header-title">IHSAN Footwears</div>
-        <div class="header-sub" id="header-date"></div>
+  <div class="pgc">
+
+    <!-- DASHBOARD -->
+    <div class="pg active" id="pg-dashboard">
+      <div class="greet" id="greet"></div>
+      <div class="stat-grid">
+        <div class="sc g" onclick="goPage('sales')"><div class="sc-icon"><i class="ti ti-cash"></i></div><div class="sc-val" id="ds-sales">₦0</div><div class="sc-lbl">Today Sales</div></div>
+        <div class="sc a" onclick="goPage('expenses')"><div class="sc-icon"><i class="ti ti-minus-circle"></i></div><div class="sc-val" id="ds-exp">₦0</div><div class="sc-lbl">Today Expenses</div></div>
+        <div class="sc b" onclick="goPage('stock')"><div class="sc-icon"><i class="ti ti-packages"></i></div><div class="sc-val" id="ds-stock">0</div><div class="sc-lbl">Stock Items</div></div>
+        <div class="sc r" onclick="goPage('credit')"><div class="sc-icon"><i class="ti ti-user-dollar"></i></div><div class="sc-val" id="ds-credit">₦0</div><div class="sc-lbl">Credit Owed</div></div>
+      </div>
+      <div class="sec-hd"><span>Today Summary</span></div>
+      <div class="sum-card">
+        <div class="sum-row"><span>Revenue</span><strong id="sm-rev">₦0</strong></div>
+        <div class="sum-row"><span>Cost of Goods</span><strong id="sm-cogs" class="rt">₦0</strong></div>
+        <div class="sum-row"><span>Gross Profit</span><strong id="sm-gross" class="gt">₦0</strong></div>
+        <div class="sum-row"><span>Expenses</span><strong id="sm-exp" class="rt">₦0</strong></div>
+        <div class="sum-row bt"><span><strong>Net Profit</strong></span><strong id="sm-net" class="gt">₦0</strong></div>
+        <div class="sum-row"><span>Cash Received</span><strong id="sm-cash">₦0</strong></div>
+        <div class="sum-row"><span>Transfer Received</span><strong id="sm-transfer">₦0</strong></div>
+        <div class="sum-row"><span>Credit Given Today</span><strong id="sm-cred" class="at">₦0</strong></div>
+      </div>
+      <div class="sec-hd"><span>Recent Sales</span><button class="see-all" onclick="goPage('sales')">See All</button></div>
+      <div id="dash-sales" class="rlist" style="margin-bottom:16px"></div>
+      <div class="sec-hd"><span>Low Stock Alert</span></div>
+      <div id="dash-low" class="rlist" style="margin-bottom:16px"></div>
+    </div>
+
+    <!-- SALES -->
+    <div class="pg" id="pg-sales">
+      <div class="toolbar">
+        <div class="ftabs" id="sale-tabs">
+          <button class="ft active" onclick="saleFilter('today',this)">Today</button>
+          <button class="ft" onclick="saleFilter('week',this)">Week</button>
+          <button class="ft" onclick="saleFilter('month',this)">Month</button>
+          <button class="ft" onclick="saleFilter('all',this)">All</button>
+        </div>
+        <button class="fab" onclick="openM('m-sale')"><i class="ti ti-plus"></i> New Sale</button>
+      </div>
+      <div class="ptotal" id="sale-total">Total: ₦0 | 0 sales</div>
+      <div id="sale-list" class="rlist"></div>
+    </div>
+
+    <!-- STOCK -->
+    <div class="pg" id="pg-stock">
+      <div class="toolbar">
+        <input class="sbox" type="text" placeholder="Search stock…" oninput="renderStock(this.value)"/>
+        <div style="display:flex;gap:8px">
+          <button class="fab" onclick="openM('m-restock')"><i class="ti ti-truck"></i> Restock</button>
+          <button class="fab sec" onclick="openM('m-stock')"><i class="ti ti-plus"></i> Add</button>
+        </div>
+      </div>
+      <div id="stock-list" class="rlist"></div>
+    </div>
+
+    <!-- EXPENSES -->
+    <div class="pg" id="pg-expenses">
+      <div class="toolbar">
+        <div class="ftabs" id="exp-tabs">
+          <button class="ft active" onclick="expFilter('today',this)">Today</button>
+          <button class="ft" onclick="expFilter('week',this)">Week</button>
+          <button class="ft" onclick="expFilter('month',this)">Month</button>
+          <button class="ft" onclick="expFilter('all',this)">All</button>
+        </div>
+        <button class="fab" onclick="openM('m-exp')"><i class="ti ti-plus"></i> Add</button>
+      </div>
+      <div class="ptotal" id="exp-total">Total: ₦0</div>
+      <div id="exp-list" class="rlist"></div>
+    </div>
+
+    <!-- CREDIT -->
+    <div class="pg" id="pg-credit">
+      <div class="toolbar">
+        <input class="sbox" type="text" placeholder="Search customer…" oninput="renderCredit(this.value)"/>
+        <button class="fab" onclick="openM('m-credit')"><i class="ti ti-plus"></i> Add</button>
+      </div>
+      <div class="ptotal" id="cr-total">Outstanding: ₦0</div>
+      <div id="cr-list" class="rlist"></div>
+    </div>
+
+    <!-- REPORTS -->
+    <div class="pg" id="pg-reports">
+      <div class="rpt-period">
+        <label>From</label><input type="date" id="rpt-from"/>
+        <label>To</label><input type="date" id="rpt-to"/>
+        <button class="fab" onclick="genReport()">Generate</button>
+      </div>
+      <div id="rpt-out"></div>
+      <div class="exp-row" id="rpt-export" style="display:none">
+        <button class="exp-btn" onclick="exportRpt('pdf')"><i class="ti ti-file-type-pdf"></i> PDF</button>
+        <button class="exp-btn" onclick="exportRpt('csv')"><i class="ti ti-file-spreadsheet"></i> CSV</button>
       </div>
     </div>
-    <button class="header-notify" id="notify-btn" onclick="showNotifications()">
-      <i class="ti ti-bell"></i>
-      <span class="notify-badge" id="notify-badge" style="display:none;"></span>
-    </button>
-  </header>
 
-  <!-- PAGE CONTAINER -->
-  <main class="page-container" id="page-container">
+    <!-- CUSTOMERS -->
+    <div class="pg" id="pg-customers">
+      <div class="toolbar">
+        <input class="sbox" type="text" placeholder="Search customer…" oninput="renderCustomers(this.value)"/>
+        <button class="fab" onclick="openM('m-cust')"><i class="ti ti-plus"></i> Add</button>
+      </div>
+      <div id="cust-list" class="rlist"></div>
+    </div>
 
-    <!-- ── PAGE: DASHBOARD ── -->
-    <section class="page active" id="page-dashboard">
-      <div class="dash-greeting" id="dash-greeting"></div>
+    <!-- SUPPLIERS -->
+    <div class="pg" id="pg-suppliers">
+      <div class="toolbar">
+        <input class="sbox" type="text" placeholder="Search supplier…" oninput="renderSuppliers(this.value)"/>
+        <button class="fab" onclick="openM('m-supp')"><i class="ti ti-plus"></i> Add</button>
+      </div>
+      <div id="supp-list" class="rlist"></div>
+    </div>
 
-      <div class="stat-grid">
-        <div class="stat-card green" onclick="navigate('sales')">
-          <div class="stat-icon"><i class="ti ti-cash"></i></div>
-          <div class="stat-val" id="stat-today-sales">₦0</div>
-          <div class="stat-label">Today's Sales</div>
-        </div>
-        <div class="stat-card amber" onclick="navigate('expenses')">
-          <div class="stat-icon"><i class="ti ti-minus-circle"></i></div>
-          <div class="stat-val" id="stat-today-exp">₦0</div>
-          <div class="stat-label">Today's Expenses</div>
-        </div>
-        <div class="stat-card blue" onclick="navigate('stock')">
-          <div class="stat-icon"><i class="ti ti-packages"></i></div>
-          <div class="stat-val" id="stat-stock">0</div>
-          <div class="stat-label">Stock Items</div>
-        </div>
-        <div class="stat-card red" onclick="navigate('credit')">
-          <div class="stat-icon"><i class="ti ti-user-dollar"></i></div>
-          <div class="stat-val" id="stat-credit">₦0</div>
-          <div class="stat-label">Total Credit Owed</div>
-        </div>
+    <!-- POULTRY -->
+    <div class="pg" id="pg-poultry">
+      <div class="p-hero">
+        <div class="p-hero-icon"><i class="ti ti-feather"></i></div>
+        <div><div class="p-hero-title">Poultry Management</div><div class="p-hero-sub">Flocks · Eggs · Feed · Health · Sales</div></div>
       </div>
+      <div class="p-stats">
+        <div class="psc bw"><div class="psc-icon"><i class="ti ti-feather"></i></div><div class="psc-val" id="ps-birds">0</div><div class="psc-lbl">Total Birds</div></div>
+        <div class="psc a"><div class="psc-icon"><i class="ti ti-egg"></i></div><div class="psc-val" id="ps-eggs">0</div><div class="psc-lbl">Eggs Today</div></div>
+        <div class="psc g"><div class="psc-icon"><i class="ti ti-cash"></i></div><div class="psc-val" id="ps-rev">₦0</div><div class="psc-lbl">Revenue Today</div></div>
+        <div class="psc r"><div class="psc-icon"><i class="ti ti-skull"></i></div><div class="psc-val" id="ps-mort">0</div><div class="psc-lbl">Deaths Today</div></div>
+      </div>
+      <div class="p-tabs" id="p-tabs">
+        <button class="ptab active" onclick="pTab('flocks',this)">🐔 Flocks</button>
+        <button class="ptab" onclick="pTab('eggs',this)">🥚 Eggs</button>
+        <button class="ptab" onclick="pTab('feed',this)">🌾 Feed</button>
+        <button class="ptab" onclick="pTab('health',this)">💊 Health</button>
+        <button class="ptab" onclick="pTab('psales',this)">💰 Sales</button>
+        <button class="ptab" onclick="pTab('pexp',this)">💸 Expenses</button>
+      </div>
+      <div class="ptab-content active" id="ptab-flocks">
+        <div class="p-fab-row">
+          <button class="pfab bw" onclick="openM('m-flock')"><i class="ti ti-plus"></i> Add Flock</button>
+          <button class="pfab r" onclick="openM('m-mort')"><i class="ti ti-skull"></i> Mortality</button>
+        </div>
+        <div id="flock-list" class="rlist"></div>
+      </div>
+      <div class="ptab-content" id="ptab-eggs">
+        <div class="p-fab-row"><button class="pfab a" onclick="openM('m-egg')"><i class="ti ti-plus"></i> Record Eggs</button></div>
+        <div class="ptotal" id="egg-sum">Today: 0 eggs</div>
+        <div id="egg-list" class="rlist"></div>
+      </div>
+      <div class="ptab-content" id="ptab-feed">
+        <div class="p-fab-row"><button class="pfab bw" onclick="openM('m-feed')"><i class="ti ti-plus"></i> Record Feed</button></div>
+        <div class="ptotal" id="feed-sum">Feed records</div>
+        <div id="feed-list" class="rlist"></div>
+      </div>
+      <div class="ptab-content" id="ptab-health">
+        <div class="p-fab-row"><button class="pfab r" onclick="openM('m-health')"><i class="ti ti-plus"></i> Health Event</button></div>
+        <div id="health-list" class="rlist"></div>
+      </div>
+      <div class="ptab-content" id="ptab-psales">
+        <div class="p-fab-row"><button class="pfab g" onclick="openM('m-psale')"><i class="ti ti-plus"></i> Record Sale</button></div>
+        <div class="ptotal" id="psale-sum">Total: ₦0</div>
+        <div id="psale-list" class="rlist"></div>
+      </div>
+      <div class="ptab-content" id="ptab-pexp">
+        <div class="p-fab-row"><button class="pfab t" onclick="openM('m-pexp')"><i class="ti ti-plus"></i> Add Expense</button></div>
+        <div class="ptotal" id="pexp-sum">Total: ₦0</div>
+        <div id="pexp-list" class="rlist"></div>
+      </div>
+    </div>
 
-      <div class="section-head">
-        <span>Today's Summary</span>
+    <!-- SETTINGS -->
+    <div class="pg" id="pg-settings">
+      <div class="cloud-ok">
+        <i class="ti ti-cloud-check"></i>
+        <div><div class="cloud-ok-text">☁️ Cloud Storage Active</div><div class="cloud-ok-sub">All data syncs to Supabase automatically</div></div>
       </div>
-      <div class="summary-card" id="dash-summary">
-        <div class="summary-row"><span>Total Revenue</span><strong id="sum-revenue">₦0</strong></div>
-        <div class="summary-row"><span>Cost of Goods Sold</span><strong id="sum-cogs" class="red-text">₦0</strong></div>
-        <div class="summary-row"><span>Gross Profit</span><strong id="sum-gross" class="green-text">₦0</strong></div>
-        <div class="summary-row"><span>Expenses</span><strong id="sum-expenses" class="red-text">₦0</strong></div>
-        <div class="summary-row border-top"><span><strong>Net Profit</strong></span><strong id="sum-net" class="green-text">₦0</strong></div>
-        <div class="summary-row"><span>Cash Received</span><strong id="sum-cash">₦0</strong></div>
-        <div class="summary-row"><span>Transfer Received</span><strong id="sum-transfer">₦0</strong></div>
-        <div class="summary-row"><span>Credit Given Today</span><strong id="sum-credit-today" class="amber-text">₦0</strong></div>
+      <div class="set-grp">
+        <div class="set-lbl">Business Info</div>
+        <div class="set-item"><label>Business Name</label><input type="text" id="set-biz"/></div>
+        <div class="set-item"><label>Owner Name</label><input type="text" id="set-owner" placeholder="Your name"/></div>
+        <div class="set-item"><label>Phone</label><input type="tel" id="set-phone" placeholder="+234..."/></div>
+        <div class="set-item"><label>Address</label><input type="text" id="set-addr" placeholder="Shop address"/></div>
       </div>
+      <div class="set-grp">
+        <div class="set-lbl">Change PIN</div>
+        <div class="set-item"><label>Current PIN</label><input type="password" maxlength="4" id="set-old-pin" placeholder="••••"/></div>
+        <div class="set-item"><label>New PIN</label><input type="password" maxlength="4" id="set-new-pin" placeholder="••••"/></div>
+        <div class="set-item"><label>Confirm PIN</label><input type="password" maxlength="4" id="set-cfm-pin" placeholder="••••"/></div>
+        <button class="set-btn" onclick="changePin()"><i class="ti ti-lock"></i> Update PIN</button>
+      </div>
+      <div class="set-grp">
+        <div class="set-lbl">Low Stock Alert</div>
+        <div class="set-item"><label>Alert when qty drops below</label><input type="number" id="set-low" value="5" min="1"/></div>
+      </div>
+      <div class="set-grp">
+        <div class="set-lbl">Manage</div>
+        <button class="set-btn" onclick="saveSettings()"><i class="ti ti-check"></i> Save Settings</button>
+        <button class="set-btn warn" onclick="resetCloud()"><i class="ti ti-refresh"></i> Change Cloud Credentials</button>
+        <button class="set-btn danger" onclick="clearAll()"><i class="ti ti-trash"></i> Clear All Data</button>
+      </div>
+      <div class="app-ver">IHSAN Business App v3 · Built by YaseerTech</div>
+    </div>
 
-      <div class="section-head"><span>Recent Sales</span><button class="see-all" onclick="navigate('sales')">See All</button></div>
-      <div id="dash-recent-sales" class="recent-list">
-        <div class="empty-state"><i class="ti ti-receipt-off"></i><p>No sales yet today</p></div>
-      </div>
-
-      <div class="section-head"><span>Low Stock Alert</span></div>
-      <div id="dash-low-stock" class="recent-list">
-        <div class="empty-state"><i class="ti ti-package-off"></i><p>All stock levels are fine</p></div>
-      </div>
-    </section>
-
-    <!-- ── PAGE: SALES ── -->
-    <section class="page" id="page-sales">
-      <div class="page-toolbar">
-        <div class="filter-tabs" id="sales-filter">
-          <button class="ftab active" onclick="filterSales('today',this)">Today</button>
-          <button class="ftab" onclick="filterSales('week',this)">This Week</button>
-          <button class="ftab" onclick="filterSales('month',this)">This Month</button>
-          <button class="ftab" onclick="filterSales('all',this)">All</button>
-        </div>
-        <button class="fab-inline" onclick="openModal('modal-sale')"><i class="ti ti-plus"></i> New Sale</button>
-      </div>
-      <div class="period-total" id="sales-period-total">Total: ₦0 &nbsp;|&nbsp; 0 sales</div>
-      <div id="sales-list" class="record-list"></div>
-    </section>
-
-    <!-- ── PAGE: STOCK ── -->
-    <section class="page" id="page-stock">
-      <div class="page-toolbar">
-        <input class="search-box" type="text" placeholder="Search stock…" oninput="filterStock(this.value)" />
-        <div class="toolbar-btns">
-          <button class="fab-inline" onclick="openModal('modal-restock')"><i class="ti ti-truck"></i> Restock</button>
-          <button class="fab-inline fab-green" onclick="openModal('modal-stock-item')"><i class="ti ti-plus"></i> Add Item</button>
-        </div>
-      </div>
-      <div id="stock-list" class="record-list"></div>
-    </section>
-
-    <!-- ── PAGE: EXPENSES ── -->
-    <section class="page" id="page-expenses">
-      <div class="page-toolbar">
-        <div class="filter-tabs" id="exp-filter">
-          <button class="ftab active" onclick="filterExp('today',this)">Today</button>
-          <button class="ftab" onclick="filterExp('week',this)">Week</button>
-          <button class="ftab" onclick="filterExp('month',this)">Month</button>
-          <button class="ftab" onclick="filterExp('all',this)">All</button>
-        </div>
-        <button class="fab-inline" onclick="openModal('modal-expense')"><i class="ti ti-plus"></i> Add</button>
-      </div>
-      <div class="period-total" id="exp-period-total">Total: ₦0</div>
-      <div id="expense-list" class="record-list"></div>
-    </section>
-
-    <!-- ── PAGE: CREDIT ── -->
-    <section class="page" id="page-credit">
-      <div class="page-toolbar">
-        <input class="search-box" type="text" placeholder="Search customer…" oninput="filterCredit(this.value)" />
-        <button class="fab-inline" onclick="openModal('modal-credit')"><i class="ti ti-plus"></i> Add Credit</button>
-      </div>
-      <div class="period-total" id="credit-total">Total Outstanding: ₦0</div>
-      <div id="credit-list" class="record-list"></div>
-    </section>
-
-    <!-- ── PAGE: REPORTS ── -->
-    <section class="page" id="page-reports">
-      <div class="report-period">
-        <label>From</label><input type="date" id="rpt-from" />
-        <label>To</label><input type="date" id="rpt-to" />
-        <button class="fab-inline" onclick="generateReport()">Generate</button>
-      </div>
-      <div id="report-output" class="report-output">
-        <div class="empty-state"><i class="ti ti-chart-bar-off"></i><p>Select a date range and tap Generate</p></div>
-      </div>
-      <div class="report-export-row" id="report-export-row" style="display:none;">
-        <button class="export-btn" onclick="exportReport('pdf')"><i class="ti ti-file-type-pdf"></i> Export PDF</button>
-        <button class="export-btn" onclick="exportReport('csv')"><i class="ti ti-file-spreadsheet"></i> Export CSV</button>
-      </div>
-    </section>
-
-    <!-- ── PAGE: CUSTOMERS ── -->
-    <section class="page" id="page-customers">
-      <div class="page-toolbar">
-        <input class="search-box" type="text" placeholder="Search customer…" oninput="filterCustomers(this.value)" />
-        <button class="fab-inline" onclick="openModal('modal-customer')"><i class="ti ti-plus"></i> Add</button>
-      </div>
-      <div id="customer-list" class="record-list"></div>
-    </section>
-
-    <!-- ── PAGE: SUPPLIERS ── -->
-    <section class="page" id="page-suppliers">
-      <div class="page-toolbar">
-        <input class="search-box" type="text" placeholder="Search supplier…" oninput="filterSuppliers(this.value)" />
-        <button class="fab-inline" onclick="openModal('modal-supplier')"><i class="ti ti-plus"></i> Add</button>
-      </div>
-      <div id="supplier-list" class="record-list"></div>
-    </section>
-
-    <!-- ── PAGE: SETTINGS ── -->
-    <section class="page" id="page-settings">
-      <div class="settings-group">
-        <div class="settings-label">Business Info</div>
-        <div class="settings-item">
-          <label>Business Name</label>
-          <input type="text" id="set-biz-name" value="IHSAN Footwears & General Enterprises" />
-        </div>
-        <div class="settings-item">
-          <label>Owner Name</label>
-          <input type="text" id="set-owner" placeholder="Owner / Manager name" />
-        </div>
-        <div class="settings-item">
-          <label>Phone Number</label>
-          <input type="tel" id="set-phone" placeholder="+234..." />
-        </div>
-        <div class="settings-item">
-          <label>Address</label>
-          <input type="text" id="set-address" placeholder="Shop address" />
-        </div>
-      </div>
-      <div class="settings-group">
-        <div class="settings-label">Security</div>
-        <div class="settings-item">
-          <label>Current PIN</label>
-          <input type="password" maxlength="4" id="set-old-pin" placeholder="••••" />
-        </div>
-        <div class="settings-item">
-          <label>New PIN</label>
-          <input type="password" maxlength="4" id="set-new-pin" placeholder="••••" />
-        </div>
-        <div class="settings-item">
-          <label>Confirm New PIN</label>
-          <input type="password" maxlength="4" id="set-confirm-pin" placeholder="••••" />
-        </div>
-        <button class="settings-save-btn" onclick="changePin()">Update PIN</button>
-      </div>
-      <div class="settings-group">
-        <div class="settings-label">Low Stock Threshold</div>
-        <div class="settings-item">
-          <label>Alert when quantity drops below</label>
-          <input type="number" id="set-low-stock" value="5" min="1" />
-        </div>
-      </div>
-      <div class="settings-group">
-        <div class="settings-label">App</div>
-        <button class="settings-save-btn" onclick="saveSettings()">Save Settings</button>
-        <button class="settings-danger-btn" onclick="installPWA()"><i class="ti ti-download"></i> Install App on Phone</button>
-        <button class="settings-danger-btn red" onclick="confirmClearData()"><i class="ti ti-trash"></i> Clear All Data</button>
-      </div>
-      <div class="app-version">IHSAN Footwears v1.0 &nbsp;·&nbsp; Built by YaseerTech</div>
-    </section>
-
-  </main>
+  </div><!-- end pgc -->
 
   <!-- BOTTOM NAV -->
-  <nav class="bottom-nav">
-    <button class="nav-btn active" onclick="navigate('dashboard')" id="nav-dashboard">
-      <i class="ti ti-home"></i><span>Home</span>
-    </button>
-    <button class="nav-btn" onclick="navigate('sales')" id="nav-sales">
-      <i class="ti ti-shopping-cart"></i><span>Sales</span>
-    </button>
-    <button class="nav-btn" onclick="navigate('stock')" id="nav-stock">
-      <i class="ti ti-packages"></i><span>Stock</span>
-    </button>
-    <button class="nav-btn" onclick="navigate('expenses')" id="nav-expenses">
-      <i class="ti ti-minus-circle"></i><span>Expenses</span>
-    </button>
-    <button class="nav-btn" onclick="showMoreMenu()" id="nav-more">
-      <i class="ti ti-dots"></i><span>More</span>
-    </button>
+  <nav class="bnav">
+    <button class="nb active" id="nb-dashboard" onclick="goPage('dashboard')"><i class="ti ti-home"></i><span>Home</span></button>
+    <button class="nb" id="nb-sales" onclick="goPage('sales')"><i class="ti ti-shopping-cart"></i><span>Sales</span></button>
+    <button class="nb" id="nb-stock" onclick="goPage('stock')"><i class="ti ti-packages"></i><span>Stock</span></button>
+    <button class="nb" id="nb-expenses" onclick="goPage('expenses')"><i class="ti ti-minus-circle"></i><span>Expenses</span></button>
+    <button class="nb" id="nb-more" onclick="showMore()"><i class="ti ti-dots"></i><span>More</span></button>
   </nav>
 
-  <!-- MORE MENU -->
-  <div class="more-menu hidden" id="more-menu">
-    <div class="more-menu-backdrop" onclick="hideMoreMenu()"></div>
-    <div class="more-menu-sheet">
-      <div class="more-menu-title">More Options</div>
+  <!-- MORE SHEET -->
+  <div class="more-overlay hidden" id="more-overlay">
+    <div class="more-bg" onclick="hideMore()"></div>
+    <div class="more-sheet">
+      <div class="more-lbl">More Options</div>
       <div class="more-grid">
-        <button class="more-item" onclick="navigate('credit');hideMoreMenu()">
-          <i class="ti ti-user-dollar"></i><span>Credit</span>
-        </button>
-        <button class="more-item" onclick="navigate('reports');hideMoreMenu()">
-          <i class="ti ti-chart-bar"></i><span>Reports</span>
-        </button>
-        <button class="more-item" onclick="navigate('customers');hideMoreMenu()">
-          <i class="ti ti-users"></i><span>Customers</span>
-        </button>
-        <button class="more-item" onclick="navigate('suppliers');hideMoreMenu()">
-          <i class="ti ti-building-store"></i><span>Suppliers</span>
-        </button>
-        <button class="more-item" onclick="navigate('settings');hideMoreMenu()">
-          <i class="ti ti-settings"></i><span>Settings</span>
-        </button>
+        <button class="mi" onclick="goPage('credit');hideMore()"><i class="ti ti-user-dollar"></i><span>Credit</span></button>
+        <button class="mi" onclick="goPage('reports');hideMore()"><i class="ti ti-chart-bar"></i><span>Reports</span></button>
+        <button class="mi" onclick="goPage('customers');hideMore()"><i class="ti ti-users"></i><span>Customers</span></button>
+        <button class="mi" onclick="goPage('suppliers');hideMore()"><i class="ti ti-building-store"></i><span>Suppliers</span></button>
+        <button class="mi poultry-mi" onclick="goPage('poultry');hideMore()"><i class="ti ti-feather"></i><span>Poultry</span></button>
+        <button class="mi" onclick="goPage('settings');hideMore()"><i class="ti ti-settings"></i><span>Settings</span></button>
       </div>
     </div>
   </div>
-
 </div><!-- end #app -->
 
-<!-- ══════════════ MODALS ══════════════ -->
-
-<!-- MODAL: Record Sale -->
-<div class="modal-overlay hidden" id="modal-sale">
+<!-- ══ FOOTWEAR MODALS ══ -->
+<div class="mov hidden" id="m-sale">
   <div class="modal">
-    <div class="modal-header"><span>Record a Sale</span><button onclick="closeModal('modal-sale')"><i class="ti ti-x"></i></button></div>
-    <div class="modal-body">
-      <label>Item / Product Name *</label>
-      <input type="text" id="sale-item" placeholder="e.g. Men's Oxford Size 43" list="stock-datalist" />
-      <datalist id="stock-datalist"></datalist>
-      <label>Quantity Sold *</label>
-      <input type="number" id="sale-qty" value="1" min="1" />
-      <label>Selling Price (per unit) ₦ *</label>
-      <input type="number" id="sale-price" placeholder="0.00" />
-      <label>Buying/Cost Price (per unit) ₦ *</label>
-      <input type="number" id="sale-cost" placeholder="0.00" />
-      <label>Payment Method *</label>
-      <select id="sale-payment">
+    <div class="mhdr"><span>New Sale</span><button onclick="closeM('m-sale')"><i class="ti ti-x"></i></button></div>
+    <div class="mbody">
+      <label>Select from Stock</label>
+      <div id="sale-picker" class="spicker"></div>
+      <div id="sel-info" style="display:none"><div class="sel-badge" id="sel-badge"></div></div>
+      <label>Or type item manually</label>
+      <input type="text" id="s-item" placeholder="Item name"/>
+      <label>Qty *</label><input type="number" id="s-qty" value="1" min="1" oninput="salePreview()"/>
+      <label>Selling Price ₦ *</label><input type="number" id="s-price" placeholder="0.00" oninput="salePreview()"/>
+      <label>Cost Price ₦</label><input type="number" id="s-cost" placeholder="0.00" oninput="salePreview()"/>
+      <div id="s-prev" class="total-prev" style="display:none"></div>
+      <label>Payment *</label>
+      <select id="s-pay" onchange="payChange()">
         <option value="cash">Cash</option>
-        <option value="transfer">Bank Transfer</option>
+        <option value="transfer">Transfer</option>
         <option value="credit">Credit (Pay Later)</option>
         <option value="part">Part Payment</option>
       </select>
-      <div id="part-pay-row" style="display:none;">
-        <label>Amount Paid Now ₦</label>
-        <input type="number" id="sale-part-paid" placeholder="0.00" />
+      <div id="s-part-row" style="display:none">
+        <label>Amount Paid Now ₦</label><input type="number" id="s-part" placeholder="0.00"/>
       </div>
-      <label>Customer Name (optional)</label>
-      <input type="text" id="sale-customer" placeholder="Customer name" list="customer-datalist" />
-      <datalist id="customer-datalist"></datalist>
-      <label>Customer Phone (optional)</label>
-      <input type="tel" id="sale-cust-phone" placeholder="+234..." />
-      <label>Note (optional)</label>
-      <input type="text" id="sale-note" placeholder="Any note about this sale" />
+      <label>Customer Name</label><input type="text" id="s-cust" placeholder="Customer name" list="dl-cust"/><datalist id="dl-cust"></datalist>
+      <label>Customer Phone</label><input type="tel" id="s-phone" placeholder="+234..."/>
+      <label>Note</label><input type="text" id="s-note" placeholder="Any note"/>
     </div>
-    <div class="modal-footer">
-      <button class="btn-cancel" onclick="closeModal('modal-sale')">Cancel</button>
-      <button class="btn-save" onclick="recordSale()"><i class="ti ti-check"></i> Save Sale</button>
+    <div class="mfoot">
+      <button class="mc" onclick="closeM('m-sale')">Cancel</button>
+      <button class="ms" id="btn-sale" onclick="saveSale()"><i class="ti ti-check"></i> Save Sale</button>
     </div>
   </div>
 </div>
 
-<!-- MODAL: Add Stock Item -->
-<div class="modal-overlay hidden" id="modal-stock-item">
+<div class="mov hidden" id="m-stock">
   <div class="modal">
-    <div class="modal-header"><span>Add Stock Item</span><button onclick="closeModal('modal-stock-item')"><i class="ti ti-x"></i></button></div>
-    <div class="modal-body">
-      <label>Item Name *</label>
-      <input type="text" id="si-name" placeholder="e.g. Men's Oxford" />
-      <label>Brand / Type</label>
-      <input type="text" id="si-brand" placeholder="e.g. Clarks, Bata, School Shoe" />
+    <div class="mhdr"><span>Add Stock Item</span><button onclick="closeM('m-stock')"><i class="ti ti-x"></i></button></div>
+    <div class="mbody">
+      <label>Photo (optional)</label>
+      <div id="si-box" class="img-box" onclick="document.getElementById('si-file').click()"><i class="ti ti-camera"></i><p>Tap to take photo or upload</p></div>
+      <input type="file" id="si-file" accept="image/*" capture="environment" style="display:none" onchange="previewImg(this)"/>
+      <div id="si-prev" style="display:none" class="img-wrap"><img id="si-img" class="img-prev"/><button class="img-del" onclick="removeImg()"><i class="ti ti-x"></i></button></div>
+      <label>Item Name *</label><input type="text" id="si-name" placeholder="e.g. Men's Oxford"/>
+      <label>Brand</label><input type="text" id="si-brand" placeholder="e.g. Clarks, Bata"/>
       <label>Category</label>
-      <select id="si-category">
-        <option value="men">Men's</option>
-        <option value="women">Women's</option>
-        <option value="kids">Kids'</option>
-        <option value="unisex">Unisex</option>
-        <option value="other">Other</option>
+      <select id="si-cat">
+        <option value="men">Men's</option><option value="women">Women's</option>
+        <option value="kids">Kids'</option><option value="unisex">Unisex</option><option value="other">Other</option>
       </select>
-      <label>Size</label>
-      <input type="text" id="si-size" placeholder="e.g. 43 or 37-42" />
-      <label>Colour</label>
-      <input type="text" id="si-colour" placeholder="e.g. Black, Brown" />
-      <label>Quantity in Stock *</label>
-      <input type="number" id="si-qty" value="1" min="0" />
-      <label>Buying Price (per unit) ₦ *</label>
-      <input type="number" id="si-buy" placeholder="0.00" />
-      <label>Selling Price (per unit) ₦ *</label>
-      <input type="number" id="si-sell" placeholder="0.00" />
+      <label>Size</label><input type="text" id="si-size" placeholder="e.g. 43"/>
+      <label>Colour</label><input type="text" id="si-colour" placeholder="e.g. Black"/>
+      <label>Qty *</label><input type="number" id="si-qty" value="1" min="0"/>
+      <label>Buying Price ₦ *</label><input type="number" id="si-buy" placeholder="0.00"/>
+      <label>Selling Price ₦ *</label><input type="number" id="si-sell" placeholder="0.00"/>
     </div>
-    <div class="modal-footer">
-      <button class="btn-cancel" onclick="closeModal('modal-stock-item')">Cancel</button>
-      <button class="btn-save" onclick="addStockItem()"><i class="ti ti-check"></i> Add Item</button>
+    <div class="mfoot">
+      <button class="mc" onclick="closeM('m-stock')">Cancel</button>
+      <button class="ms" id="btn-stock" onclick="saveStock()"><i class="ti ti-check"></i> Add Item</button>
     </div>
   </div>
 </div>
 
-<!-- MODAL: Restock -->
-<div class="modal-overlay hidden" id="modal-restock">
+<div class="mov hidden" id="m-restock">
   <div class="modal">
-    <div class="modal-header"><span>Record Restock / Purchase</span><button onclick="closeModal('modal-restock')"><i class="ti ti-x"></i></button></div>
-    <div class="modal-body">
-      <label>Item Name *</label>
-      <input type="text" id="rs-item" placeholder="Item restocked" list="stock-datalist2" />
-      <datalist id="stock-datalist2"></datalist>
-      <label>Quantity Received *</label>
-      <input type="number" id="rs-qty" value="1" min="1" />
-      <label>Cost Paid ₦ (total batch) *</label>
-      <input type="number" id="rs-cost" placeholder="0.00" />
-      <label>Supplier Name</label>
-      <input type="text" id="rs-supplier" placeholder="Supplier name" list="supplier-datalist" />
-      <datalist id="supplier-datalist"></datalist>
-      <label>Note</label>
-      <input type="text" id="rs-note" placeholder="Any note" />
+    <div class="mhdr"><span>Restock</span><button onclick="closeM('m-restock')"><i class="ti ti-x"></i></button></div>
+    <div class="mbody">
+      <label>Select Item</label><select id="rs-sel" onchange="document.getElementById('rs-item').value=this.value"><option value="">-- Select --</option></select>
+      <label>Or type item</label><input type="text" id="rs-item" placeholder="Item name"/>
+      <label>Qty Received *</label><input type="number" id="rs-qty" value="1" min="1"/>
+      <label>Total Cost ₦</label><input type="number" id="rs-cost" placeholder="0.00"/>
+      <label>Supplier</label><input type="text" id="rs-supp" placeholder="Supplier name" list="dl-supp"/><datalist id="dl-supp"></datalist>
+      <label>Note</label><input type="text" id="rs-note" placeholder="Any note"/>
     </div>
-    <div class="modal-footer">
-      <button class="btn-cancel" onclick="closeModal('modal-restock')">Cancel</button>
-      <button class="btn-save" onclick="recordRestock()"><i class="ti ti-check"></i> Save</button>
+    <div class="mfoot">
+      <button class="mc" onclick="closeM('m-restock')">Cancel</button>
+      <button class="ms" onclick="saveRestock()"><i class="ti ti-check"></i> Save</button>
     </div>
   </div>
 </div>
 
-<!-- MODAL: Add Expense -->
-<div class="modal-overlay hidden" id="modal-expense">
+<div class="mov hidden" id="m-exp">
   <div class="modal">
-    <div class="modal-header"><span>Add Expense</span><button onclick="closeModal('modal-expense')"><i class="ti ti-x"></i></button></div>
-    <div class="modal-body">
-      <label>Description *</label>
-      <input type="text" id="exp-desc" placeholder="e.g. Shop Rent, Transport" />
+    <div class="mhdr"><span>Add Expense</span><button onclick="closeM('m-exp')"><i class="ti ti-x"></i></button></div>
+    <div class="mbody">
+      <label>Description *</label><input type="text" id="e-desc" placeholder="e.g. Rent, Transport"/>
       <label>Category *</label>
-      <select id="exp-cat">
-        <option value="rent">Rent</option>
-        <option value="transport">Transport</option>
-        <option value="wages">Staff Wages</option>
-        <option value="electricity">Electricity / NEPA</option>
-        <option value="packaging">Packaging</option>
-        <option value="restock">Stock Purchase</option>
-        <option value="maintenance">Maintenance</option>
-        <option value="other">Other</option>
+      <select id="e-cat">
+        <option value="rent">Rent</option><option value="transport">Transport</option>
+        <option value="wages">Wages</option><option value="electricity">Electricity</option>
+        <option value="packaging">Packaging</option><option value="restock">Stock Purchase</option>
+        <option value="maintenance">Maintenance</option><option value="other">Other</option>
       </select>
-      <label>Amount ₦ *</label>
-      <input type="number" id="exp-amount" placeholder="0.00" />
-      <label>Payment Method</label>
-      <select id="exp-payment">
-        <option value="cash">Cash</option>
-        <option value="transfer">Transfer</option>
+      <label>Amount ₦ *</label><input type="number" id="e-amt" placeholder="0.00"/>
+      <label>Payment</label><select id="e-pay"><option value="cash">Cash</option><option value="transfer">Transfer</option></select>
+      <label>Note</label><input type="text" id="e-note" placeholder="Any note"/>
+    </div>
+    <div class="mfoot">
+      <button class="mc" onclick="closeM('m-exp')">Cancel</button>
+      <button class="ms" onclick="saveExp()"><i class="ti ti-check"></i> Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="mov hidden" id="m-credit">
+  <div class="modal">
+    <div class="mhdr"><span>Record Credit</span><button onclick="closeM('m-credit')"><i class="ti ti-x"></i></button></div>
+    <div class="mbody">
+      <label>Customer Name *</label><input type="text" id="cr-name" placeholder="Full name" list="dl-cust2"/><datalist id="dl-cust2"></datalist>
+      <label>Phone</label><input type="tel" id="cr-phone" placeholder="+234..."/>
+      <label>Item Bought</label><input type="text" id="cr-item" placeholder="What did they buy?"/>
+      <label>Total Owed ₦ *</label><input type="number" id="cr-total" placeholder="0.00"/>
+      <label>Paid Now ₦</label><input type="number" id="cr-paid" value="0"/>
+      <label>Due Date</label><input type="date" id="cr-due"/>
+      <label>Note</label><input type="text" id="cr-note" placeholder="Any note"/>
+    </div>
+    <div class="mfoot">
+      <button class="mc" onclick="closeM('m-credit')">Cancel</button>
+      <button class="ms" onclick="saveCredit()"><i class="ti ti-check"></i> Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="mov hidden" id="m-cr-pay">
+  <div class="modal">
+    <div class="mhdr"><span>Record Payment</span><button onclick="closeM('m-cr-pay')"><i class="ti ti-x"></i></button></div>
+    <div class="mbody">
+      <p id="cr-pay-info" style="font-size:14px;color:var(--t2);background:var(--al);padding:10px 14px;border-radius:8px"></p>
+      <label>Amount Paid ₦ *</label><input type="number" id="cr-pay-amt" placeholder="0.00"/>
+      <label>Method</label><select id="cr-pay-mth"><option value="cash">Cash</option><option value="transfer">Transfer</option></select>
+    </div>
+    <div class="mfoot">
+      <button class="mc" onclick="closeM('m-cr-pay')">Cancel</button>
+      <button class="ms" onclick="saveCrPay()"><i class="ti ti-check"></i> Record</button>
+    </div>
+  </div>
+</div>
+
+<div class="mov hidden" id="m-cust">
+  <div class="modal">
+    <div class="mhdr"><span>Add Customer</span><button onclick="closeM('m-cust')"><i class="ti ti-x"></i></button></div>
+    <div class="mbody">
+      <label>Name *</label><input type="text" id="cu-name" placeholder="Full name"/>
+      <label>Phone</label><input type="tel" id="cu-phone" placeholder="+234..."/>
+      <label>Address</label><input type="text" id="cu-addr" placeholder="Address"/>
+      <label>Note (shoe size, preferences)</label><input type="text" id="cu-note" placeholder="e.g. Size 43, Black"/>
+    </div>
+    <div class="mfoot">
+      <button class="mc" onclick="closeM('m-cust')">Cancel</button>
+      <button class="ms" onclick="saveCust()"><i class="ti ti-check"></i> Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="mov hidden" id="m-supp">
+  <div class="modal">
+    <div class="mhdr"><span>Add Supplier</span><button onclick="closeM('m-supp')"><i class="ti ti-x"></i></button></div>
+    <div class="mbody">
+      <label>Name *</label><input type="text" id="su-name" placeholder="Supplier name"/>
+      <label>Phone</label><input type="tel" id="su-phone" placeholder="+234..."/>
+      <label>What They Supply</label><input type="text" id="su-items" placeholder="e.g. Men's shoes"/>
+      <label>Location</label><input type="text" id="su-loc" placeholder="City / Market"/>
+      <label>Note</label><input type="text" id="su-note" placeholder="Any note"/>
+    </div>
+    <div class="mfoot">
+      <button class="mc" onclick="closeM('m-supp')">Cancel</button>
+      <button class="ms" onclick="saveSupp()"><i class="ti ti-check"></i> Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="mov hidden" id="m-receipt">
+  <div class="modal">
+    <div class="mhdr"><span>Receipt</span><button onclick="closeM('m-receipt')"><i class="ti ti-x"></i></button></div>
+    <div class="mbody" id="receipt-body"></div>
+    <div class="mfoot">
+      <button class="mc" onclick="closeM('m-receipt')">Close</button>
+      <button class="ms" onclick="shareReceipt()"><i class="ti ti-brand-whatsapp"></i> Share</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ POULTRY MODALS ══ -->
+<div class="mov hidden" id="m-flock">
+  <div class="modal">
+    <div class="mhdr"><span>Add Flock</span><button onclick="closeM('m-flock')"><i class="ti ti-x"></i></button></div>
+    <div class="mbody">
+      <label>Flock Name *</label><input type="text" id="fl-name" placeholder="e.g. Batch A — Broilers"/>
+      <label>Bird Type *</label>
+      <select id="fl-type">
+        <option value="broiler">Broiler (Meat)</option><option value="layer">Layer (Eggs)</option>
+        <option value="cockerel">Cockerel</option><option value="noiler">Noiler</option>
+        <option value="turkey">Turkey</option><option value="duck">Duck</option><option value="other">Other</option>
       </select>
-      <label>Note (optional)</label>
-      <input type="text" id="exp-note" placeholder="Additional note" />
+      <label>Number of Birds *</label><input type="number" id="fl-count" placeholder="e.g. 200" min="1"/>
+      <label>Age / Week</label><input type="text" id="fl-age" placeholder="e.g. Day-old, 4 weeks"/>
+      <label>Date Purchased</label><input type="date" id="fl-date"/>
+      <label>Purchase Cost ₦</label><input type="number" id="fl-cost" placeholder="0.00"/>
+      <label>Supplier / Source</label><input type="text" id="fl-supp" placeholder="Farm / Market"/>
+      <label>Housing / Pen</label><input type="text" id="fl-pen" placeholder="e.g. Pen 1"/>
+      <label>Note</label><input type="text" id="fl-note" placeholder="Any note"/>
     </div>
-    <div class="modal-footer">
-      <button class="btn-cancel" onclick="closeModal('modal-expense')">Cancel</button>
-      <button class="btn-save" onclick="addExpense()"><i class="ti ti-check"></i> Save</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL: Add Credit -->
-<div class="modal-overlay hidden" id="modal-credit">
-  <div class="modal">
-    <div class="modal-header"><span>Record Credit Sale</span><button onclick="closeModal('modal-credit')"><i class="ti ti-x"></i></button></div>
-    <div class="modal-body">
-      <label>Customer Name *</label>
-      <input type="text" id="cr-name" placeholder="Full name" />
-      <label>Phone Number *</label>
-      <input type="tel" id="cr-phone" placeholder="+234..." />
-      <label>Item Bought</label>
-      <input type="text" id="cr-item" placeholder="What did they buy?" />
-      <label>Total Amount Owed ₦ *</label>
-      <input type="number" id="cr-total" placeholder="0.00" />
-      <label>Amount Paid Now ₦</label>
-      <input type="number" id="cr-paid" value="0" />
-      <label>Expected Payment Date</label>
-      <input type="date" id="cr-due" />
-      <label>Note</label>
-      <input type="text" id="cr-note" placeholder="Any note" />
-    </div>
-    <div class="modal-footer">
-      <button class="btn-cancel" onclick="closeModal('modal-credit')">Cancel</button>
-      <button class="btn-save" onclick="addCredit()"><i class="ti ti-check"></i> Save</button>
+    <div class="mfoot">
+      <button class="mc" onclick="closeM('m-flock')">Cancel</button>
+      <button class="ms bw" onclick="saveFlock()"><i class="ti ti-check"></i> Add Flock</button>
     </div>
   </div>
 </div>
 
-<!-- MODAL: Add Customer -->
-<div class="modal-overlay hidden" id="modal-customer">
+<div class="mov hidden" id="m-mort">
   <div class="modal">
-    <div class="modal-header"><span>Add Customer</span><button onclick="closeModal('modal-customer')"><i class="ti ti-x"></i></button></div>
-    <div class="modal-body">
-      <label>Full Name *</label>
-      <input type="text" id="cust-name" placeholder="Customer full name" />
-      <label>Phone Number</label>
-      <input type="tel" id="cust-phone" placeholder="+234..." />
-      <label>Address</label>
-      <input type="text" id="cust-address" placeholder="Customer address" />
-      <label>Note</label>
-      <input type="text" id="cust-note" placeholder="Foot size, preferences, etc." />
-    </div>
-    <div class="modal-footer">
-      <button class="btn-cancel" onclick="closeModal('modal-customer')">Cancel</button>
-      <button class="btn-save" onclick="addCustomer()"><i class="ti ti-check"></i> Save</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL: Add Supplier -->
-<div class="modal-overlay hidden" id="modal-supplier">
-  <div class="modal">
-    <div class="modal-header"><span>Add Supplier</span><button onclick="closeModal('modal-supplier')"><i class="ti ti-x"></i></button></div>
-    <div class="modal-body">
-      <label>Supplier Name *</label>
-      <input type="text" id="sup-name" placeholder="Supplier / Company name" />
-      <label>Phone Number</label>
-      <input type="tel" id="sup-phone" placeholder="+234..." />
-      <label>What They Supply</label>
-      <input type="text" id="sup-items" placeholder="e.g. Men's shoes, Kids shoes" />
-      <label>Location</label>
-      <input type="text" id="sup-location" placeholder="City / Market" />
-      <label>Note</label>
-      <input type="text" id="sup-note" placeholder="Any note" />
-    </div>
-    <div class="modal-footer">
-      <button class="btn-cancel" onclick="closeModal('modal-supplier')">Cancel</button>
-      <button class="btn-save" onclick="addSupplier()"><i class="ti ti-check"></i> Save</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL: Receipt -->
-<div class="modal-overlay hidden" id="modal-receipt">
-  <div class="modal">
-    <div class="modal-header"><span>Receipt</span><button onclick="closeModal('modal-receipt')"><i class="ti ti-x"></i></button></div>
-    <div class="modal-body" id="receipt-body"></div>
-    <div class="modal-footer">
-      <button class="btn-cancel" onclick="closeModal('modal-receipt')">Close</button>
-      <button class="btn-save" onclick="shareReceipt()"><i class="ti ti-brand-whatsapp"></i> Share</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL: Credit Payment -->
-<div class="modal-overlay hidden" id="modal-credit-pay">
-  <div class="modal">
-    <div class="modal-header"><span>Record Payment</span><button onclick="closeModal('modal-credit-pay')"><i class="ti ti-x"></i></button></div>
-    <div class="modal-body">
-      <p id="credit-pay-info" style="margin-bottom:12px;font-size:14px;color:var(--text-2);"></p>
-      <label>Amount Paid ₦ *</label>
-      <input type="number" id="credit-pay-amount" placeholder="0.00" />
-      <label>Payment Method</label>
-      <select id="credit-pay-method">
-        <option value="cash">Cash</option>
-        <option value="transfer">Transfer</option>
+    <div class="mhdr"><span>Record Mortality</span><button onclick="closeM('m-mort')"><i class="ti ti-x"></i></button></div>
+    <div class="mbody">
+      <label>Flock *</label><select id="mo-flock"><option value="">-- Select flock --</option></select>
+      <label>Deaths *</label><input type="number" id="mo-count" value="1" min="1"/>
+      <label>Cause</label>
+      <select id="mo-cause">
+        <option value="disease">Disease</option><option value="predator">Predator</option>
+        <option value="heat">Heat Stress</option><option value="accident">Accident</option>
+        <option value="unknown">Unknown</option><option value="other">Other</option>
       </select>
+      <label>Note</label><input type="text" id="mo-note" placeholder="Any detail"/>
     </div>
-    <div class="modal-footer">
-      <button class="btn-cancel" onclick="closeModal('modal-credit-pay')">Cancel</button>
-      <button class="btn-save" onclick="recordCreditPayment()"><i class="ti ti-check"></i> Record</button>
+    <div class="mfoot">
+      <button class="mc" onclick="closeM('m-mort')">Cancel</button>
+      <button class="ms rm" onclick="saveMort()"><i class="ti ti-check"></i> Record</button>
     </div>
   </div>
 </div>
 
-<!-- NOTIFICATIONS PANEL -->
+<div class="mov hidden" id="m-egg">
+  <div class="modal">
+    <div class="mhdr"><span>Record Eggs</span><button onclick="closeM('m-egg')"><i class="ti ti-x"></i></button></div>
+    <div class="mbody">
+      <label>Flock *</label><select id="eg-flock"><option value="">-- Select flock --</option></select>
+      <label>Eggs Collected *</label><input type="number" id="eg-count" placeholder="Number of eggs" min="0"/>
+      <label>Cracked / Bad Eggs</label><input type="number" id="eg-bad" value="0" min="0"/>
+      <label>Collection Time</label>
+      <select id="eg-time">
+        <option value="morning">Morning</option><option value="afternoon">Afternoon</option>
+        <option value="evening">Evening</option><option value="total">Total (daily)</option>
+      </select>
+      <label>Note</label><input type="text" id="eg-note" placeholder="Any note"/>
+    </div>
+    <div class="mfoot">
+      <button class="mc" onclick="closeM('m-egg')">Cancel</button>
+      <button class="ms am" onclick="saveEgg()"><i class="ti ti-check"></i> Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="mov hidden" id="m-feed">
+  <div class="modal">
+    <div class="mhdr"><span>Record Feed</span><button onclick="closeM('m-feed')"><i class="ti ti-x"></i></button></div>
+    <div class="mbody">
+      <label>Flock *</label><select id="fd-flock"><option value="">-- Select flock --</option></select>
+      <label>Feed Type *</label>
+      <select id="fd-type">
+        <option value="starter">Starter</option><option value="grower">Grower</option>
+        <option value="finisher">Finisher</option><option value="layer_mash">Layer Mash</option>
+        <option value="concentrate">Concentrate</option><option value="corn">Corn / Maize</option><option value="other">Other</option>
+      </select>
+      <label>Quantity (kg) *</label><input type="number" id="fd-qty" placeholder="e.g. 25" min="0" step="0.5"/>
+      <label>Cost Paid ₦</label><input type="number" id="fd-cost" placeholder="0.00"/>
+      <label>Supplier / Brand</label><input type="text" id="fd-supp" placeholder="Feed brand"/>
+      <label>Note</label><input type="text" id="fd-note" placeholder="Any note"/>
+    </div>
+    <div class="mfoot">
+      <button class="mc" onclick="closeM('m-feed')">Cancel</button>
+      <button class="ms bw" onclick="saveFeed()"><i class="ti ti-check"></i> Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="mov hidden" id="m-health">
+  <div class="modal">
+    <div class="mhdr"><span>Health Event</span><button onclick="closeM('m-health')"><i class="ti ti-x"></i></button></div>
+    <div class="mbody">
+      <label>Flock *</label><select id="hl-flock"><option value="">-- Select flock --</option></select>
+      <label>Event Type *</label>
+      <select id="hl-type">
+        <option value="vaccination">Vaccination</option><option value="medication">Medication</option>
+        <option value="deworming">Deworming</option><option value="vitamin">Vitamins</option>
+        <option value="disease">Disease Outbreak</option><option value="inspection">Vet Inspection</option><option value="other">Other</option>
+      </select>
+      <label>Drug / Description *</label><input type="text" id="hl-desc" placeholder="e.g. Newcastle vaccine"/>
+      <label>Birds Treated</label><input type="number" id="hl-birds" placeholder="Number of birds"/>
+      <label>Cost ₦</label><input type="number" id="hl-cost" placeholder="0.00"/>
+      <label>Status</label>
+      <select id="hl-status">
+        <option value="treated">Treated</option><option value="good">All Good</option>
+        <option value="watch">Under Watch</option><option value="sick">Still Sick</option><option value="recovering">Recovering</option>
+      </select>
+      <label>Vet Name</label><input type="text" id="hl-vet" placeholder="Veterinarian name"/>
+      <label>Note</label><input type="text" id="hl-note" placeholder="Any note"/>
+    </div>
+    <div class="mfoot">
+      <button class="mc" onclick="closeM('m-health')">Cancel</button>
+      <button class="ms rm" onclick="saveHealth()"><i class="ti ti-check"></i> Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="mov hidden" id="m-psale">
+  <div class="modal">
+    <div class="mhdr"><span>Poultry Sale</span><button onclick="closeM('m-psale')"><i class="ti ti-x"></i></button></div>
+    <div class="mbody">
+      <label>Flock *</label><select id="ps-flock"><option value="">-- Select flock --</option></select>
+      <label>What Was Sold *</label>
+      <select id="ps-type">
+        <option value="bird">Live Birds</option><option value="egg">Eggs (crates)</option>
+        <option value="egg_piece">Eggs (pieces)</option><option value="dressed">Dressed Bird</option>
+        <option value="manure">Manure</option><option value="other">Other</option>
+      </select>
+      <label>Quantity *</label><input type="number" id="ps-qty" placeholder="e.g. 50" min="1" oninput="psPreview()"/>
+      <label>Unit Price ₦ *</label><input type="number" id="ps-price" placeholder="0.00" oninput="psPreview()"/>
+      <div id="ps-prev" class="total-prev" style="display:none;background:var(--gl);color:var(--gt)"></div>
+      <label>Payment</label>
+      <select id="ps-pay"><option value="cash">Cash</option><option value="transfer">Transfer</option><option value="credit">Credit</option></select>
+      <label>Buyer Name</label><input type="text" id="ps-buyer" placeholder="Buyer name"/>
+      <label>Buyer Phone</label><input type="tel" id="ps-phone" placeholder="+234..."/>
+      <label>Note</label><input type="text" id="ps-note" placeholder="Any note"/>
+    </div>
+    <div class="mfoot">
+      <button class="mc" onclick="closeM('m-psale')">Cancel</button>
+      <button class="ms" style="background:var(--g)" onclick="savePSale()"><i class="ti ti-check"></i> Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="mov hidden" id="m-pexp">
+  <div class="modal">
+    <div class="mhdr"><span>Poultry Expense</span><button onclick="closeM('m-pexp')"><i class="ti ti-x"></i></button></div>
+    <div class="mbody">
+      <label>Description *</label><input type="text" id="pe-desc" placeholder="e.g. Vaccination, Labour"/>
+      <label>Category *</label>
+      <select id="pe-cat">
+        <option value="feed">Feed Purchase</option><option value="medication">Medication/Vaccine</option>
+        <option value="equipment">Equipment</option><option value="labour">Labour/Wages</option>
+        <option value="housing">Housing/Pen</option><option value="transport">Transport</option><option value="other">Other</option>
+      </select>
+      <label>Amount ₦ *</label><input type="number" id="pe-amt" placeholder="0.00"/>
+      <label>Related Flock</label><select id="pe-flock"><option value="">-- All flocks --</option></select>
+      <label>Note</label><input type="text" id="pe-note" placeholder="Any note"/>
+    </div>
+    <div class="mfoot">
+      <button class="mc" onclick="closeM('m-pexp')">Cancel</button>
+      <button class="ms tm" onclick="savePExp()"><i class="ti ti-check"></i> Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- NOTIFICATIONS -->
 <div class="notif-panel hidden" id="notif-panel">
-  <div class="notif-backdrop" onclick="hideNotifications()"></div>
+  <div class="notif-bg" onclick="hideNotif()"></div>
   <div class="notif-sheet">
-    <div class="notif-header"><span>Notifications</span><button onclick="hideNotifications()"><i class="ti ti-x"></i></button></div>
+    <div class="notif-hdr"><span>Notifications</span><button onclick="hideNotif()"><i class="ti ti-x"></i></button></div>
     <div id="notif-list"></div>
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast hidden" id="toast"></div>
 
-<script src="app.js"></script>
+<script>
+'use strict';
+
+/* ════════════════════════════════════════
+   STATE
+   ════════════════════════════════════════ */
+let sb=null, settings={}, currentPIN='1234', enteredPIN='';
+let curPage='dashboard', crPayTarget=null, rptData=null;
+let selStockId=null, pendingImg=null, saleFilter_='today', expFilter_='today';
+let curPTab='flocks';
+
+let cache={sales:[],expenses:[],stock:[],credits:[],customers:[],suppliers:[]};
+let pcache={flocks:[],eggs:[],feed:[],health:[],psales:[],pexpenses:[]};
+
+/* ════════════════════════════════════════
+   CONFIG / BOOT
+   ════════════════════════════════════════ */
+function getCfg(){ return {url:localStorage.getItem('ihsan_sb_url')||'', key:localStorage.getItem('ihsan_sb_key')||''}; }
+
+window.addEventListener('load', async ()=>{
+  const cfg=getCfg();
+  if(!cfg.url||!cfg.key){
+    document.getElementById('scr-loading').classList.add('hidden');
+    document.getElementById('scr-setup').classList.remove('hidden');
+    return;
+  }
+  try{
+    sb=window.supabase.createClient(cfg.url,cfg.key);
+    await boot();
+  }catch(e){
+    document.getElementById('scr-loading').classList.add('hidden');
+    document.getElementById('scr-setup').classList.remove('hidden');
+  }
+});
+
+async function saveConfig(){
+  const url=document.getElementById('su-url').value.trim();
+  const key=document.getElementById('su-key').value.trim();
+  const err=document.getElementById('su-err');
+  err.textContent='';
+  if(!url||!key) return err.textContent='Both fields are required';
+  if(!url.startsWith('https://')) return err.textContent='URL must start with https://';
+  err.textContent='Connecting…';
+  try{
+    sb=window.supabase.createClient(url,key);
+    const {error}=await sb.from('ihsan_settings').select('id').limit(1);
+    if(error && error.code!=='PGRST116' && !error.message.includes('does not exist')) throw error;
+    localStorage.setItem('ihsan_sb_url',url);
+    localStorage.setItem('ihsan_sb_key',key);
+    document.getElementById('scr-setup').classList.add('hidden');
+    document.getElementById('scr-loading').classList.remove('hidden');
+    await boot();
+  }catch(e){
+    err.textContent='Connection failed — check your URL and key';
+  }
+}
+
+function resetCloud(){
+  if(!confirm('Disconnect cloud storage? You will need to re-enter credentials.')) return;
+  localStorage.removeItem('ihsan_sb_url');
+  localStorage.removeItem('ihsan_sb_key');
+  location.reload();
+}
+
+async function boot(){
+  setSync('syncing','Loading data…');
+  try{
+    await loadAll();
+    setSync('ok','Connected to cloud ☁️');
+  }catch(e){
+    setSync('err','Offline — cached data');
+    loadCache();
+  }
+  settings=getSettings();
+  currentPIN=settings.pin||'1234';
+  setDate(); setGreet(); monitorOnline();
+  document.getElementById('scr-loading').classList.add('hidden');
+  document.getElementById('scr-pin').classList.remove('hidden');
+}
+
+function monitorOnline(){
+  window.addEventListener('online',async ()=>{
+    document.getElementById('off-bar').classList.remove('on');
+    setSync('syncing','Reconnecting…');
+    try{ await loadAll(); setSync('ok','Connected to cloud ☁️'); refreshDash(); }
+    catch(e){ setSync('err','Sync failed'); }
+  });
+  window.addEventListener('offline',()=>{
+    document.getElementById('off-bar').classList.add('on');
+    setSync('err','Offline — cached data');
+  });
+  if(!navigator.onLine){
+    document.getElementById('off-bar').classList.add('on');
+    setSync('err','Offline — cached data');
+  }
+}
+
+function setSync(state,label){
+  const dot=document.getElementById('sdot'), lbl=document.getElementById('slbl');
+  dot.className='sdot'+(state==='syncing'?' syncing':state==='err'?' err':'');
+  lbl.textContent=label;
+}
+
+/* ════════════════════════════════════════
+   DATA LAYER — FOOTWEAR
+   ════════════════════════════════════════ */
+async function loadAll(){
+  const tabs=['sales','expenses','stock','credits','customers','suppliers'];
+  const res=await Promise.all(tabs.map(t=>sb.from('ihsan_'+t).select('*').order('created_at',{ascending:false})));
+  tabs.forEach((t,i)=>{
+    if(!res[i].error){ cache[t]=res[i].data||[]; localStorage.setItem('ihsan_c_'+t,JSON.stringify(cache[t])); }
+  });
+}
+function loadCache(){
+  ['sales','expenses','stock','credits','customers','suppliers'].forEach(t=>{
+    try{ cache[t]=JSON.parse(localStorage.getItem('ihsan_c_'+t))||[]; }catch{ cache[t]=[]; }
+  });
+}
+async function dIns(table,row){
+  setSync('syncing','Saving…');
+  const {data,error}=await sb.from('ihsan_'+table).insert([row]).select().single();
+  if(error){ setSync('err','Save failed'); throw error; }
+  cache[table]=[data,...cache[table]];
+  localStorage.setItem('ihsan_c_'+table,JSON.stringify(cache[table]));
+  setSync('ok','Saved ✓');
+  return data;
+}
+async function dUpd(table,id,upd){
+  setSync('syncing','Updating…');
+  const {error}=await sb.from('ihsan_'+table).update(upd).eq('id',id);
+  if(error){ setSync('err','Update failed'); throw error; }
+  cache[table]=cache[table].map(r=>r.id===id?{...r,...upd}:r);
+  localStorage.setItem('ihsan_c_'+table,JSON.stringify(cache[table]));
+  setSync('ok','Saved ✓');
+}
+async function dDel(table,id){
+  setSync('syncing','Deleting…');
+  const {error}=await sb.from('ihsan_'+table).delete().eq('id',id);
+  if(error){ setSync('err','Delete failed'); throw error; }
+  cache[table]=cache[table].filter(r=>r.id!==id);
+  localStorage.setItem('ihsan_c_'+table,JSON.stringify(cache[table]));
+  setSync('ok','Deleted ✓');
+}
+
+/* ── SETTINGS (local) ── */
+function getSettings(){
+  try{ return JSON.parse(localStorage.getItem('ihsan_settings'))||defSet(); }catch{ return defSet(); }
+}
+function defSet(){ return {pin:'1234',lowStock:5,bizName:'IHSAN Footwears & General Enterprises',owner:'',phone:'',address:''}; }
+function setSettings(s){ localStorage.setItem('ihsan_settings',JSON.stringify(s)); }
+
+/* ════════════════════════════════════════
+   UTILS
+   ════════════════════════════════════════ */
+function uid(){ return typeof crypto.randomUUID==='function'?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2); }
+function fmt(n){ return '₦'+Number(n||0).toLocaleString('en-NG',{minimumFractionDigits:0}); }
+function fT(iso){ try{return new Date(iso).toLocaleTimeString('en-NG',{hour:'2-digit',minute:'2-digit'});}catch{return '';} }
+function fD(iso){ try{return new Date(iso).toLocaleDateString('en-NG',{day:'numeric',month:'short',year:'numeric'});}catch{return '';} }
+function todayS(){ return new Date().toISOString().slice(0,10); }
+function isToday(iso){ return iso && iso.slice(0,10)===todayS(); }
+function isWeek(iso){ if(!iso)return false; const d=new Date(iso),n=new Date(),s=new Date(n); s.setDate(n.getDate()-n.getDay()); s.setHours(0,0,0,0); return d>=s; }
+function isMonth(iso){ if(!iso)return false; const d=new Date(iso),n=new Date(); return d.getMonth()===n.getMonth()&&d.getFullYear()===n.getFullYear(); }
+function byPeriod(arr,p){ const k=r=>r.created_at; if(p==='today')return arr.filter(r=>isToday(k(r))); if(p==='week')return arr.filter(r=>isWeek(k(r))); if(p==='month')return arr.filter(r=>isMonth(k(r))); return [...arr]; }
+function setDate(){ document.getElementById('hdr-date').textContent=new Date().toLocaleDateString('en-NG',{weekday:'short',day:'numeric',month:'short',year:'numeric'}); }
+function setGreet(){ const h=new Date().getHours(); const g=h<12?'Good morning':h<17?'Good afternoon':'Good evening'; const n=settings.owner?`, ${settings.owner.split(' ')[0]}`:''; document.getElementById('greet').textContent=`${g}${n} 👋`; }
+
+/* ════════════════════════════════════════
+   PIN
+   ════════════════════════════════════════ */
+function pk(d){ if(enteredPIN.length>=4)return; enteredPIN+=d; pdots(); if(enteredPIN.length===4) setTimeout(checkPin,130); }
+function pdel(){ enteredPIN=enteredPIN.slice(0,-1); pdots(); document.getElementById('pin-err').textContent=''; document.querySelectorAll('.dot').forEach(d=>d.classList.remove('err')); }
+function pdots(){ for(let i=1;i<=4;i++){ const d=document.getElementById('d'+i); d.classList.toggle('on',i<=enteredPIN.length); d.classList.remove('err'); } }
+function checkPin(){
+  if(enteredPIN===currentPIN){
+    document.getElementById('scr-pin').classList.add('hidden');
+    document.getElementById('app').classList.remove('hidden');
+    refreshDash(); checkNotif();
+  }else{
+    document.querySelectorAll('.dot').forEach(d=>d.classList.add('err'));
+    document.getElementById('pin-err').textContent='Wrong PIN. Try again.';
+    enteredPIN='';
+    setTimeout(()=>{ pdots(); document.getElementById('pin-err').textContent=''; },700);
+  }
+}
+function changePin(){
+  const o=document.getElementById('set-old-pin').value, n=document.getElementById('set-new-pin').value, c=document.getElementById('set-cfm-pin').value;
+  if(o!==currentPIN) return toast('Current PIN is wrong');
+  if(!/^\d{4}$/.test(n)) return toast('PIN must be 4 digits');
+  if(n!==c) return toast('New PINs do not match');
+  currentPIN=n; settings.pin=n; setSettings(settings);
+  toast('PIN updated ✓');
+  ['set-old-pin','set-new-pin','set-cfm-pin'].forEach(id=>document.getElementById(id).value='');
+}
+
+/* ════════════════════════════════════════
+   NAVIGATION
+   ════════════════════════════════════════ */
+function goPage(page){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+  const el=document.getElementById('pg-'+page);
+  if(!el) return;
+  el.classList.add('active');
+  const nb=document.getElementById('nb-'+page);
+  if(nb) nb.classList.add('active');
+  curPage=page;
+  if(page==='dashboard') refreshDash();
+  else if(page==='sales') renderSales(saleFilter_);
+  else if(page==='stock') renderStock('');
+  else if(page==='expenses') renderExp(expFilter_);
+  else if(page==='credit') renderCredit('');
+  else if(page==='customers') renderCust('');
+  else if(page==='suppliers') renderSupp('');
+  else if(page==='settings') loadSetUI();
+  else if(page==='poultry') navPoultry();
+}
+function showMore(){ document.getElementById('nb-more').classList.add('active'); document.getElementById('more-overlay').classList.remove('hidden'); }
+function hideMore(){ document.getElementById('nb-more').classList.remove('active'); document.getElementById('more-overlay').classList.add('hidden'); }
+
+/* ════════════════════════════════════════
+   MODAL HELPERS
+   ════════════════════════════════════════ */
+function openM(id){
+  document.getElementById(id).classList.remove('hidden');
+  fillDataLists();
+  if(id==='m-sale') buildSalePicker();
+  if(['m-flock','m-mort','m-egg','m-feed','m-health','m-psale','m-pexp'].includes(id)) fillFlockDropdowns();
+}
+function closeM(id){ document.getElementById(id).classList.add('hidden'); }
+
+function fillDataLists(){
+  const set=(id,html)=>{ const e=document.getElementById(id); if(e) e.innerHTML=html; };
+  const custOpts=cache.customers.map(c=>`<option value="${esc(c.name)}">`).join('');
+  set('dl-cust',custOpts); set('dl-cust2',custOpts);
+  set('dl-supp',cache.suppliers.map(s=>`<option value="${esc(s.name)}">`).join(''));
+  set('rs-sel','<option value="">-- Select --</option>'+cache.stock.map(s=>`<option value="${esc(s.name)}">${esc(s.name)}${s.colour?' - '+esc(s.colour):''} Sz${s.size||'?'} (${s.qty||0} left)</option>`).join(''));
+}
+function esc(s){ return String(s||'').replace(/"/g,'&quot;'); }
+
+/* ── SALE PICKER ── */
+function buildSalePicker(){
+  selStockId=null;
+  document.getElementById('sel-info').style.display='none';
+  document.getElementById('s-prev').style.display='none';
+  const el=document.getElementById('sale-picker');
+  if(!cache.stock.length){ el.innerHTML='<div style="padding:12px;text-align:center;color:var(--t3);font-size:13px">No stock items yet — add items first.</div>'; return; }
+  el.innerHTML=cache.stock.map(s=>`
+    <div class="sopt" id="so-${s.id}" onclick="pickSale('${s.id}')">
+      ${s.image?`<img src="${s.image}" class="sopt-thumb"/>`:`<div class="sopt-ph"><i class="ti ti-shoe"></i></div>`}
+      <div class="sopt-info">
+        <div class="sopt-name">${esc(s.name)}</div>
+        <div class="sopt-sub">${[s.colour,s.size?'Sz '+s.size:'',s.brand].filter(Boolean).join(' · ')} · <span style="color:${(s.qty||0)<=0?'var(--rm)':'var(--t2)'}">${s.qty||0} left</span></div>
+      </div>
+      <div class="sopt-price">${fmt(s.sell)}</div>
+    </div>`).join('');
+}
+function pickSale(id){
+  const s=cache.stock.find(x=>x.id===id); if(!s) return;
+  selStockId=id;
+  document.querySelectorAll('.sopt').forEach(e=>e.classList.remove('sel'));
+  const e=document.getElementById('so-'+id); if(e) e.classList.add('sel');
+  document.getElementById('s-item').value=s.name+(s.colour?' - '+s.colour:'')+(s.size?' Sz '+s.size:'');
+  document.getElementById('s-price').value=s.sell;
+  document.getElementById('s-cost').value=s.buy;
+  document.getElementById('sel-badge').innerHTML=`<span>✓ ${esc(s.name)}${s.size?' Sz '+s.size:''}</span><span>${fmt(s.sell)}/unit</span>`;
+  document.getElementById('sel-info').style.display='block';
+  salePreview();
+}
+function payChange(){ document.getElementById('s-part-row').style.display=document.getElementById('s-pay').value==='part'?'block':'none'; }
+function salePreview(){
+  const q=parseFloat(document.getElementById('s-qty').value)||1, p=parseFloat(document.getElementById('s-price').value)||0, c=parseFloat(document.getElementById('s-cost').value)||0;
+  const el=document.getElementById('s-prev');
+  if(!p){ el.style.display='none'; return; }
+  el.textContent=`Total: ${fmt(q*p)} · Profit: ${fmt((p-c)*q)}`;
+  el.style.display='block';
+}
+
+/* ── IMAGE UPLOAD ── */
+function previewImg(input){
+  const f=input.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=e=>{
+    const img=new Image();
+    img.onload=()=>{
+      const cv=document.createElement('canvas'); const MAX=600; let w=img.width,h=img.height;
+      if(w>MAX){h=Math.round(h*MAX/w);w=MAX;} if(h>MAX){w=Math.round(w*MAX/h);h=MAX;}
+      cv.width=w; cv.height=h; cv.getContext('2d').drawImage(img,0,0,w,h);
+      pendingImg=cv.toDataURL('image/jpeg',0.72);
+      document.getElementById('si-box').style.display='none';
+      document.getElementById('si-img').src=pendingImg;
+      document.getElementById('si-prev').style.display='block';
+    };
+    img.src=e.target.result;
+  };
+  r.readAsDataURL(f);
+}
+function removeImg(){
+  pendingImg=null;
+  document.getElementById('si-file').value='';
+  document.getElementById('si-prev').style.display='none';
+  document.getElementById('si-box').style.display='block';
+}
+
+/* ════════════════════════════════════════
+   SALES
+   ════════════════════════════════════════ */
+async function saveSale(){
+  const item=document.getElementById('s-item').value.trim();
+  const qty=parseFloat(document.getElementById('s-qty').value)||1;
+  const price=parseFloat(document.getElementById('s-price').value)||0;
+  const cost=parseFloat(document.getElementById('s-cost').value)||0;
+  const pay=document.getElementById('s-pay').value;
+  const cust=document.getElementById('s-cust').value.trim();
+  const phone=document.getElementById('s-phone').value.trim();
+  const note=document.getElementById('s-note').value.trim();
+  const part=pay==='part'?parseFloat(document.getElementById('s-part').value)||0:0;
+  if(!item) return toast('Select or enter an item');
+  if(!price) return toast('Enter selling price');
+  const total=qty*price, totalCost=qty*cost;
+  const btn=document.getElementById('btn-sale');
+  btn.disabled=true; btn.innerHTML='Saving…';
+  try{
+    const row={id:uid(),item,qty,price,cost,total_cost:totalCost,total,payment:pay,customer:cust,phone,note,part_paid:part,stock_item_id:selStockId,created_at:new Date().toISOString()};
+    const saved=await dIns('sales',row);
+    let si=selStockId?cache.stock.find(x=>x.id===selStockId):cache.stock.find(x=>item.toLowerCase().startsWith(x.name.toLowerCase()));
+    if(si) await dUpd('stock',si.id,{qty:Math.max(0,(si.qty||0)-qty)});
+    if(cust) await autoCust(cust,phone);
+    if(pay==='credit') await addCreditRow(cust||'Unknown',phone,item,total,0,'',note);
+    else if(pay==='part' && (total-part)>0) await addCreditRow(cust||'Unknown',phone,item,total,part,'',note);
+    showReceipt({...row,id:saved?.id||row.id});
+    clearSaleForm(); closeM('m-sale');
+    toast('Sale saved to cloud ☁️');
+    checkNotif();
+    if(curPage==='dashboard') refreshDash();
+    if(curPage==='sales') renderSales(saleFilter_);
+  }catch(e){ toast('❌ Failed to save — check connection'); }
+  finally{ btn.disabled=false; btn.innerHTML='<i class="ti ti-check"></i> Save Sale'; }
+}
+function clearSaleForm(){
+  ['s-item','s-price','s-cost','s-cust','s-phone','s-note','s-part'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('s-qty').value='1';
+  document.getElementById('s-pay').value='cash';
+  document.getElementById('s-part-row').style.display='none';
+  document.getElementById('sel-info').style.display='none';
+  document.getElementById('s-prev').style.display='none';
+  selStockId=null;
+}
+function showReceipt(s){
+  const biz=settings.bizName||'IHSAN Footwears & General Enterprises';
+  const part=s.part_paid||0, bal=s.payment==='credit'?s.total:s.payment==='part'?(s.total-part):0;
+  document.getElementById('receipt-body').innerHTML=`
+    <div class="receipt">
+      <div class="r-hdr"><div class="r-biz">${esc(biz)}</div><div>${esc(settings.phone||'')}</div><div style="font-size:11px;margin-top:4px">${fD(s.created_at)} · ${fT(s.created_at)}</div></div>
+      <div class="r-row"><span>Item</span><span>${esc(s.item)}</span></div>
+      <div class="r-row"><span>Qty</span><span>${s.qty}</span></div>
+      <div class="r-row"><span>Unit Price</span><span>${fmt(s.price)}</span></div>
+      <hr class="r-div"/>
+      <div class="r-row r-total"><span>TOTAL</span><span>${fmt(s.total)}</span></div>
+      <div class="r-row"><span>Payment</span><span>${s.payment.toUpperCase()}</span></div>
+      ${s.payment==='part'?`<div class="r-row"><span>Paid</span><span>${fmt(part)}</span></div>`:''}
+      ${bal>0?`<div class="r-row" style="color:var(--rm)"><span><strong>Balance</strong></span><span><strong>${fmt(bal)}</strong></span></div>`:''}
+      ${s.customer?`<div class="r-row"><span>Customer</span><span>${esc(s.customer)}</span></div>`:''}
+      <hr class="r-div"/>
+      <div style="text-align:center;font-size:11px;margin-top:8px">Thank you! 🙏<br>Built by YaseerTech</div>
+    </div>`;
+  window._lastSale=s;
+  openM('m-receipt');
+}
+function shareReceipt(){
+  const s=window._lastSale; if(!s) return;
+  const biz=settings.bizName||'IHSAN Footwears';
+  const part=s.part_paid||0, bal=s.payment==='credit'?s.total:s.payment==='part'?(s.total-part):0;
+  const msg=`*${biz}*\n📦 ${s.item} x${s.qty}\n💰 Total: ${fmt(s.total)}\n💳 ${s.payment.toUpperCase()}\n`+(bal>0?`⚠️ Balance: ${fmt(bal)}\n`:'')+`📅 ${fD(s.created_at)}\n\n_Thank you!_`;
+  window.open(`https://wa.me/${(s.phone||'').replace(/\D/g,'')}?text=${encodeURIComponent(msg)}`,'_blank');
+}
+function saleFilter(p,el){ saleFilter_=p; document.querySelectorAll('#sale-tabs .ft').forEach(b=>b.classList.remove('active')); el.classList.add('active'); renderSales(p); }
+function renderSales(p){
+  const f=byPeriod(cache.sales,p);
+  const tot=f.reduce((a,s)=>a+(s.payment==='credit'?0:s.payment==='part'?(s.part_paid||0):s.total),0);
+  document.getElementById('sale-total').textContent=`Total: ${fmt(tot)} | ${f.length} sale${f.length!==1?'s':''}`;
+  const el=document.getElementById('sale-list');
+  el.innerHTML=f.length===0?`<div class="empty"><i class="ti ti-receipt-off"></i><p>No sales in this period</p></div>`:f.map(s=>saleCard(s,true)).join('');
+}
+function saleCard(s,acts=true){
+  const clr=s.payment==='cash'?'g':s.payment==='transfer'?'b':'a';
+  const icn=s.payment==='cash'?'ti-cash':s.payment==='transfer'?'ti-building-bank':'ti-clock-dollar';
+  const paid=s.payment==='credit'?0:s.payment==='part'?(s.part_paid||0):s.total;
+  const si=s.stock_item_id?cache.stock.find(x=>x.id===s.stock_item_id):null;
+  const thumb=si?.image?`<img src="${si.image}" class="thumb"/>`:`<div class="ri ${clr}"><i class="ti ${icn}"></i></div>`;
+  return `<div class="rc">
+    ${thumb}
+    <div class="rb">
+      <div class="rtitle">${esc(s.item)}</div>
+      <div class="rmeta">Qty: ${s.qty} · ${s.payment.toUpperCase()}${s.customer?' · '+esc(s.customer):''}</div>
+      ${acts?`<div class="ract">
+        <button class="btn g" onclick='showReceipt(${JSON.stringify(s).replace(/'/g,"&#39;")})'><i class="ti ti-receipt"></i> Receipt</button>
+        <button class="btn r" onclick="delSale('${s.id}')"><i class="ti ti-trash"></i></button>
+      </div>`:''}
+    </div>
+    <div class="rright"><div class="ramt ${clr}">${fmt(paid)}</div><div class="rtime">${fT(s.created_at)}</div></div>
+  </div>`;
+}
+async function delSale(id){
+  if(!confirm('Delete this sale?')) return;
+  try{ await dDel('sales',id); toast('Sale deleted'); renderSales(saleFilter_); if(curPage==='dashboard') refreshDash(); }
+  catch(e){ toast('❌ Delete failed'); }
+}
+
+/* ════════════════════════════════════════
+   STOCK
+   ════════════════════════════════════════ */
+async function saveStock(){
+  const name=document.getElementById('si-name').value.trim();
+  const brand=document.getElementById('si-brand').value.trim();
+  const cat=document.getElementById('si-cat').value;
+  const size=document.getElementById('si-size').value.trim();
+  const colour=document.getElementById('si-colour').value.trim();
+  const qty=parseFloat(document.getElementById('si-qty').value)||0;
+  const buy=parseFloat(document.getElementById('si-buy').value)||0;
+  const sell=parseFloat(document.getElementById('si-sell').value)||0;
+  if(!name) return toast('Item name is required');
+  if(!buy||!sell) return toast('Enter buying and selling prices');
+  const btn=document.getElementById('btn-stock');
+  btn.disabled=true; btn.innerHTML='Saving…';
+  try{
+    await dIns('stock',{id:uid(),name,brand,cat,size,colour,qty,buy,sell,image:pendingImg||null,created_at:new Date().toISOString()});
+    ['si-name','si-brand','si-size','si-colour','si-buy','si-sell'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('si-qty').value='1';
+    removeImg(); closeM('m-stock');
+    toast('Stock saved ☁️');
+    if(curPage==='stock') renderStock('');
+    refreshDash();
+  }catch(e){ toast('❌ Failed to save'); }
+  finally{ btn.disabled=false; btn.innerHTML='<i class="ti ti-check"></i> Add Item'; }
+}
+async function saveRestock(){
+  const sel=document.getElementById('rs-sel').value;
+  const item=(sel||document.getElementById('rs-item').value).trim();
+  const qty=parseFloat(document.getElementById('rs-qty').value)||0;
+  const cost=parseFloat(document.getElementById('rs-cost').value)||0;
+  const supp=document.getElementById('rs-supp').value.trim();
+  const note=document.getElementById('rs-note').value.trim();
+  if(!item||!qty) return toast('Item name and quantity are required');
+  try{
+    await dIns('restocks',{id:uid(),item,qty,cost,supplier:supp,note,created_at:new Date().toISOString()});
+    const si=cache.stock.find(x=>x.name.toLowerCase()===item.toLowerCase()||item.toLowerCase().startsWith(x.name.toLowerCase()));
+    if(si) await dUpd('stock',si.id,{qty:(si.qty||0)+qty});
+    ['rs-item','rs-cost','rs-supp','rs-note'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('rs-qty').value='1';
+    document.getElementById('rs-sel').value='';
+    closeM('m-restock');
+    toast('Restock saved ☁️');
+    if(curPage==='stock') renderStock('');
+    refreshDash(); checkNotif();
+  }catch(e){ toast('❌ Failed to save'); }
+}
+async function delStock(id){
+  if(!confirm('Delete this stock item?')) return;
+  try{ await dDel('stock',id); toast('Item deleted'); renderStock(''); refreshDash(); }
+  catch(e){ toast('❌ Delete failed'); }
+}
+function renderStock(q=''){
+  const low=settings.lowStock||5;
+  const f=cache.stock.filter(s=>!q||s.name.toLowerCase().includes(q.toLowerCase())||(s.colour||'').toLowerCase().includes(q.toLowerCase())||(s.brand||'').toLowerCase().includes(q.toLowerCase()));
+  const el=document.getElementById('stock-list');
+  if(!f.length){ el.innerHTML=`<div class="empty"><i class="ti ti-package-off"></i><p>${q?'No items match':'No stock yet. Tap Add to begin.'}</p></div>`; return; }
+  el.innerHTML=f.map(s=>{
+    const isLow=(s.qty||0)<=low, profit=s.sell-s.buy, margin=s.buy>0?Math.round((profit/s.sell)*100):0;
+    return `<div class="stock-card">
+      <div class="sth">
+        ${s.image?`<img src="${s.image}" class="sthumb"/>`:`<div class="sthumb-ph"><i class="ti ti-shoe"></i></div>`}
+        <div class="sb">
+          <div class="sname">${esc(s.name)}</div>
+          <div class="smeta">${[s.brand,s.cat,s.colour,s.size?'Sz '+s.size:''].filter(Boolean).join(' · ')}</div>
+          ${isLow?'<span class="low-badge"><i class="ti ti-alert-triangle"></i> Low Stock</span>':''}
+        </div>
+        <div class="sr"><div class="sqty${isLow?' low':''}">${s.qty||0}</div><div class="sqty-lbl">in stock</div></div>
+      </div>
+      <div class="sprices">
+        <div class="spi"><span class="spl">Bought</span><span class="spv">${fmt(s.buy)}</span></div>
+        <div class="spi"><span class="spl">Selling</span><span class="spv">${fmt(s.sell)}</span></div>
+        <div class="spi"><span class="spl">Profit</span><span class="spv gt">${fmt(profit)}</span></div>
+        <span class="pchip">${margin}% margin</span>
+      </div>
+      <div class="ract" style="margin-top:10px">
+        <button class="btn g" onclick="quickRestock('${esc(s.name)}')"><i class="ti ti-truck"></i> Restock</button>
+        <button class="btn b" onclick="quickSell('${s.id}')"><i class="ti ti-shopping-cart"></i> Sell</button>
+        <button class="btn r" onclick="delStock('${s.id}')"><i class="ti ti-trash"></i> Delete</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+function quickRestock(name){ openM('m-restock'); setTimeout(()=>document.getElementById('rs-item').value=name,80); }
+function quickSell(id){ goPage('sales'); setTimeout(()=>{ openM('m-sale'); setTimeout(()=>pickSale(id),120); },80); }
+
+/* ════════════════════════════════════════
+   EXPENSES
+   ════════════════════════════════════════ */
+async function saveExp(){
+  const desc=document.getElementById('e-desc').value.trim();
+  const cat=document.getElementById('e-cat').value;
+  const amt=parseFloat(document.getElementById('e-amt').value)||0;
+  const pay=document.getElementById('e-pay').value;
+  const note=document.getElementById('e-note').value.trim();
+  if(!desc) return toast('Description is required');
+  if(!amt) return toast('Amount is required');
+  try{
+    await dIns('expenses',{id:uid(),desc,cat,amount:amt,payment:pay,note,created_at:new Date().toISOString()});
+    ['e-desc','e-amt','e-note'].forEach(id=>document.getElementById(id).value='');
+    closeM('m-exp'); toast('Expense saved ☁️');
+    if(curPage==='expenses') renderExp(expFilter_);
+    if(curPage==='dashboard') refreshDash();
+  }catch(e){ toast('❌ Failed to save'); }
+}
+async function delExp(id){
+  if(!confirm('Delete this expense?')) return;
+  try{ await dDel('expenses',id); toast('Deleted'); renderExp(expFilter_); if(curPage==='dashboard') refreshDash(); }
+  catch(e){ toast('❌ Delete failed'); }
+}
+function expFilter(p,el){ expFilter_=p; document.querySelectorAll('#exp-tabs .ft').forEach(b=>b.classList.remove('active')); el.classList.add('active'); renderExp(p); }
+function renderExp(p){
+  const f=byPeriod(cache.expenses,p);
+  const tot=f.reduce((a,e)=>a+e.amount,0);
+  document.getElementById('exp-total').textContent=`Total: ${fmt(tot)} | ${f.length} expense${f.length!==1?'s':''}`;
+  const icons={rent:'ti-building',transport:'ti-car',wages:'ti-users',electricity:'ti-bolt',packaging:'ti-package',restock:'ti-truck',maintenance:'ti-tool',other:'ti-minus-circle'};
+  const el=document.getElementById('exp-list');
+  el.innerHTML=f.length===0?`<div class="empty"><i class="ti ti-receipt-off"></i><p>No expenses</p></div>`:f.map(e=>`<div class="rc">
+    <div class="ri r"><i class="ti ${icons[e.cat]||'ti-minus-circle'}"></i></div>
+    <div class="rb">
+      <div class="rtitle">${esc(e.desc)}</div>
+      <div class="rmeta">${e.cat.charAt(0).toUpperCase()+e.cat.slice(1)} · ${e.payment.toUpperCase()}${e.note?' · '+esc(e.note):''}</div>
+      <div class="ract"><button class="btn r" onclick="delExp('${e.id}')"><i class="ti ti-trash"></i> Delete</button></div>
+    </div>
+    <div class="rright"><div class="ramt r">${fmt(e.amount)}</div><div class="rtime">${fD(e.created_at)}</div></div>
+  </div>`).join('');
+}
+
+/* ════════════════════════════════════════
+   CREDIT
+   ════════════════════════════════════════ */
+async function addCreditRow(name,phone,item,total,paid,due,note){
+  await dIns('credits',{id:uid(),name,phone,item,total,paid,balance:total-paid,due:due||null,note,payments:[],created_at:new Date().toISOString()});
+}
+async function saveCredit(){
+  const name=document.getElementById('cr-name').value.trim();
+  const phone=document.getElementById('cr-phone').value.trim();
+  const item=document.getElementById('cr-item').value.trim();
+  const total=parseFloat(document.getElementById('cr-total').value)||0;
+  const paid=parseFloat(document.getElementById('cr-paid').value)||0;
+  const due=document.getElementById('cr-due').value;
+  const note=document.getElementById('cr-note').value.trim();
+  if(!name) return toast('Customer name is required');
+  if(!total) return toast('Amount owed is required');
+  try{
+    await addCreditRow(name,phone,item,total,paid,due,note);
+    ['cr-name','cr-phone','cr-item','cr-total','cr-paid','cr-due','cr-note'].forEach(id=>document.getElementById(id).value='');
+    closeM('m-credit'); toast('Credit saved ☁️');
+    if(curPage==='credit') renderCredit('');
+    if(curPage==='dashboard') refreshDash();
+  }catch(e){ toast('❌ Failed to save'); }
+}
+function openCrPay(id){
+  const cr=cache.credits.find(c=>c.id===id); if(!cr) return;
+  crPayTarget=id;
+  document.getElementById('cr-pay-info').textContent=`${cr.name} owes ${fmt(cr.balance)}`;
+  document.getElementById('cr-pay-amt').value='';
+  openM('m-cr-pay');
+}
+async function saveCrPay(){
+  const amt=parseFloat(document.getElementById('cr-pay-amt').value)||0;
+  const mth=document.getElementById('cr-pay-mth').value;
+  if(!amt) return toast('Enter amount paid');
+  const cr=cache.credits.find(c=>c.id===crPayTarget); if(!cr) return;
+  const newPaid=(cr.paid||0)+amt, newBal=Math.max(0,cr.total-newPaid);
+  const payments=[...(cr.payments||[]),{amount:amt,method:mth,date:new Date().toISOString()}];
+  try{
+    await dUpd('credits',crPayTarget,{paid:newPaid,balance:newBal,payments});
+    closeM('m-cr-pay'); toast(`Payment of ${fmt(amt)} saved ☁️`);
+    renderCredit(''); if(curPage==='dashboard') refreshDash(); checkNotif();
+  }catch(e){ toast('❌ Failed to save'); }
+}
+async function delCredit(id){
+  if(!confirm('Delete this credit record?')) return;
+  try{ await dDel('credits',id); toast('Deleted'); renderCredit(''); if(curPage==='dashboard') refreshDash(); }
+  catch(e){ toast('❌ Delete failed'); }
+}
+function renderCredit(q=''){
+  const f=cache.credits.filter(c=>!q||c.name.toLowerCase().includes(q.toLowerCase())||(c.phone||'').includes(q));
+  const tot=f.reduce((a,c)=>a+(c.balance||0),0);
+  document.getElementById('cr-total').textContent=`Outstanding: ${fmt(tot)}`;
+  const el=document.getElementById('cr-list');
+  el.innerHTML=f.length===0?`<div class="empty"><i class="ti ti-user-off"></i><p>No credit records</p></div>`:f.map(c=>{
+    const pct=c.total>0?Math.min(100,Math.round(((c.paid||0)/c.total)*100)):0;
+    const done=(c.balance||0)<=0;
+    return `<div class="cr-card">
+      <div class="cr-top">
+        <div class="cr-av">${c.name.charAt(0).toUpperCase()}</div>
+        <div style="flex:1;min-width:0"><div class="cr-name">${esc(c.name)}</div><div class="cr-phone">${esc(c.phone)||'No phone'}${c.item?' · '+esc(c.item):''}</div></div>
+        <div style="text-align:right;flex-shrink:0"><div class="cr-bal${done?' paid':''}">${done?'✓ Paid':fmt(c.balance)}</div><div style="font-size:11px;color:var(--t3)">of ${fmt(c.total)}</div></div>
+      </div>
+      <div class="pbar-bg"><div class="pbar-fill" style="width:${pct}%"></div></div>
+      <div class="cr-amts"><span>${pct}% paid</span><span>${c.due?'Due: '+fD(c.due):''}</span></div>
+      <div class="ract" style="margin-top:8px">
+        ${!done?`<button class="btn g" onclick="openCrPay('${c.id}')"><i class="ti ti-cash"></i> Pay</button>${c.phone?`<button class="btn" onclick="window.open('tel:${c.phone}')"><i class="ti ti-phone"></i></button><button class="btn b" onclick="waRemind('${c.phone}','${esc(c.name)}','${fmt(c.balance)}')"><i class="ti ti-brand-whatsapp"></i></button>`:''}`:''}
+        <button class="btn r" onclick="delCredit('${c.id}')"><i class="ti ti-trash"></i></button>
+      </div>
+    </div>`;
+  }).join('');
+}
+function waRemind(phone,name,bal){
+  const msg=`Hello ${name}, reminder: you have an outstanding balance of *${bal}* at IHSAN Footwears. Kindly pay soon. Thank you! 🙏`;
+  window.open(`https://wa.me/${phone.replace(/\D/g,'')}?text=${encodeURIComponent(msg)}`,'_blank');
+}
+
+/* ════════════════════════════════════════
+   CUSTOMERS
+   ════════════════════════════════════════ */
+async function autoCust(name,phone='',addr='',note=''){
+  if(cache.customers.some(c=>c.name.toLowerCase()===name.toLowerCase())) return;
+  await dIns('customers',{id:uid(),name,phone,address:addr,note,created_at:new Date().toISOString()});
+}
+async function saveCust(){
+  const name=document.getElementById('cu-name').value.trim();
+  const phone=document.getElementById('cu-phone').value.trim();
+  const addr=document.getElementById('cu-addr').value.trim();
+  const note=document.getElementById('cu-note').value.trim();
+  if(!name) return toast('Name is required');
+  try{
+    await autoCust(name,phone,addr,note);
+    ['cu-name','cu-phone','cu-addr','cu-note'].forEach(id=>document.getElementById(id).value='');
+    closeM('m-cust'); toast('Customer saved ☁️');
+    if(curPage==='customers') renderCust('');
+  }catch(e){ toast('❌ Failed to save'); }
+}
+async function delCust(id){
+  if(!confirm('Delete this customer?')) return;
+  try{ await dDel('customers',id); toast('Deleted'); renderCust(''); }
+  catch(e){ toast('❌ Delete failed'); }
+}
+function renderCust(q=''){
+  const f=cache.customers.filter(c=>!q||c.name.toLowerCase().includes(q.toLowerCase())||(c.phone||'').includes(q));
+  const el=document.getElementById('cust-list');
+  el.innerHTML=f.length===0?`<div class="empty"><i class="ti ti-user-off"></i><p>No customers yet</p></div>`:f.map(c=>{
+    const sales=cache.sales.filter(s=>s.customer&&s.customer.toLowerCase()===c.name.toLowerCase());
+    const spent=sales.reduce((a,s)=>a+s.total,0);
+    return `<div class="ct-card">
+      <div class="ct-av">${c.name.charAt(0).toUpperCase()}</div>
+      <div class="ct-body"><div class="ct-name">${esc(c.name)}</div><div class="ct-meta">${esc(c.phone)||'No phone'} · ${sales.length} purchase${sales.length!==1?'s':''} · ${fmt(spent)}</div>${c.note?`<div class="ct-meta">${esc(c.note)}</div>`:''}</div>
+      <div class="ct-acts">${c.phone?`<button class="ct-btn" onclick="window.open('tel:${c.phone}')"><i class="ti ti-phone"></i></button>`:''}<button class="ct-btn" style="color:var(--rm)" onclick="delCust('${c.id}')"><i class="ti ti-trash"></i></button></div>
+    </div>`;
+  }).join('');
+}
+
+/* ════════════════════════════════════════
+   SUPPLIERS
+   ════════════════════════════════════════ */
+async function saveSupp(){
+  const name=document.getElementById('su-name').value.trim();
+  const phone=document.getElementById('su-phone').value.trim();
+  const items=document.getElementById('su-items').value.trim();
+  const loc=document.getElementById('su-loc').value.trim();
+  const note=document.getElementById('su-note').value.trim();
+  if(!name) return toast('Name is required');
+  try{
+    await dIns('suppliers',{id:uid(),name,phone,items,location:loc,note,created_at:new Date().toISOString()});
+    ['su-name','su-phone','su-items','su-loc','su-note'].forEach(id=>document.getElementById(id).value='');
+    closeM('m-supp'); toast('Supplier saved ☁️');
+    if(curPage==='suppliers') renderSupp('');
+  }catch(e){ toast('❌ Failed to save'); }
+}
+async function delSupp(id){
+  if(!confirm('Delete this supplier?')) return;
+  try{ await dDel('suppliers',id); toast('Deleted'); renderSupp(''); }
+  catch(e){ toast('❌ Delete failed'); }
+}
+function renderSupp(q=''){
+  const f=cache.suppliers.filter(s=>!q||s.name.toLowerCase().includes(q.toLowerCase()));
+  const el=document.getElementById('supp-list');
+  el.innerHTML=f.length===0?`<div class="empty"><i class="ti ti-building-store"></i><p>No suppliers yet</p></div>`:f.map(s=>`<div class="ct-card">
+    <div class="ct-av" style="background:var(--bl);color:var(--bm)">${s.name.charAt(0).toUpperCase()}</div>
+    <div class="ct-body"><div class="ct-name">${esc(s.name)}</div><div class="ct-meta">${esc(s.phone)||'No phone'}${s.location?' · '+esc(s.location):''}</div>${s.items?`<div class="ct-meta">${esc(s.items)}</div>`:''}</div>
+    <div class="ct-acts">${s.phone?`<button class="ct-btn" onclick="window.open('tel:${s.phone}')"><i class="ti ti-phone"></i></button>`:''}<button class="ct-btn" style="color:var(--rm)" onclick="delSupp('${s.id}')"><i class="ti ti-trash"></i></button></div>
+  </div>`).join('');
+}
+
+/* ════════════════════════════════════════
+   DASHBOARD
+   ════════════════════════════════════════ */
+function refreshDash(){
+  const {sales,expenses,stock,credits}=cache;
+  const tS=sales.filter(s=>isToday(s.created_at));
+  const tE=expenses.filter(e=>isToday(e.created_at));
+  const cashR=tS.filter(s=>s.payment==='cash').reduce((a,s)=>a+s.total,0);
+  const trR=tS.filter(s=>s.payment==='transfer').reduce((a,s)=>a+s.total,0);
+  const pR=tS.filter(s=>s.payment==='part').reduce((a,s)=>a+(s.part_paid||0),0);
+  const tSaleAmt=cashR+trR+pR;
+  const tExpAmt=tE.reduce((a,e)=>a+e.amount,0);
+  const tCredOut=credits.reduce((a,c)=>a+(c.balance||0),0);
+  const rev=tS.reduce((a,s)=>a+s.total,0);
+  const cogs=tS.reduce((a,s)=>a+(s.total_cost||0),0);
+  const gross=rev-cogs, net=gross-tExpAmt;
+  const credToday=tS.filter(s=>s.payment==='credit').reduce((a,s)=>a+s.total,0)+tS.filter(s=>s.payment==='part').reduce((a,s)=>a+(s.total-(s.part_paid||0)),0);
+  const set=(id,v)=>{ const e=document.getElementById(id); if(e) e.textContent=v; };
+  set('ds-sales',fmt(tSaleAmt)); set('ds-exp',fmt(tExpAmt)); set('ds-stock',stock.length); set('ds-credit',fmt(tCredOut));
+  set('sm-rev',fmt(rev)); set('sm-cogs',fmt(cogs)); set('sm-gross',fmt(gross)); set('sm-exp',fmt(tExpAmt));
+  set('sm-net',fmt(net)); set('sm-cash',fmt(cashR+pR)); set('sm-transfer',fmt(trR)); set('sm-cred',fmt(credToday));
+  const netEl=document.getElementById('sm-net'); if(netEl) netEl.className=net>=0?'gt':'rt';
+  document.getElementById('dash-sales').innerHTML=tS.length===0?`<div class="empty"><i class="ti ti-receipt-off"></i><p>No sales yet today</p></div>`:tS.slice(0,5).map(s=>saleCard(s,false)).join('');
+  const low=settings.lowStock||5;
+  const lowS=stock.filter(s=>(s.qty||0)<=low);
+  document.getElementById('dash-low').innerHTML=lowS.length===0?`<div class="empty"><i class="ti ti-package-off"></i><p>All stock levels are fine ✓</p></div>`:lowS.map(s=>`<div class="rc">
+    ${s.image?`<img src="${s.image}" class="thumb"/>`:`<div class="ri a"><i class="ti ti-alert-triangle"></i></div>`}
+    <div class="rb"><div class="rtitle">${esc(s.name)}</div><div class="rmeta">${[s.colour,s.size?'Sz '+s.size:'',s.brand].filter(Boolean).join(' · ')}</div></div>
+    <div class="rright"><div class="ramt a">${s.qty||0} left</div><div class="rtime">Low Stock</div></div>
+  </div>`).join('');
+}
+
+/* ════════════════════════════════════════
+   REPORTS
+   ════════════════════════════════════════ */
+function genReport(){
+  const from=document.getElementById('rpt-from').value, to=document.getElementById('rpt-to').value;
+  if(!from||!to) return toast('Select both dates');
+  const fD_=new Date(from); fD_.setHours(0,0,0,0);
+  const tD_=new Date(to); tD_.setHours(23,59,59,999);
+  const inR=iso=>{ const d=new Date(iso); return d>=fD_&&d<=tD_; };
+  const fS=cache.sales.filter(s=>inR(s.created_at));
+  const fE=cache.expenses.filter(e=>inR(e.created_at));
+  const rev=fS.reduce((a,s)=>a+s.total,0), cogs=fS.reduce((a,s)=>a+(s.total_cost||0),0);
+  const gross=rev-cogs, totExp=fE.reduce((a,e)=>a+e.amount,0), net=gross-totExp;
+  const cashS=fS.filter(s=>s.payment==='cash').reduce((a,s)=>a+s.total,0);
+  const trS=fS.filter(s=>s.payment==='transfer').reduce((a,s)=>a+s.total,0);
+  const crS=fS.filter(s=>s.payment==='credit').reduce((a,s)=>a+s.total,0);
+  const byCat={}; fE.forEach(e=>{ byCat[e.cat]=(byCat[e.cat]||0)+e.amount; });
+  const best={}; fS.forEach(s=>{ best[s.item]=(best[s.item]||0)+s.qty; });
+  const top=Object.entries(best).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  rptData={from,to,fS,fE,rev,cogs,gross,totExp,net};
+  document.getElementById('rpt-out').innerHTML=`
+    <div class="rpt-sec"><div class="rpt-sec-t">📅 ${fD(from)} — ${fD(to)}</div>
+      <div class="rpt-row"><span>Transactions</span><span>${fS.length} sales</span></div>
+      <div class="rpt-row"><span>Revenue</span><span class="rpt-total">${fmt(rev)}</span></div>
+      <div class="rpt-row"><span>COGS</span><span style="color:var(--rm)">${fmt(cogs)}</span></div>
+      <div class="rpt-row"><span>Gross Profit</span><span style="color:var(--gt)">${fmt(gross)}</span></div>
+      <div class="rpt-row"><span>Expenses</span><span style="color:var(--rm)">${fmt(totExp)}</span></div>
+      <div class="rpt-row" style="border-top:2px solid var(--br);padding-top:10px"><span><strong>Net Profit</strong></span><span class="rpt-total" style="color:${net>=0?'var(--gt)':'var(--rm)'}">${fmt(net)}</span></div>
+    </div>
+    <div class="rpt-sec"><div class="rpt-sec-t">💳 Payments</div>
+      <div class="rpt-row"><span>Cash</span><span>${fmt(cashS)}</span></div>
+      <div class="rpt-row"><span>Transfer</span><span>${fmt(trS)}</span></div>
+      <div class="rpt-row"><span>Credit</span><span style="color:var(--ad)">${fmt(crS)}</span></div>
+    </div>
+    ${top.length?`<div class="rpt-sec"><div class="rpt-sec-t">🏆 Best Sellers</div>${top.map((t,i)=>`<div class="rpt-row"><span>${i+1}. ${esc(t[0])}</span><span>${t[1]} units</span></div>`).join('')}</div>`:''}
+    ${Object.keys(byCat).length?`<div class="rpt-sec"><div class="rpt-sec-t">💸 Expenses by Category</div>${Object.entries(byCat).map(([k,v])=>`<div class="rpt-row"><span>${k.charAt(0).toUpperCase()+k.slice(1)}</span><span>${fmt(v)}</span></div>`).join('')}</div>`:''}`;
+  document.getElementById('rpt-export').style.display='flex';
+}
+function exportRpt(type){
+  if(!rptData) return;
+  const {from,to,fS,fE,rev,cogs,gross,totExp,net}=rptData;
+  if(type==='csv'){
+    let csv=`IHSAN Report ${from} to ${to}\n\nSALES\nDate,Item,Qty,Total,Payment,Customer\n`;
+    fS.forEach(s=>{csv+=`${fD(s.created_at)},"${s.item}",${s.qty},${s.total},${s.payment},"${s.customer||''}"\n`;});
+    csv+=`\nEXPENSES\nDate,Description,Category,Amount\n`;
+    fE.forEach(e=>{csv+=`${fD(e.created_at)},"${e.desc}",${e.cat},${e.amount}\n`;});
+    csv+=`\nSUMMARY\nRevenue,${rev}\nCOGS,${cogs}\nGross Profit,${gross}\nExpenses,${totExp}\nNet Profit,${net}\n`;
+    const blob=new Blob([csv],{type:'text/csv'}); const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob); a.download=`IHSAN_Report_${from}_${to}.csv`; a.click();
+    toast('CSV downloaded ✓');
+  }else{
+    const win=window.open('','_blank');
+    win.document.write(`<!DOCTYPE html><html><head><title>IHSAN Report</title><style>body{font-family:Arial;padding:24px;max-width:600px;margin:0 auto}.rpt-sec{background:#f9f9f9;border:1px solid #ddd;border-radius:8px;padding:16px;margin-bottom:16px}.rpt-sec-t{font-weight:700;font-size:12px;text-transform:uppercase;color:#555;margin-bottom:12px}.rpt-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #eee;font-size:14px}.rpt-total{font-weight:700;font-size:16px}h1{text-align:center;color:#1a3c1a}p{text-align:center;color:#666}</style></head><body><h1>IHSAN Footwears & General Enterprises</h1><p>${from} to ${to}</p>${document.getElementById('rpt-out').innerHTML}<p style="margin-top:32px;font-size:11px;color:#aaa;text-align:center">Generated by IHSAN App · YaseerTech</p></body></html>`);
+    win.document.close(); win.print();
+  }
+}
+
+/* ════════════════════════════════════════
+   SETTINGS
+   ════════════════════════════════════════ */
+function loadSetUI(){
+  document.getElementById('set-biz').value=settings.bizName||'IHSAN Footwears & General Enterprises';
+  document.getElementById('set-owner').value=settings.owner||'';
+  document.getElementById('set-phone').value=settings.phone||'';
+  document.getElementById('set-addr').value=settings.address||'';
+  document.getElementById('set-low').value=settings.lowStock||5;
+}
+function saveSettings(){
+  settings.bizName=document.getElementById('set-biz').value.trim();
+  settings.owner=document.getElementById('set-owner').value.trim();
+  settings.phone=document.getElementById('set-phone').value.trim();
+  settings.address=document.getElementById('set-addr').value.trim();
+  settings.lowStock=parseInt(document.getElementById('set-low').value)||5;
+  setSettings(settings); setGreet(); toast('Settings saved ✓');
+}
+async function clearAll(){
+  if(!confirm('⚠️ This will permanently delete ALL data — footwear AND poultry. Cannot be undone. Continue?')) return;
+  const pin=prompt('Enter PIN to confirm:');
+  if(pin!==currentPIN) return toast('Wrong PIN — not cleared');
+  try{
+    setSync('syncing','Clearing all data…');
+    const tabs=['sales','expenses','stock','restocks','credits','customers','suppliers'];
+    const ptabs=['flocks','eggs','feed','health','psales','pexpenses'];
+    await Promise.all([
+      ...tabs.map(t=>sb.from('ihsan_'+t).delete().neq('id','00000000-0000-0000-0000-000000000000')),
+      ...ptabs.map(t=>sb.from('ihsan_p_'+t).delete().neq('id','00000000-0000-0000-0000-000000000000'))
+    ]);
+    cache={sales:[],expenses:[],stock:[],credits:[],customers:[],suppliers:[]};
+    pcache={flocks:[],eggs:[],feed:[],health:[],psales:[],pexpenses:[]};
+    tabs.forEach(t=>localStorage.removeItem('ihsan_c_'+t));
+    ptabs.forEach(t=>localStorage.removeItem('ihsan_pc_'+t));
+    toast('All data cleared'); refreshDash(); setSync('ok','Connected to cloud ☁️');
+  }catch(e){ toast('❌ Clear failed'); }
+}
+
+/* ════════════════════════════════════════
+   NOTIFICATIONS
+   ════════════════════════════════════════ */
+function checkNotif(){
+  const notifs=[]; const low=settings.lowStock||5;
+  cache.credits.forEach(c=>{
+    if((c.balance||0)>0&&c.due){
+      const diff=Math.ceil((new Date(c.due)-new Date())/86400000);
+      if(diff>=0&&diff<=2) notifs.push({col:'a',icon:'ti-clock-dollar',text:`${c.name} owes ${fmt(c.balance)} — due ${diff===0?'TODAY':`in ${diff}d`}`,time:'Credit due soon'});
+      if(diff<0) notifs.push({col:'r',icon:'ti-alert-triangle',text:`${c.name} credit ${fmt(c.balance)} OVERDUE by ${Math.abs(diff)}d`,time:'Overdue'});
+    }
+  });
+  cache.stock.filter(s=>(s.qty||0)<=low).forEach(s=>notifs.push({col:'a',icon:'ti-packages',text:`${s.name} low — ${s.qty||0} left`,time:'Low stock'}));
+  const badge=document.getElementById('nbadge');
+  if(notifs.length){ badge.style.display='block'; badge.textContent=notifs.length>9?'9+':notifs.length; } else badge.style.display='none';
+  window._notifs=notifs;
+}
+function showNotif(){
+  const n=window._notifs||[];
+  document.getElementById('notif-list').innerHTML=n.length===0?`<div class="empty" style="margin:16px"><i class="ti ti-bell-off"></i><p>No notifications</p></div>`:n.map(x=>`<div class="notif-item">
+    <div class="ni-icon" style="background:${x.col==='r'?'var(--rl)':'var(--al)'};color:${x.col==='r'?'var(--rm)':'var(--am)'}"><i class="ti ${x.icon}"></i></div>
+    <div><div class="ni-text">${x.text}</div><div class="ni-time">${x.time}</div></div>
+  </div>`).join('');
+  document.getElementById('notif-panel').classList.remove('hidden');
+}
+function hideNotif(){ document.getElementById('notif-panel').classList.add('hidden'); }
+
+/* ════════════════════════════════════════
+   TOAST
+   ════════════════════════════════════════ */
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.remove('hidden');
+  clearTimeout(window._tt);
+  window._tt=setTimeout(()=>t.classList.add('hidden'),3000);
+}
+
+/* ════════════════════════════════════════
+   POULTRY — DATA LAYER
+   ════════════════════════════════════════ */
+let pLoaded=false;
+
+async function loadPoultry(){
+  const tabs=['flocks','eggs','feed','health','psales','pexpenses'];
+  const res=await Promise.all(tabs.map(t=>sb.from('ihsan_p_'+t).select('*').order('created_at',{ascending:false})));
+  tabs.forEach((t,i)=>{
+    if(!res[i].error){ pcache[t]=res[i].data||[]; localStorage.setItem('ihsan_pc_'+t,JSON.stringify(pcache[t])); }
+  });
+}
+function loadPCache(){
+  ['flocks','eggs','feed','health','psales','pexpenses'].forEach(t=>{
+    try{ pcache[t]=JSON.parse(localStorage.getItem('ihsan_pc_'+t))||[]; }catch{ pcache[t]=[]; }
+  });
+}
+async function pIns(table,row){
+  setSync('syncing','Saving…');
+  const {data,error}=await sb.from('ihsan_p_'+table).insert([row]).select().single();
+  if(error){ setSync('err','Save failed'); throw error; }
+  pcache[table]=[data,...pcache[table]];
+  localStorage.setItem('ihsan_pc_'+table,JSON.stringify(pcache[table]));
+  setSync('ok','Saved ✓');
+  return data;
+}
+async function pUpd(table,id,upd){
+  setSync('syncing','Updating…');
+  const {error}=await sb.from('ihsan_p_'+table).update(upd).eq('id',id);
+  if(error){ setSync('err','Update failed'); throw error; }
+  pcache[table]=pcache[table].map(r=>r.id===id?{...r,...upd}:r);
+  localStorage.setItem('ihsan_pc_'+table,JSON.stringify(pcache[table]));
+  setSync('ok','Saved ✓');
+}
+async function pDel(table,id){
+  setSync('syncing','Deleting…');
+  const {error}=await sb.from('ihsan_p_'+table).delete().eq('id',id);
+  if(error){ setSync('err','Delete failed'); throw error; }
+  pcache[table]=pcache[table].filter(r=>r.id!==id);
+  localStorage.setItem('ihsan_pc_'+table,JSON.stringify(pcache[table]));
+  setSync('ok','Deleted ✓');
+}
+
+async function navPoultry(){
+  if(!pLoaded){
+    pLoaded=true;
+    setSync('syncing','Loading poultry data…');
+    try{ await loadPoultry(); setSync('ok','Connected to cloud ☁️'); }
+    catch(e){ loadPCache(); setSync('err','Offline — cached data'); }
+  }
+  refreshPStats();
+  renderFlocks();
+}
+
+function pTab(tab,el){
+  curPTab=tab;
+  document.querySelectorAll('.ptab').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.ptab-content').forEach(c=>c.classList.remove('active'));
+  document.getElementById('ptab-'+tab).classList.add('active');
+  if(tab==='flocks') renderFlocks();
+  else if(tab==='eggs') renderEggs();
+  else if(tab==='feed') renderFeed();
+  else if(tab==='health') renderHealth();
+  else if(tab==='psales') renderPSales();
+  else if(tab==='pexp') renderPExp();
+}
+
+function fillFlockDropdowns(){
+  const opts='<option value="">-- Select flock --</option>'+pcache.flocks.map(f=>`<option value="${f.id}">${esc(f.name)} (${f.current_count??f.count??0} birds)</option>`).join('');
+  ['mo-flock','eg-flock','fd-flock','hl-flock','ps-flock','pe-flock'].forEach(id=>{
+    const e=document.getElementById(id); if(e) e.innerHTML=opts;
+  });
+}
+
+function refreshPStats(){
+  const totalBirds=pcache.flocks.reduce((a,f)=>a+(f.current_count??f.count??0),0);
+  const todayEggs=pcache.eggs.filter(e=>isToday(e.created_at)).reduce((a,e)=>a+(e.count||0),0);
+  const todayRev=pcache.psales.filter(s=>isToday(s.created_at)).reduce((a,s)=>a+(s.total||0),0);
+  const todayMort=pcache.flocks.reduce((a,f)=>{
+    const tm=(f.mortality_log||[]).filter(m=>isToday(m.date));
+    return a+tm.reduce((b,m)=>b+(m.count||0),0);
+  },0);
+  const set=(id,v)=>{ const e=document.getElementById(id); if(e) e.textContent=v; };
+  set('ps-birds',totalBirds); set('ps-eggs',todayEggs); set('ps-rev',fmt(todayRev)); set('ps-mort',todayMort);
+}
+
+/* ── FLOCKS ── */
+async function saveFlock(){
+  const name=document.getElementById('fl-name').value.trim();
+  const type=document.getElementById('fl-type').value;
+  const count=parseInt(document.getElementById('fl-count').value)||0;
+  const age=document.getElementById('fl-age').value.trim();
+  const date=document.getElementById('fl-date').value;
+  const cost=parseFloat(document.getElementById('fl-cost').value)||0;
+  const supp=document.getElementById('fl-supp').value.trim();
+  const pen=document.getElementById('fl-pen').value.trim();
+  const note=document.getElementById('fl-note').value.trim();
+  if(!name) return toast('Flock name is required');
+  if(!count) return toast('Number of birds is required');
+  try{
+    await pIns('flocks',{id:uid(),name,type,count,current_count:count,age,purchase_date:date||null,cost,supplier:supp,pen,note,mortality_log:[],created_at:new Date().toISOString()});
+    ['fl-name','fl-age','fl-cost','fl-supp','fl-pen','fl-note'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('fl-count').value=''; document.getElementById('fl-date').value='';
+    closeM('m-flock'); toast('Flock added ☁️');
+    refreshPStats(); renderFlocks();
+  }catch(e){ toast('❌ Failed to save'); }
+}
+function renderFlocks(){
+  const el=document.getElementById('flock-list');
+  if(!pcache.flocks.length){ el.innerHTML=`<div class="empty"><i class="ti ti-feather"></i><p>No flocks yet. Tap "Add Flock" to begin.</p></div>`; return; }
+  const tLabel={broiler:'Broiler',layer:'Layer',cockerel:'Cockerel',noiler:'Noiler',turkey:'Turkey',duck:'Duck',other:'Other'};
+  el.innerHTML=pcache.flocks.map(f=>{
+    const cur=f.current_count??f.count??0, orig=f.count||0, dead=orig-cur;
+    const mRate=orig>0?Math.round((dead/orig)*100):0;
+    const tFeed=pcache.feed.filter(x=>x.flock_id===f.id).reduce((a,x)=>a+(x.qty||0),0);
+    const tEggs=pcache.eggs.filter(x=>x.flock_id===f.id).reduce((a,x)=>a+(x.count||0),0);
+    const tSales=pcache.psales.filter(x=>x.flock_id===f.id).reduce((a,x)=>a+(x.total||0),0);
+    return `<div class="flock-card">
+      <div class="flock-top">
+        <div class="flock-icon"><i class="ti ti-feather"></i></div>
+        <div style="flex:1;min-width:0">
+          <div class="flock-name">${esc(f.name)}</div>
+          <div class="flock-meta">${tLabel[f.type]||f.type} · ${esc(f.pen)||'No pen'}${f.age?' · '+esc(f.age):''}</div>
+          ${mRate>0?`<span class="mort-badge">⚠️ ${mRate}% mortality (${dead} dead)</span>`:''}
+        </div>
+        <div style="text-align:right;flex-shrink:0"><div class="flock-count">${cur}</div><div class="flock-count-lbl">alive</div></div>
+      </div>
+      <div class="flock-grid">
+        <div class="fg-item"><div class="fg-num">${orig}</div><div class="fg-lbl">Started</div></div>
+        ${f.type==='layer'?`<div class="fg-item"><div class="fg-num">${tEggs}</div><div class="fg-lbl">Total Eggs</div></div>`:`<div class="fg-item"><div class="fg-num">${tFeed.toFixed(0)}kg</div><div class="fg-lbl">Feed Used</div></div>`}
+        <div class="fg-item"><div class="fg-num">${fmt(tSales)}</div><div class="fg-lbl">Revenue</div></div>
+      </div>
+      ${f.purchase_date?`<div style="font-size:12px;color:var(--t3);margin-bottom:8px">📅 ${fD(f.purchase_date)} · Cost: ${fmt(f.cost||0)}</div>`:''}
+      <div class="ract">
+        <button class="btn g" onclick="qEgg('${f.id}')"><i class="ti ti-egg"></i> Eggs</button>
+        <button class="btn" style="background:var(--bwl);color:var(--bwm);border-color:var(--bwl)" onclick="qFeed('${f.id}')"><i class="ti ti-package"></i> Feed</button>
+        <button class="btn b" onclick="qSellFlock('${f.id}')"><i class="ti ti-cash"></i> Sell</button>
+        <button class="btn r" onclick="delFlock('${f.id}')"><i class="ti ti-trash"></i></button>
+      </div>
+    </div>`;
+  }).join('');
+}
+function qEgg(id){ pTab('eggs',document.querySelectorAll('.ptab')[1]); setTimeout(()=>{ openM('m-egg'); document.getElementById('eg-flock').value=id; },80); }
+function qFeed(id){ pTab('feed',document.querySelectorAll('.ptab')[2]); setTimeout(()=>{ openM('m-feed'); document.getElementById('fd-flock').value=id; },80); }
+function qSellFlock(id){ pTab('psales',document.querySelectorAll('.ptab')[4]); setTimeout(()=>{ openM('m-psale'); document.getElementById('ps-flock').value=id; },80); }
+async function delFlock(id){
+  if(!confirm('Delete this flock and all its records?')) return;
+  try{ await pDel('flocks',id); toast('Flock deleted'); refreshPStats(); renderFlocks(); }
+  catch(e){ toast('❌ Delete failed'); }
+}
+
+/* ── MORTALITY ── */
+async function saveMort(){
+  const flockId=document.getElementById('mo-flock').value;
+  const count=parseInt(document.getElementById('mo-count').value)||0;
+  const cause=document.getElementById('mo-cause').value;
+  const note=document.getElementById('mo-note').value.trim();
+  if(!flockId) return toast('Select a flock');
+  if(!count) return toast('Enter number of deaths');
+  const flock=pcache.flocks.find(f=>f.id===flockId); if(!flock) return;
+  const newCount=Math.max(0,(flock.current_count??flock.count??0)-count);
+  const log=[...(flock.mortality_log||[]),{count,cause,note,date:new Date().toISOString()}];
+  try{
+    await pUpd('flocks',flockId,{current_count:newCount,mortality_log:log});
+    document.getElementById('mo-count').value='1'; document.getElementById('mo-note').value='';
+    closeM('m-mort'); toast(`${count} mortality recorded ☁️`);
+    refreshPStats(); renderFlocks();
+  }catch(e){ toast('❌ Failed to save'); }
+}
+
+/* ── EGGS ── */
+async function saveEgg(){
+  const flockId=document.getElementById('eg-flock').value;
+  const count=parseInt(document.getElementById('eg-count').value)||0;
+  const bad=parseInt(document.getElementById('eg-bad').value)||0;
+  const time=document.getElementById('eg-time').value;
+  const note=document.getElementById('eg-note').value.trim();
+  if(!flockId) return toast('Select a flock');
+  if(!count) return toast('Enter number of eggs');
+  const flock=pcache.flocks.find(f=>f.id===flockId);
+  try{
+    await pIns('eggs',{id:uid(),flock_id:flockId,flock_name:flock?.name||'',count,bad_eggs:bad,good_eggs:count-bad,collection_time:time,note,created_at:new Date().toISOString()});
+    ['eg-count','eg-note'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('eg-bad').value='0';
+    closeM('m-egg'); toast('Egg record saved ☁️');
+    refreshPStats(); renderEggs();
+  }catch(e){ toast('❌ Failed to save'); }
+}
+function renderEggs(){
+  const tot=pcache.eggs.filter(e=>isToday(e.created_at)).reduce((a,e)=>a+(e.count||0),0);
+  const good=pcache.eggs.filter(e=>isToday(e.created_at)).reduce((a,e)=>a+(e.good_eggs??e.count??0),0);
+  document.getElementById('egg-sum').textContent=`Today: ${tot} eggs · ${good} good · ${tot-good} cracked`;
+  const el=document.getElementById('egg-list');
+  if(!pcache.eggs.length){ el.innerHTML=`<div class="empty"><i class="ti ti-egg"></i><p>No egg records yet</p></div>`; return; }
+  el.innerHTML=pcache.eggs.map(e=>`<div class="p-rec">
+    <div class="p-rec-icon egg"><i class="ti ti-egg"></i></div>
+    <div style="flex:1;min-width:0"><div class="rtitle">${esc(e.flock_name)||'Unknown'}</div><div class="rmeta">${(e.collection_time||'').toUpperCase()} · Good: ${e.good_eggs??e.count} · Cracked: ${e.bad_eggs||0}${e.note?' · '+esc(e.note):''}</div></div>
+    <div class="rright"><div class="ramt a" style="font-size:20px">${e.count}</div><div class="rtime">${fD(e.created_at)}</div><button class="btn r" style="margin-top:4px;font-size:11px" onclick="delPRecord('eggs','${e.id}',renderEggs)"><i class="ti ti-trash"></i></button></div>
+  </div>`).join('');
+}
+
+/* ── FEED ── */
+async function saveFeed(){
+  const flockId=document.getElementById('fd-flock').value;
+  const type=document.getElementById('fd-type').value;
+  const qty=parseFloat(document.getElementById('fd-qty').value)||0;
+  const cost=parseFloat(document.getElementById('fd-cost').value)||0;
+  const supp=document.getElementById('fd-supp').value.trim();
+  const note=document.getElementById('fd-note').value.trim();
+  if(!flockId) return toast('Select a flock');
+  if(!qty) return toast('Enter feed quantity');
+  const flock=pcache.flocks.find(f=>f.id===flockId);
+  try{
+    await pIns('feed',{id:uid(),flock_id:flockId,flock_name:flock?.name||'',type,qty,cost,supplier:supp,note,created_at:new Date().toISOString()});
+    ['fd-qty','fd-cost','fd-supp','fd-note'].forEach(id=>document.getElementById(id).value='');
+    closeM('m-feed'); toast('Feed record saved ☁️');
+    renderFeed();
+  }catch(e){ toast('❌ Failed to save'); }
+}
+function renderFeed(){
+  const kg=pcache.feed.reduce((a,f)=>a+(f.qty||0),0), cost=pcache.feed.reduce((a,f)=>a+(f.cost||0),0);
+  document.getElementById('feed-sum').textContent=`Total: ${kg.toFixed(1)}kg used · ${fmt(cost)}`;
+  const el=document.getElementById('feed-list');
+  if(!pcache.feed.length){ el.innerHTML=`<div class="empty"><i class="ti ti-package"></i><p>No feed records yet</p></div>`; return; }
+  const tLabel={starter:'Starter',grower:'Grower',finisher:'Finisher',layer_mash:'Layer Mash',concentrate:'Concentrate',corn:'Corn/Maize',other:'Other'};
+  el.innerHTML=pcache.feed.map(f=>`<div class="p-rec">
+    <div class="p-rec-icon feed"><i class="ti ti-package"></i></div>
+    <div style="flex:1;min-width:0"><div class="rtitle">${esc(f.flock_name)||'Unknown'}</div><div class="rmeta">${tLabel[f.type]||f.type} · ${f.qty}kg${f.supplier?' · '+esc(f.supplier):''}</div></div>
+    <div class="rright"><div class="ramt" style="color:var(--bwm)">${fmt(f.cost)}</div><div class="rtime">${fD(f.created_at)}</div><button class="btn r" style="margin-top:4px;font-size:11px" onclick="delPRecord('feed','${f.id}',renderFeed)"><i class="ti ti-trash"></i></button></div>
+  </div>`).join('');
+}
+
+/* ── HEALTH ── */
+async function saveHealth(){
+  const flockId=document.getElementById('hl-flock').value;
+  const type=document.getElementById('hl-type').value;
+  const desc=document.getElementById('hl-desc').value.trim();
+  const birds=parseInt(document.getElementById('hl-birds').value)||0;
+  const cost=parseFloat(document.getElementById('hl-cost').value)||0;
+  const status=document.getElementById('hl-status').value;
+  const vet=document.getElementById('hl-vet').value.trim();
+  const note=document.getElementById('hl-note').value.trim();
+  if(!flockId) return toast('Select a flock');
+  if(!desc) return toast('Description is required');
+  const flock=pcache.flocks.find(f=>f.id===flockId);
+  try{
+    await pIns('health',{id:uid(),flock_id:flockId,flock_name:flock?.name||'',type,description:desc,birds_affected:birds,cost,status,vet,note,created_at:new Date().toISOString()});
+    ['hl-desc','hl-birds','hl-cost','hl-vet','hl-note'].forEach(id=>document.getElementById(id).value='');
+    closeM('m-health'); toast('Health record saved ☁️');
+    renderHealth();
+  }catch(e){ toast('❌ Failed to save'); }
+}
+function renderHealth(){
+  const el=document.getElementById('health-list');
+  if(!pcache.health.length){ el.innerHTML=`<div class="empty"><i class="ti ti-heart-rate-monitor"></i><p>No health records yet</p></div>`; return; }
+  const tLabel={vaccination:'Vaccination',medication:'Medication',deworming:'Deworming',vitamin:'Vitamins',disease:'Disease',inspection:'Vet Inspection',other:'Other'};
+  const sColor={treated:'treated',recovering:'watch',good:'good',watch:'watch',sick:'sick'};
+  el.innerHTML=pcache.health.map(h=>`<div class="p-rec">
+    <div class="p-rec-icon health"><i class="ti ti-heart-rate-monitor"></i></div>
+    <div style="flex:1;min-width:0">
+      <div class="rtitle">${esc(h.flock_name)||'Unknown'} — ${tLabel[h.type]||h.type}</div>
+      <div class="rmeta">${esc(h.description)}${h.birds_affected?' · '+h.birds_affected+' birds':''}</div>
+      <div style="margin-top:4px;display:flex;gap:6px;align-items:center;flex-wrap:wrap"><span class="hbadge ${sColor[h.status]||'good'}">${(h.status||'').toUpperCase()}</span>${h.vet?`<span style="font-size:11px;color:var(--t3)">Vet: ${esc(h.vet)}</span>`:''}</div>
+    </div>
+    <div class="rright"><div class="ramt r">${fmt(h.cost)}</div><div class="rtime">${fD(h.created_at)}</div><button class="btn r" style="margin-top:4px;font-size:11px" onclick="delPRecord('health','${h.id}',renderHealth)"><i class="ti ti-trash"></i></button></div>
+  </div>`).join('');
+}
+
+/* ── POULTRY SALES ── */
+function psPreview(){
+  const q=parseFloat(document.getElementById('ps-qty').value)||0, p=parseFloat(document.getElementById('ps-price').value)||0;
+  const el=document.getElementById('ps-prev');
+  if(!p||!q){ el.style.display='none'; return; }
+  el.textContent=`Total: ${fmt(q*p)}`; el.style.display='block';
+}
+async function savePSale(){
+  const flockId=document.getElementById('ps-flock').value;
+  const type=document.getElementById('ps-type').value;
+  const qty=parseFloat(document.getElementById('ps-qty').value)||0;
+  const price=parseFloat(document.getElementById('ps-price').value)||0;
+  const pay=document.getElementById('ps-pay').value;
+  const buyer=document.getElementById('ps-buyer').value.trim();
+  const phone=document.getElementById('ps-phone').value.trim();
+  const note=document.getElementById('ps-note').value.trim();
+  if(!flockId) return toast('Select a flock');
+  if(!qty||!price) return toast('Quantity and price are required');
+  const total=qty*price;
+  const flock=pcache.flocks.find(f=>f.id===flockId);
+  try{
+    await pIns('psales',{id:uid(),flock_id:flockId,flock_name:flock?.name||'',type,qty,price,total,payment:pay,buyer,phone,note,created_at:new Date().toISOString()});
+    if(type==='bird'||type==='dressed'){
+      const newCount=Math.max(0,(flock?.current_count??flock?.count??0)-qty);
+      await pUpd('flocks',flockId,{current_count:newCount});
+    }
+    ['ps-qty','ps-price','ps-buyer','ps-phone','ps-note'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('ps-prev').style.display='none';
+    closeM('m-psale'); toast('Sale saved ☁️');
+    refreshPStats(); renderPSales();
+  }catch(e){ toast('❌ Failed to save'); }
+}
+function renderPSales(){
+  const tot=pcache.psales.reduce((a,s)=>a+(s.total||0),0);
+  document.getElementById('psale-sum').textContent=`Total: ${fmt(tot)} · ${pcache.psales.length} record${pcache.psales.length!==1?'s':''}`;
+  const el=document.getElementById('psale-list');
+  if(!pcache.psales.length){ el.innerHTML=`<div class="empty"><i class="ti ti-cash"></i><p>No poultry sales yet</p></div>`; return; }
+  const tLabel={bird:'Live Birds',egg:'Eggs (crates)',egg_piece:'Eggs (pieces)',dressed:'Dressed Bird',manure:'Manure',other:'Other'};
+  el.innerHTML=pcache.psales.map(s=>`<div class="p-rec">
+    <div class="p-rec-icon sale"><i class="ti ti-cash"></i></div>
+    <div style="flex:1;min-width:0"><div class="rtitle">${esc(s.flock_name)||'Poultry'} — ${tLabel[s.type]||s.type}</div><div class="rmeta">Qty: ${s.qty} · ${(s.payment||'').toUpperCase()}${s.buyer?' · '+esc(s.buyer):''}</div></div>
+    <div class="rright"><div class="ramt g">${fmt(s.total)}</div><div class="rtime">${fD(s.created_at)}</div><button class="btn r" style="margin-top:4px;font-size:11px" onclick="delPRecord('psales','${s.id}',renderPSales)"><i class="ti ti-trash"></i></button></div>
+  </div>`).join('');
+}
+
+/* ── POULTRY EXPENSES ── */
+async function savePExp(){
+  const desc=document.getElementById('pe-desc').value.trim();
+  const cat=document.getElementById('pe-cat').value;
+  const amt=parseFloat(document.getElementById('pe-amt').value)||0;
+  const flockId=document.getElementById('pe-flock').value;
+  const note=document.getElementById('pe-note').value.trim();
+  const flock=pcache.flocks.find(f=>f.id===flockId);
+  if(!desc) return toast('Description is required');
+  if(!amt) return toast('Amount is required');
+  try{
+    await pIns('pexpenses',{id:uid(),description:desc,cat,amount:amt,flock_id:flockId||null,flock_name:flock?.name||'General',note,created_at:new Date().toISOString()});
+    ['pe-desc','pe-amt','pe-note'].forEach(id=>document.getElementById(id).value='');
+    closeM('m-pexp'); toast('Expense saved ☁️');
+    renderPExp();
+  }catch(e){ toast('❌ Failed to save'); }
+}
+function renderPExp(){
+  const tot=pcache.pexpenses.reduce((a,e)=>a+(e.amount||0),0);
+  document.getElementById('pexp-sum').textContent=`Total: ${fmt(tot)} · ${pcache.pexpenses.length} record${pcache.pexpenses.length!==1?'s':''}`;
+  const el=document.getElementById('pexp-list');
+  if(!pcache.pexpenses.length){ el.innerHTML=`<div class="empty"><i class="ti ti-minus-circle"></i><p>No expense records yet</p></div>`; return; }
+  const icons={feed:'ti-package',medication:'ti-pill',equipment:'ti-tools',labour:'ti-users',housing:'ti-home',transport:'ti-car',other:'ti-minus-circle'};
+  el.innerHTML=pcache.pexpenses.map(e=>`<div class="p-rec">
+    <div class="p-rec-icon exp"><i class="ti ${icons[e.cat]||'ti-minus-circle'}"></i></div>
+    <div style="flex:1;min-width:0"><div class="rtitle">${esc(e.description)}</div><div class="rmeta">${e.cat.charAt(0).toUpperCase()+e.cat.slice(1)} · ${esc(e.flock_name)||'General'}${e.note?' · '+esc(e.note):''}</div></div>
+    <div class="rright"><div class="ramt r">${fmt(e.amount)}</div><div class="rtime">${fD(e.created_at)}</div><button class="btn r" style="margin-top:4px;font-size:11px" onclick="delPRecord('pexpenses','${e.id}',renderPExp)"><i class="ti ti-trash"></i></button></div>
+  </div>`).join('');
+}
+
+async function delPRecord(table,id,rerenderFn){
+  if(!confirm('Delete this record?')) return;
+  try{ await pDel(table,id); toast('Deleted'); rerenderFn(); refreshPStats(); }
+  catch(e){ toast('❌ Delete failed'); }
+}
+
+/* ── SERVICE WORKER (force-refresh on every load) ── */
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.getRegistrations().then(regs=>regs.forEach(r=>r.unregister()));
+}
+</script>
 </body>
 </html>
