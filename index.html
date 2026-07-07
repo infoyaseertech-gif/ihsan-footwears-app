@@ -352,7 +352,7 @@ html,body{height:100%;overflow:hidden;font-family:'Inter',sans-serif;font-size:1
 </div>
 
 <!-- SETUP -->
-<div id="scr-setup" class="hidden">
+<div id="scr-setup" class="hidden" style="display:none!important">
   <div class="setup-box">
     <div class="setup-logo"><i class="ti ti-shoe"></i></div>
     <div class="setup-title">Connect to Cloud</div>
@@ -604,7 +604,7 @@ html,body{height:100%;overflow:hidden;font-family:'Inter',sans-serif;font-size:1
       <div class="set-grp">
         <div class="set-lbl">Manage</div>
         <button class="set-btn" onclick="saveSettings()"><i class="ti ti-check"></i> Save Settings</button>
-        <button class="set-btn warn" onclick="resetCloud()"><i class="ti ti-refresh"></i> Change Cloud Credentials</button>
+        
         <button class="set-btn danger" onclick="clearAll()"><i class="ti ti-trash"></i> Clear All Data</button>
       </div>
       <div class="app-ver">IHSAN Business App v3 · Built by YaseerTech</div>
@@ -1018,52 +1018,22 @@ let pcache={flocks:[],eggs:[],feed:[],health:[],psales:[],pexpenses:[]};
 /* ════════════════════════════════════════
    CONFIG / BOOT
    ════════════════════════════════════════ */
-function getCfg(){ return {url:localStorage.getItem('ihsan_sb_url')||'', key:localStorage.getItem('ihsan_sb_key')||''}; }
+const SB_URL='https://pelkootzjmcppuljgbqs.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBlbGtvb3R6am1jcHB1bGpnYnFzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4MDY3NDEsImV4cCI6MjA5NTM4Mjc0MX0.rjuqM25Tx0pQNm-vZ9VdxkePimuUqYapU9bwmUhx2fw';
 
 window.addEventListener('load', async ()=>{
-  const cfg=getCfg();
-  if(!cfg.url||!cfg.key){
-    document.getElementById('scr-loading').classList.add('hidden');
-    document.getElementById('scr-setup').classList.remove('hidden');
-    return;
-  }
+  document.getElementById('scr-setup').classList.add('hidden');
   try{
-    sb=window.supabase.createClient(cfg.url,cfg.key);
+    sb=window.supabase.createClient(SB_URL,SB_KEY);
     await boot();
   }catch(e){
-    document.getElementById('scr-loading').classList.add('hidden');
-    document.getElementById('scr-setup').classList.remove('hidden');
+    console.error('Supabase error:',e);
+    await boot();
   }
 });
 
-async function saveConfig(){
-  const url=document.getElementById('su-url').value.trim();
-  const key=document.getElementById('su-key').value.trim();
-  const err=document.getElementById('su-err');
-  err.textContent='';
-  if(!url||!key) return err.textContent='Both fields are required';
-  if(!url.startsWith('https://')) return err.textContent='URL must start with https://';
-  err.textContent='Connecting…';
-  try{
-    sb=window.supabase.createClient(url,key);
-    const {error}=await sb.from('ihsan_settings').select('id').limit(1);
-    if(error && error.code!=='PGRST116' && !error.message.includes('does not exist')) throw error;
-    localStorage.setItem('ihsan_sb_url',url);
-    localStorage.setItem('ihsan_sb_key',key);
-    document.getElementById('scr-setup').classList.add('hidden');
-    document.getElementById('scr-loading').classList.remove('hidden');
-    await boot();
-  }catch(e){
-    err.textContent='Connection failed — check your URL and key';
-  }
-}
-
-function resetCloud(){
-  if(!confirm('Disconnect cloud storage? You will need to re-enter credentials.')) return;
-  localStorage.removeItem('ihsan_sb_url');
-  localStorage.removeItem('ihsan_sb_key');
-  location.reload();
-}
+function saveConfig(){ boot(); }
+function resetCloud(){ location.reload(); }
 
 async function boot(){
   setSync('syncing','Loading data…');
