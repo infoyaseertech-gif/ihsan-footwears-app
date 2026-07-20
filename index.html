@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-title" content="IHSAN"/>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" crossorigin="anonymous"></script>
 <style>
 :root{
   --gd:#1a3c1a;--gm:#2d5a2d;--g:#3b7a3b;--gl:#e8f5e8;--gt:#1f5c1f;
@@ -257,11 +257,13 @@ html,body{height:100%;overflow:hidden;font-family:'Inter',sans-serif;font-size:1
 .ni-icon{width:36px;height:36px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px}
 .ni-text{font-size:13px;color:var(--t1);line-height:1.5}.ni-time{font-size:11px;color:var(--t3);margin-top:2px}
 .toast{position:fixed;bottom:calc(var(--nh)+14px);left:50%;transform:translateX(-50%);background:#1a2e1a;color:#fff;padding:12px 22px;border-radius:50px;font-size:14px;font-weight:500;z-index:9000;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.2);animation:toastIn .25s ease}
+
+.ld-retry{margin-top:16px;padding:12px 28px;border-radius:50px;border:2px solid rgba(255,255,255,.5);background:rgba(255,255,255,.15);color:#fff;font-size:14px;font-weight:600;cursor:pointer;}
 </style>
 </head>
 <body>
 <!-- LOADING -->
-<div id="scr-loading"><div class="ld"><div class="ld-logo"><i class="ti ti-building-store"></i></div><div class="ld-title">IHSAN Business App</div><div class="ld-sub" id="ld-sub">Connecting to cloud...</div><div class="spinner"></div></div></div>
+<div id="scr-loading"><div class="ld"><div class="ld-logo"><i class="ti ti-building-store"></i></div><div class="ld-title">IHSAN Business App</div><div class="ld-sub" id="ld-sub">Connecting to cloud...</div><div class="spinner" id="ld-spin"></div><button class="ld-retry hidden" id="ld-retry" onclick="location.reload()">Tap to Retry</button></div></div>
 
 <!-- DOWNLOAD BAR -->
 <div id="dl-bar" class="hidden"><span>&#128241; Install this app on your phone for offline access</span><button class="dl-btn" onclick="downloadApp()"><i class="ti ti-download"></i> Download App</button><button class="dl-close" onclick="document.getElementById('dl-bar').classList.add('hidden')"><i class="ti ti-x"></i></button></div>
@@ -304,8 +306,34 @@ let P={flocks:[],eggs:[],feed:[],health:[],psales:[],pexpenses:[]};
 
 window.addEventListener('load',async()=>{
   showDLBar();
-  try{sb=window.supabase.createClient(SB_URL,SB_KEY);settings=getSett();currentPIN=settings.pin||'1234';setDate();document.getElementById('scr-loading').classList.add('hidden');document.getElementById('scr-select').classList.remove('hidden');monitorOnline();}
-  catch(e){document.getElementById('ld-sub').textContent='Error - please refresh';}
+  // Safety timeout - if stuck loading for 3s, show error with retry
+  const loadTO = setTimeout(()=>{
+    document.getElementById('ld-sub').textContent='Taking too long... tap to retry';
+    document.getElementById('ld-spin').style.display='none';
+    document.getElementById('ld-retry').classList.remove('hidden');
+  }, 5000);
+  try{
+    // Wait for supabase to be available
+    let attempts=0;
+    while(typeof window.supabase==='undefined' && attempts<20){
+      await new Promise(r=>setTimeout(r,200));
+      attempts++;
+    }
+    if(typeof window.supabase==='undefined') throw new Error('Supabase not loaded');
+    sb=window.supabase.createClient(SB_URL,SB_KEY);
+    settings=getSett();
+    currentPIN=settings.pin||'1234';
+    setDate();
+    clearTimeout(loadTO);
+    document.getElementById('scr-loading').classList.add('hidden');
+    document.getElementById('scr-select').classList.remove('hidden');
+    monitorOnline();
+  } catch(e){
+    clearTimeout(loadTO);
+    document.getElementById('ld-sub').textContent='Connection error';
+    document.getElementById('ld-spin').style.display='none';
+    document.getElementById('ld-retry').classList.remove('hidden');
+  }
 });
 
 function showDLBar(){const isS=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone;if(!isS&&!/android|iphone|ipad/i.test(navigator.userAgent))document.getElementById('dl-bar').classList.remove('hidden');}
