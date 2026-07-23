@@ -259,19 +259,20 @@ html,body{height:100%;font-family:system-ui,-apple-system,sans-serif;background:
 
 <!-- DOWNLOAD BAR -->
 
-<div id="install-bar" class="hidden" style="position:fixed;bottom:0;left:0;right:0;z-index:3000;background:linear-gradient(135deg,#1a3c1a,#2d5a2d);color:#fff;padding:14px 14px 22px;display:flex;align-items:center;gap:12px;box-shadow:0 -3px 20px rgba(0,0,0,.4)">
-  <div style="width:48px;height:48px;background:rgba(255,255,255,.15);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0">&#127978;</div>
+<div id="install-bar" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:3000;background:linear-gradient(135deg,#1a3c1a,#2d5a2d);color:#fff;padding:14px 14px 28px;display:flex;align-items:center;gap:12px;box-shadow:0 -3px 20px rgba(0,0,0,.4)">
+  <div style="width:50px;height:50px;background:rgba(255,255,255,.15);border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0">&#127978;</div>
   <div style="flex:1;min-width:0">
-    <div style="font-size:15px;font-weight:700;margin-bottom:2px">Install IHSAN App</div>
-    <div style="font-size:12px;opacity:.65">Add to home screen &middot; Real-time sync</div>
+    <div style="font-size:15px;font-weight:700;margin-bottom:3px">Install IHSAN App</div>
+    <div style="font-size:11px;opacity:.65;line-height:1.4">Add to home screen &bull; Works like a real app &bull; Always live data</div>
   </div>
-  <button onclick="triggerInstall()" style="padding:12px 18px;border-radius:12px;border:none;background:#fff;color:#1a3c1a;font-size:13px;font-weight:800;cursor:pointer;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.2)">Install &#10133;</button>
-  <button onclick="hideIB()" style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:16px;cursor:pointer;width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">&#10005;</button>
+  <button onclick="triggerInstall()" style="padding:13px 18px;border-radius:12px;border:none;background:#fff;color:#1a3c1a;font-size:13px;font-weight:800;cursor:pointer;white-space:nowrap">Install</button>
+  <button onclick="hideIB()" style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:18px;cursor:pointer;width:36px;height:36px;border-radius:8px;flex-shrink:0">&#10005;</button>
 </div>
-<div id="dlbar" class="hidden">
-  <span>&#128241; Add to home screen for best experience</span>
-  <button onclick="dlApp()">&#11015; Download</button>
-  <button class="dlx" onclick="this.parentElement.classList.add('hidden')">&#10005;</button>
+<div id="dlbar" style="display:none;position:fixed;top:0;left:0;right:0;z-index:2000;background:#1a3c1a;color:#fff;padding:10px 14px;align-items:center;gap:10px;font-size:13px">
+  <span style="font-size:16px">&#127978;</span>
+  <span style="flex:1;font-size:12px;font-weight:500">Install IHSAN as a desktop app</span>
+  <button onclick="dlApp()" style="padding:7px 14px;border-radius:8px;border:1.5px solid rgba(255,255,255,.5);background:rgba(255,255,255,.15);color:#fff;font-size:12px;font-weight:700;cursor:pointer">&#10133; Install</button>
+  <button onclick="this.parentElement.style.display='none'" style="background:none;border:none;color:rgba(255,255,255,.6);font-size:18px;cursor:pointer;padding:0 4px">&#10005;</button>
 </div>
 
 <!-- SELECTOR -->
@@ -406,12 +407,12 @@ function dlApp(){
   // Also try native install if available
   if(_dp){_dp.prompt();}
 }
-function chkDL(){const s=window.matchMedia('(display-mode:standalone)').matches||navigator.standalone;if(!s&&!/iphone|ipad|android/i.test(navigator.userAgent))document.getElementById('dlbar').classList.remove('hidden');}
+// chkDL removed
 function monOnline(){window.addEventListener('online',async()=>{document.getElementById('off-bar').classList.remove('on');setSy('sy','Reconnecting...');try{await loadAll();setSy('ok','Connected');rPage();}catch{setSy('er','Sync error');}});window.addEventListener('offline',()=>{document.getElementById('off-bar').classList.add('on');setSy('er','Offline');});}
 function gS(){return lg('sett',{pin:'1234',lowStock:5,bizName:'IHSAN Footwears & General Enterprises',owner:'',phone:'',address:''});}
 function svS(){ls('sett',S);}
 function setDate(){const el=document.getElementById('hdr-date');if(el)el.textContent=new Date().toLocaleDateString('en-NG',{weekday:'short',day:'numeric',month:'short',year:'numeric'});}
-document.addEventListener('DOMContentLoaded',()=>{chkDL();S=gS();PIN=S.pin||'1234';monOnline();});
+document.addEventListener('DOMContentLoaded',()=>{S=gS();PIN=S.pin||'1234';monOnline();registerSW();chkPWA();});
 function selBiz(b){biz=b;document.getElementById('scr-sel').classList.add('hidden');document.getElementById('scr-pin').classList.remove('hidden');const ip=b==='pt';document.getElementById('plogo').textContent=ip?'&#129413;':'&#128094;';document.getElementById('ptitle').textContent=ip?'Poultry Management':'IHSAN Footwears';document.getElementById('psub').textContent=ip?'Flock - Eggs - Feed - Health':'& General Enterprises';ePIN='';dots();}
 function goSel(){document.getElementById('app').classList.add('hidden');document.getElementById('scr-pin').classList.add('hidden');document.getElementById('scr-sel').classList.remove('hidden');ePIN='';if(nTmr){clearInterval(nTmr);nTmr=null;}}
 function pk(d){if(ePIN.length>=4)return;ePIN+=d+'';dots();if(ePIN.length===4)setTimeout(chkPin,130);}
@@ -698,8 +699,8 @@ async function delPR(t,id,cb){if(!confirm('Delete?'))return;try{await pD(t,id);t
 let _dp=null;
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();_dp=e;showIB();});
 window.addEventListener('appinstalled',()=>{hideIB();_dp=null;toast('App installed! Open from home screen.');});
-function showIB(){const b=document.getElementById('install-bar');if(b)b.classList.remove('hidden');}
-function hideIB(){const b=document.getElementById('install-bar');if(b)b.classList.add('hidden');}
+function showIB(){const b=document.getElementById('install-bar');if(b)b.style.display='flex';}
+function hideIB(){const b=document.getElementById('install-bar');if(b)b.style.display='none';}
 async function triggerInstall(){
   if(_dp){
     // Android Chrome - native install prompt
@@ -728,14 +729,24 @@ function hideIOSGuide(){
 }
 function chkPWA(){
   const isApp=window.matchMedia('(display-mode:standalone)').matches||navigator.standalone;
-  if(isApp){hideIB();document.getElementById('dlbar').classList.add('hidden');return;}
+  if(isApp){
+    // Already installed - hide both banners
+    hideIB();
+    const dl=document.getElementById('dlbar');
+    if(dl)dl.style.display='none';
+    return;
+  }
   const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
   const isAndroid=/android/i.test(navigator.userAgent);
   const isMobile=isIOS||isAndroid;
-  // Always show install bar on mobile (iOS and Android)
-  showIB();
-  // Also show desktop bar on desktop
-  if(!isMobile){document.getElementById('dlbar').classList.remove('hidden');}
+  if(isMobile){
+    // Mobile: show bottom install banner (always - don't wait for beforeinstallprompt)
+    showIB();
+  } else {
+    // Desktop: show top bar
+    const dl=document.getElementById('dlbar');
+    if(dl)dl.style.display='flex';
+  }
 }
 
 // ═══ SERVICE WORKER ═══
@@ -790,12 +801,8 @@ function goSel(){
   ePIN='';
 }
 
-document.addEventListener('DOMContentLoaded',()=>{
-  S=gS();PIN=S.pin||'1234';
-  monOnline();
-  registerSW();
-  chkPWA();
-});
+// boot handled above
+
 
 </script>
 
