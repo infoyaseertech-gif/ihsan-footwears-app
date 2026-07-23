@@ -566,7 +566,7 @@ function rDash(){const {sales,expenses,stock,credits}=C;const tS=sales.filter(s=
 function genRpt(){const from=document.getElementById('rpt-from').value,to=document.getElementById('rpt-to').value;if(!from||!to)return toast('Select both dates');const f0=new Date(from);f0.setHours(0,0,0,0);const t0=new Date(to);t0.setHours(23,59,59,999);const iR=iso=>{const d=new Date(iso);return d>=f0&&d<=t0;};const fS=C.sales.filter(s=>iR(s.created_at)),fE=C.expenses.filter(e=>iR(e.created_at));const rv=fS.reduce((a,s)=>a+s.total,0),cg=fS.reduce((a,s)=>a+(s.total_cost||0),0),gp=rv-cg,tE=fE.reduce((a,e)=>a+e.amount,0),np=gp-tE;const cS=fS.filter(s=>s.payment==='cash').reduce((a,s)=>a+s.total,0),trS=fS.filter(s=>s.payment==='transfer').reduce((a,s)=>a+s.total,0),crS=fS.filter(s=>s.payment==='credit').reduce((a,s)=>a+s.total,0);const bC={};fE.forEach(e=>{bC[e.cat]=(bC[e.cat]||0)+e.amount;});const best={};fS.forEach(s=>{best[s.item]=(best[s.item]||0)+s.qty;});const top=Object.entries(best).sort((a,b)=>b[1]-a[1]).slice(0,5);rptD={from,to,fS,fE,rv,cg,gp,tE,np};document.getElementById('rpt-out').innerHTML='<div class="rpt-sec"><div class="rpt-sec-t">'+fD2(from)+' to '+fD2(to)+'</div><div class="rpt-row"><span>Transactions</span><span>'+fS.length+'</span></div><div class="rpt-row"><span>Revenue</span><span class="rpt-tot">'+N(rv)+'</span></div><div class="rpt-row"><span>COGS</span><span style="color:var(--rm)">'+N(cg)+'</span></div><div class="rpt-row"><span>Gross Profit</span><span style="color:var(--gt)">'+N(gp)+'</span></div><div class="rpt-row"><span>Expenses</span><span style="color:var(--rm)">'+N(tE)+'</span></div><div class="rpt-row" style="border-top:2px solid var(--br);padding-top:9px"><span><b>Net Profit</b></span><span class="rpt-tot" style="color:'+(np>=0?'var(--gt)':'var(--rm)')+'">'+N(np)+'</span></div></div><div class="rpt-sec"><div class="rpt-sec-t">Payments</div><div class="rpt-row"><span>Cash</span><span>'+N(cS)+'</span></div><div class="rpt-row"><span>Transfer</span><span>'+N(trS)+'</span></div><div class="rpt-row"><span>Credit</span><span style="color:var(--ad)">'+N(crS)+'</span></div></div>'+(top.length?'<div class="rpt-sec"><div class="rpt-sec-t">Best Sellers</div>'+top.map((t,i)=>'<div class="rpt-row"><span>'+(i+1)+'. '+ex(t[0])+'</span><span>'+t[1]+' units</span></div>').join('')+'</div>':'')+(Object.keys(bC).length?'<div class="rpt-sec"><div class="rpt-sec-t">Expenses by Category</div>'+Object.entries(bC).map(([k,v])=>'<div class="rpt-row"><span>'+k+'</span><span>'+N(v)+'</span></div>').join('')+'</div>':'');document.getElementById('rpt-btns').style.display='flex';}
 function expRpt(t){if(!rptD)return;const {from,to,fS,fE,rv,cg,gp,tE,np}=rptD;if(t==='csv'){let c='IHSAN Report '+from+' to '+to+'\n\nSALES\nDate,Item,Qty,Total,Payment,Customer\n';fS.forEach(s=>{c+=fD2(s.created_at)+',"'+s.item+'",'+s.qty+','+s.total+','+s.payment+',"'+(s.customer||'')+'"\n';});c+='\nEXPENSES\nDate,Description,Category,Amount\n';fE.forEach(e=>{c+=fD2(e.created_at)+',"'+e.desc+'",'+e.cat+','+e.amount+'\n';});c+='\nSUMMARY\nRevenue,'+rv+'\nCOGS,'+cg+'\nGross,'+gp+'\nExpenses,'+tE+'\nNet,'+np+'\n';const b=new Blob([c],{type:'text/csv'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='IHSAN_'+from+'_'+to+'.csv';a.click();toast('CSV downloaded');}else{const w=window.open('','_blank');w.document.write('<!DOCTYPE html><html><head><title>IHSAN Report</title><style>body{font-family:Arial;padding:24px;max-width:580px;margin:0 auto}.rpt-sec{background:#f9f9f9;border:1px solid #ddd;border-radius:8px;padding:14px;margin-bottom:14px}.rpt-sec-t{font-weight:700;font-size:11px;text-transform:uppercase;color:#666;margin-bottom:10px}.rpt-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #eee;font-size:13px}.rpt-tot{font-weight:700;font-size:15px}h1{text-align:center;color:#1a3c1a;font-size:18px}</style></head><body><h1>IHSAN Footwears</h1><p style="text-align:center;font-size:13px;color:#666">'+from+' to '+to+'</p>'+document.getElementById('rpt-out').innerHTML+'
 <!-- iOS Install Guide -->
-<div id="ios-guide" class="hidden" style="position:fixed;inset:0;z-index:4000;background:rgba(0,0,0,.7);display:flex;align-items:flex-end;justify-content:center">
+<div id="ios-guide" style="display:none;position:fixed;inset:0;z-index:4000;background:rgba(0,0,0,.7);align-items:flex-end;justify-content:center">
   <div style="background:#fff;border-radius:22px 22px 0 0;padding:24px 20px 40px;width:100%;max-width:480px;animation:slideUp .3s ease">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
       <div style="font-size:17px;font-weight:700;color:#1a2e1a">Add to Home Screen</div>
@@ -702,30 +702,30 @@ window.addEventListener('appinstalled',()=>{hideIB();_dp=null;toast('App install
 function showIB(){const b=document.getElementById('install-bar');if(b)b.style.display='flex';}
 function hideIB(){const b=document.getElementById('install-bar');if(b)b.style.display='none';}
 async function triggerInstall(){
+  const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
   if(_dp){
-    // Android Chrome - native install prompt
-    _dp.prompt();
-    const{outcome}=await _dp.userChoice;
-    _dp=null;
-    if(outcome==='accepted')hideIB();
+    // Android Chrome native prompt available
+    try{
+      await _dp.prompt();
+      const res=await _dp.userChoice;
+      if(res.outcome==='accepted'){hideIB();toast('Installing IHSAN App...');}
+      _dp=null;
+    }catch(e){showIOSGuide();}
+  } else if(isIOS){
+    // iOS Safari - no beforeinstallprompt, show manual guide
+    showIOSGuide();
   } else {
-    const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
-    if(isIOS){
-      // iOS Safari - show step by step
-      showIOSGuide();
-    } else {
-      // Android already installed or using other browser
-      toast('Open this page in Chrome, then tap Add to Home Screen');
-    }
+    // Android Firefox or Samsung Browser - manual guide
+    showIOSGuide();
   }
 }
 function showIOSGuide(){
   const el=document.getElementById('ios-guide');
-  if(el)el.classList.remove('hidden');
+  if(el){el.style.display='flex';}
 }
 function hideIOSGuide(){
   const el=document.getElementById('ios-guide');
-  if(el)el.classList.add('hidden');
+  if(el){el.style.display='none';}
 }
 function chkPWA(){
   const isApp=window.matchMedia('(display-mode:standalone)').matches||navigator.standalone;
@@ -807,7 +807,7 @@ function goSel(){
 </script>
 
 <!-- iOS Install Guide -->
-<div id="ios-guide" class="hidden" style="position:fixed;inset:0;z-index:4000;background:rgba(0,0,0,.7);display:flex;align-items:flex-end;justify-content:center">
+<div id="ios-guide" style="display:none;position:fixed;inset:0;z-index:4000;background:rgba(0,0,0,.7);align-items:flex-end;justify-content:center">
   <div style="background:#fff;border-radius:22px 22px 0 0;padding:24px 20px 40px;width:100%;max-width:480px;animation:slideUp .3s ease">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
       <div style="font-size:17px;font-weight:700;color:#1a2e1a">Add to Home Screen</div>
