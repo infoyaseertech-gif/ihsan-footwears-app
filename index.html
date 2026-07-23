@@ -259,14 +259,14 @@ html,body{height:100%;font-family:system-ui,-apple-system,sans-serif;background:
 
 <!-- DOWNLOAD BAR -->
 
-<div id="install-bar" class="hidden" style="position:fixed;bottom:0;left:0;right:0;z-index:3000;background:linear-gradient(135deg,#1a3c1a,#2d5a2d);color:#fff;padding:14px;display:flex;align-items:center;gap:12px;box-shadow:0 -3px 16px rgba(0,0,0,.35)">
-  <span style="font-size:32px">&#127978;</span>
-  <div style="flex:1">
-    <div style="font-size:15px;font-weight:700">Install IHSAN App</div>
-    <div style="font-size:12px;opacity:.7;margin-top:2px">Real-time sync &middot; Always latest data</div>
+<div id="install-bar" class="hidden" style="position:fixed;bottom:0;left:0;right:0;z-index:3000;background:linear-gradient(135deg,#1a3c1a,#2d5a2d);color:#fff;padding:14px 14px 22px;display:flex;align-items:center;gap:12px;box-shadow:0 -3px 20px rgba(0,0,0,.4)">
+  <div style="width:48px;height:48px;background:rgba(255,255,255,.15);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0">&#127978;</div>
+  <div style="flex:1;min-width:0">
+    <div style="font-size:15px;font-weight:700;margin-bottom:2px">Install IHSAN App</div>
+    <div style="font-size:12px;opacity:.65">Add to home screen &middot; Real-time sync</div>
   </div>
-  <button onclick="triggerInstall()" style="padding:11px 18px;border-radius:10px;border:none;background:#fff;color:#1a3c1a;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap">&#11015; Install</button>
-  <button onclick="hideIB()" style="background:rgba(255,255,255,.15);border:none;color:#fff;font-size:18px;cursor:pointer;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">&#10005;</button>
+  <button onclick="triggerInstall()" style="padding:12px 18px;border-radius:12px;border:none;background:#fff;color:#1a3c1a;font-size:13px;font-weight:800;cursor:pointer;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.2)">Install &#10133;</button>
+  <button onclick="hideIB()" style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:16px;cursor:pointer;width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">&#10005;</button>
 </div>
 <div id="dlbar" class="hidden">
   <span>&#128241; Add to home screen for best experience</span>
@@ -399,7 +399,13 @@ function fillDL(){['dl-c','dl-c2'].forEach(id=>{const el=document.getElementById
 function fillFD(){const o='<option value="">-- Select flock --</option>'+P.flocks.map(f=>`<option value="${f.id}">${ex(f.name)} (${f.current_count??f.count??0} birds)</option>`).join('');['mo-fl','eg-fl','fd-fl','hl-fl','ps-fl','pe-fl'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=o;});}
 function showNotif(){const n=window._N||[];document.getElementById('notif-list').innerHTML=n.length?n.map(x=>`<div class="ni"><div class="ni-ico" style="background:${x.c==='r'?'var(--rl)':'var(--al)'}">!</div><div><div class="ni-text">${x.t}</div><div class="ni-sub">${x.s}</div></div></div>`).join(''):'<div class="empty" style="margin:14px"><span class="eico">&#128276;</span><p>No notifications</p></div>';document.getElementById('notif-ov').classList.remove('hidden');}
 function hideNotif(){document.getElementById('notif-ov').classList.add('hidden');}
-function dlApp(){const a=document.createElement('a');a.href=location.href;a.download='IHSAN-App.html';a.click();}
+function dlApp(){
+  // On desktop, guide to install as PWA or open in browser
+  const msg=document.getElementById('desktop-guide');
+  if(msg){msg.classList.remove('hidden');setTimeout(()=>msg.classList.add('hidden'),8000);}
+  // Also try native install if available
+  if(_dp){_dp.prompt();}
+}
 function chkDL(){const s=window.matchMedia('(display-mode:standalone)').matches||navigator.standalone;if(!s&&!/iphone|ipad|android/i.test(navigator.userAgent))document.getElementById('dlbar').classList.remove('hidden');}
 function monOnline(){window.addEventListener('online',async()=>{document.getElementById('off-bar').classList.remove('on');setSy('sy','Reconnecting...');try{await loadAll();setSy('ok','Connected');rPage();}catch{setSy('er','Sync error');}});window.addEventListener('offline',()=>{document.getElementById('off-bar').classList.add('on');setSy('er','Offline');});}
 function gS(){return lg('sett',{pin:'1234',lowStock:5,bizName:'IHSAN Footwears & General Enterprises',owner:'',phone:'',address:''});}
@@ -557,7 +563,43 @@ function rSupp(q){const f=C.suppliers.filter(s=>!q||s.name.toLowerCase().include
 function rDash(){const {sales,expenses,stock,credits}=C;const tS=sales.filter(s=>isT(s.created_at)),tE=expenses.filter(e=>isT(e.created_at));const cR=tS.filter(s=>s.payment==='cash').reduce((a,s)=>a+s.total,0),tR=tS.filter(s=>s.payment==='transfer').reduce((a,s)=>a+s.total,0),pR=tS.filter(s=>s.payment==='part').reduce((a,s)=>a+(s.part_paid||0),0);const tEA=tE.reduce((a,e)=>a+e.amount,0),tCO=credits.reduce((a,c)=>a+(c.balance||0),0),rv=tS.reduce((a,s)=>a+s.total,0),cg=tS.reduce((a,s)=>a+(s.total_cost||0),0),gp=rv-cg,np=gp-tEA,ct=tS.filter(s=>s.payment==='credit').reduce((a,s)=>a+s.total,0)+tS.filter(s=>s.payment==='part').reduce((a,s)=>a+(s.total-(s.part_paid||0)),0);const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};set('ds-s',N(cR+tR+pR));set('ds-e',N(tEA));set('ds-st',stock.length);set('ds-cr',N(tCO));set('sm-rv',N(rv));set('sm-cg',N(cg));set('sm-gp',N(gp));set('sm-ex',N(tEA));set('sm-np',N(np));set('sm-ca',N(cR+pR));set('sm-tr',N(tR));set('sm-ct',N(ct));const ne=document.getElementById('sm-np');if(ne)ne.className=np>=0?'gt':'rt';setGr();document.getElementById('dash-s').innerHTML=tS.length?tS.slice(0,5).map(s=>sCard(s,false)).join(''):'<div class="empty"><span class="eico">-</span><p>No sales today</p></div>';const low=S.lowStock||5,ls2=stock.filter(s=>(s.qty||0)<=low);document.getElementById('dash-l').innerHTML=ls2.length?ls2.map(s=>`<div class="rc">${s.image?`<img src="${s.image}" class="thumb"/>`:'<div class="ri a" style="font-size:16px">!</div>'}<div class="rb"><div class="rtitle">${ex(s.name)}</div><div class="rmeta">${[s.colour,s.size?'Sz '+s.size:''].filter(Boolean).join(' ')}</div></div><div class="rright"><div class="ramt a">${s.qty||0} left</div><div class="rtime">Low</div></div></div>`).join(''):'<div class="empty"><span class="eico">-</span><p>All stock levels fine</p></div>';}
 
 function genRpt(){const from=document.getElementById('rpt-from').value,to=document.getElementById('rpt-to').value;if(!from||!to)return toast('Select both dates');const f0=new Date(from);f0.setHours(0,0,0,0);const t0=new Date(to);t0.setHours(23,59,59,999);const iR=iso=>{const d=new Date(iso);return d>=f0&&d<=t0;};const fS=C.sales.filter(s=>iR(s.created_at)),fE=C.expenses.filter(e=>iR(e.created_at));const rv=fS.reduce((a,s)=>a+s.total,0),cg=fS.reduce((a,s)=>a+(s.total_cost||0),0),gp=rv-cg,tE=fE.reduce((a,e)=>a+e.amount,0),np=gp-tE;const cS=fS.filter(s=>s.payment==='cash').reduce((a,s)=>a+s.total,0),trS=fS.filter(s=>s.payment==='transfer').reduce((a,s)=>a+s.total,0),crS=fS.filter(s=>s.payment==='credit').reduce((a,s)=>a+s.total,0);const bC={};fE.forEach(e=>{bC[e.cat]=(bC[e.cat]||0)+e.amount;});const best={};fS.forEach(s=>{best[s.item]=(best[s.item]||0)+s.qty;});const top=Object.entries(best).sort((a,b)=>b[1]-a[1]).slice(0,5);rptD={from,to,fS,fE,rv,cg,gp,tE,np};document.getElementById('rpt-out').innerHTML='<div class="rpt-sec"><div class="rpt-sec-t">'+fD2(from)+' to '+fD2(to)+'</div><div class="rpt-row"><span>Transactions</span><span>'+fS.length+'</span></div><div class="rpt-row"><span>Revenue</span><span class="rpt-tot">'+N(rv)+'</span></div><div class="rpt-row"><span>COGS</span><span style="color:var(--rm)">'+N(cg)+'</span></div><div class="rpt-row"><span>Gross Profit</span><span style="color:var(--gt)">'+N(gp)+'</span></div><div class="rpt-row"><span>Expenses</span><span style="color:var(--rm)">'+N(tE)+'</span></div><div class="rpt-row" style="border-top:2px solid var(--br);padding-top:9px"><span><b>Net Profit</b></span><span class="rpt-tot" style="color:'+(np>=0?'var(--gt)':'var(--rm)')+'">'+N(np)+'</span></div></div><div class="rpt-sec"><div class="rpt-sec-t">Payments</div><div class="rpt-row"><span>Cash</span><span>'+N(cS)+'</span></div><div class="rpt-row"><span>Transfer</span><span>'+N(trS)+'</span></div><div class="rpt-row"><span>Credit</span><span style="color:var(--ad)">'+N(crS)+'</span></div></div>'+(top.length?'<div class="rpt-sec"><div class="rpt-sec-t">Best Sellers</div>'+top.map((t,i)=>'<div class="rpt-row"><span>'+(i+1)+'. '+ex(t[0])+'</span><span>'+t[1]+' units</span></div>').join('')+'</div>':'')+(Object.keys(bC).length?'<div class="rpt-sec"><div class="rpt-sec-t">Expenses by Category</div>'+Object.entries(bC).map(([k,v])=>'<div class="rpt-row"><span>'+k+'</span><span>'+N(v)+'</span></div>').join('')+'</div>':'');document.getElementById('rpt-btns').style.display='flex';}
-function expRpt(t){if(!rptD)return;const {from,to,fS,fE,rv,cg,gp,tE,np}=rptD;if(t==='csv'){let c='IHSAN Report '+from+' to '+to+'\n\nSALES\nDate,Item,Qty,Total,Payment,Customer\n';fS.forEach(s=>{c+=fD2(s.created_at)+',"'+s.item+'",'+s.qty+','+s.total+','+s.payment+',"'+(s.customer||'')+'"\n';});c+='\nEXPENSES\nDate,Description,Category,Amount\n';fE.forEach(e=>{c+=fD2(e.created_at)+',"'+e.desc+'",'+e.cat+','+e.amount+'\n';});c+='\nSUMMARY\nRevenue,'+rv+'\nCOGS,'+cg+'\nGross,'+gp+'\nExpenses,'+tE+'\nNet,'+np+'\n';const b=new Blob([c],{type:'text/csv'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='IHSAN_'+from+'_'+to+'.csv';a.click();toast('CSV downloaded');}else{const w=window.open('','_blank');w.document.write('<!DOCTYPE html><html><head><title>IHSAN Report</title><style>body{font-family:Arial;padding:24px;max-width:580px;margin:0 auto}.rpt-sec{background:#f9f9f9;border:1px solid #ddd;border-radius:8px;padding:14px;margin-bottom:14px}.rpt-sec-t{font-weight:700;font-size:11px;text-transform:uppercase;color:#666;margin-bottom:10px}.rpt-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #eee;font-size:13px}.rpt-tot{font-weight:700;font-size:15px}h1{text-align:center;color:#1a3c1a;font-size:18px}</style></head><body><h1>IHSAN Footwears</h1><p style="text-align:center;font-size:13px;color:#666">'+from+' to '+to+'</p>'+document.getElementById('rpt-out').innerHTML+'</body></html>');w.document.close();w.print();}}
+function expRpt(t){if(!rptD)return;const {from,to,fS,fE,rv,cg,gp,tE,np}=rptD;if(t==='csv'){let c='IHSAN Report '+from+' to '+to+'\n\nSALES\nDate,Item,Qty,Total,Payment,Customer\n';fS.forEach(s=>{c+=fD2(s.created_at)+',"'+s.item+'",'+s.qty+','+s.total+','+s.payment+',"'+(s.customer||'')+'"\n';});c+='\nEXPENSES\nDate,Description,Category,Amount\n';fE.forEach(e=>{c+=fD2(e.created_at)+',"'+e.desc+'",'+e.cat+','+e.amount+'\n';});c+='\nSUMMARY\nRevenue,'+rv+'\nCOGS,'+cg+'\nGross,'+gp+'\nExpenses,'+tE+'\nNet,'+np+'\n';const b=new Blob([c],{type:'text/csv'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='IHSAN_'+from+'_'+to+'.csv';a.click();toast('CSV downloaded');}else{const w=window.open('','_blank');w.document.write('<!DOCTYPE html><html><head><title>IHSAN Report</title><style>body{font-family:Arial;padding:24px;max-width:580px;margin:0 auto}.rpt-sec{background:#f9f9f9;border:1px solid #ddd;border-radius:8px;padding:14px;margin-bottom:14px}.rpt-sec-t{font-weight:700;font-size:11px;text-transform:uppercase;color:#666;margin-bottom:10px}.rpt-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #eee;font-size:13px}.rpt-tot{font-weight:700;font-size:15px}h1{text-align:center;color:#1a3c1a;font-size:18px}</style></head><body><h1>IHSAN Footwears</h1><p style="text-align:center;font-size:13px;color:#666">'+from+' to '+to+'</p>'+document.getElementById('rpt-out').innerHTML+'
+<!-- iOS Install Guide -->
+<div id="ios-guide" class="hidden" style="position:fixed;inset:0;z-index:4000;background:rgba(0,0,0,.7);display:flex;align-items:flex-end;justify-content:center">
+  <div style="background:#fff;border-radius:22px 22px 0 0;padding:24px 20px 40px;width:100%;max-width:480px;animation:slideUp .3s ease">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+      <div style="font-size:17px;font-weight:700;color:#1a2e1a">Add to Home Screen</div>
+      <button onclick="hideIOSGuide()" style="background:#f0f0f0;border:none;border-radius:50%;width:32px;height:32px;font-size:18px;cursor:pointer">&#10005;</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:center;gap:14px;padding:12px;background:#f4f6f4;border-radius:12px">
+        <span style="font-size:28px;flex-shrink:0">1&#65039;&#8364;</span>
+        <div style="font-size:14px;color:#333">Tap the <strong>Share</strong> button <span style="font-size:18px">&#11014;&#65039;</span> at the bottom of Safari</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:14px;padding:12px;background:#f4f6f4;border-radius:12px">
+        <span style="font-size:28px;flex-shrink:0">2&#65039;&#8364;</span>
+        <div style="font-size:14px;color:#333">Scroll down and tap <strong>"Add to Home Screen"</strong> &#10133;</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:14px;padding:12px;background:#f4f6f4;border-radius:12px">
+        <span style="font-size:28px;flex-shrink:0">3&#65039;&#8364;</span>
+        <div style="font-size:14px;color:#333">Tap <strong>"Add"</strong> in the top right corner</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:14px;padding:12px;background:#e8f5e8;border-radius:12px;border:1px solid #c8e6c8">
+        <span style="font-size:28px;flex-shrink:0">&#9989;</span>
+        <div style="font-size:14px;color:#1a3c1a">IHSAN App will appear on your home screen like a real app!</div>
+      </div>
+    </div>
+    <div style="height:10px;background:#ddd;border-radius:3px;width:60px;margin:20px auto 0"></div>
+  </div>
+</div>
+
+<!-- Desktop Install Guide -->
+<div id="desktop-guide" class="hidden" style="position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:4000;background:#1a3c1a;color:#fff;padding:16px 20px;border-radius:14px;max-width:340px;box-shadow:0 8px 24px rgba(0,0,0,.3);font-size:13px;line-height:1.6">
+  <div style="font-weight:700;font-size:15px;margin-bottom:8px">&#128187; Install on Desktop</div>
+  <div>Look for the <strong>install icon &#10133;</strong> in your browser address bar and click it to install IHSAN as a desktop app.</div>
+  <div style="margin-top:8px;opacity:.7">Or bookmark this page to access it quickly.</div>
+</div>
+</body></html>');w.document.close();w.print();}}
 async function clearAll(){if(!confirm('Delete ALL footwear data permanently?'))return;const p=prompt('Enter PIN:');if(p!==PIN)return toast('Wrong PIN');try{setSy('sy','Clearing...');await Promise.all(['sales','expenses','stock','restocks','credits','customers','suppliers'].map(t=>fetch(SBU+'/rest/v1/ihsan_'+t+'?id=neq.00000000-0000-0000-0000-000000000000',{method:'DELETE',headers:H})));C={sales:[],expenses:[],stock:[],credits:[],customers:[],suppliers:[]};['sales','expenses','stock','credits','customers','suppliers'].forEach(t=>ls('c_'+t,[]));toast('All data cleared');rDash();setSy('ok','Connected');}catch(ex){toast('Failed: '+ex.message);}}
 
 function buildPUI(){
@@ -659,20 +701,41 @@ window.addEventListener('appinstalled',()=>{hideIB();_dp=null;toast('App install
 function showIB(){const b=document.getElementById('install-bar');if(b)b.classList.remove('hidden');}
 function hideIB(){const b=document.getElementById('install-bar');if(b)b.classList.add('hidden');}
 async function triggerInstall(){
-  if(_dp){_dp.prompt();const{outcome}=await _dp.userChoice;_dp=null;hideIB();}
-  else if(/iphone|ipad/i.test(navigator.userAgent)){toast('Tap the Share icon then "Add to Home Screen"');}
-  else{toast('Click the install icon in your browser address bar');}
+  if(_dp){
+    // Android Chrome - native install prompt
+    _dp.prompt();
+    const{outcome}=await _dp.userChoice;
+    _dp=null;
+    if(outcome==='accepted')hideIB();
+  } else {
+    const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+    if(isIOS){
+      // iOS Safari - show step by step
+      showIOSGuide();
+    } else {
+      // Android already installed or using other browser
+      toast('Open this page in Chrome, then tap Add to Home Screen');
+    }
+  }
+}
+function showIOSGuide(){
+  const el=document.getElementById('ios-guide');
+  if(el)el.classList.remove('hidden');
+}
+function hideIOSGuide(){
+  const el=document.getElementById('ios-guide');
+  if(el)el.classList.add('hidden');
 }
 function chkPWA(){
   const isApp=window.matchMedia('(display-mode:standalone)').matches||navigator.standalone;
   if(isApp){hideIB();document.getElementById('dlbar').classList.add('hidden');return;}
-  // Desktop: show download bar
-  if(!/iphone|ipad|android/i.test(navigator.userAgent)){
-    document.getElementById('dlbar').classList.remove('hidden');
-  }
-  // Mobile Android: install bar shown via beforeinstallprompt event
-  // iOS: show install bar always (no beforeinstallprompt)
-  if(/iphone|ipad/i.test(navigator.userAgent)){showIB();}
+  const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isAndroid=/android/i.test(navigator.userAgent);
+  const isMobile=isIOS||isAndroid;
+  // Always show install bar on mobile (iOS and Android)
+  showIB();
+  // Also show desktop bar on desktop
+  if(!isMobile){document.getElementById('dlbar').classList.remove('hidden');}
 }
 
 // ═══ SERVICE WORKER ═══
@@ -735,5 +798,41 @@ document.addEventListener('DOMContentLoaded',()=>{
 });
 
 </script>
+
+<!-- iOS Install Guide -->
+<div id="ios-guide" class="hidden" style="position:fixed;inset:0;z-index:4000;background:rgba(0,0,0,.7);display:flex;align-items:flex-end;justify-content:center">
+  <div style="background:#fff;border-radius:22px 22px 0 0;padding:24px 20px 40px;width:100%;max-width:480px;animation:slideUp .3s ease">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+      <div style="font-size:17px;font-weight:700;color:#1a2e1a">Add to Home Screen</div>
+      <button onclick="hideIOSGuide()" style="background:#f0f0f0;border:none;border-radius:50%;width:32px;height:32px;font-size:18px;cursor:pointer">&#10005;</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:center;gap:14px;padding:12px;background:#f4f6f4;border-radius:12px">
+        <span style="font-size:28px;flex-shrink:0">1&#65039;&#8364;</span>
+        <div style="font-size:14px;color:#333">Tap the <strong>Share</strong> button <span style="font-size:18px">&#11014;&#65039;</span> at the bottom of Safari</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:14px;padding:12px;background:#f4f6f4;border-radius:12px">
+        <span style="font-size:28px;flex-shrink:0">2&#65039;&#8364;</span>
+        <div style="font-size:14px;color:#333">Scroll down and tap <strong>"Add to Home Screen"</strong> &#10133;</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:14px;padding:12px;background:#f4f6f4;border-radius:12px">
+        <span style="font-size:28px;flex-shrink:0">3&#65039;&#8364;</span>
+        <div style="font-size:14px;color:#333">Tap <strong>"Add"</strong> in the top right corner</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:14px;padding:12px;background:#e8f5e8;border-radius:12px;border:1px solid #c8e6c8">
+        <span style="font-size:28px;flex-shrink:0">&#9989;</span>
+        <div style="font-size:14px;color:#1a3c1a">IHSAN App will appear on your home screen like a real app!</div>
+      </div>
+    </div>
+    <div style="height:10px;background:#ddd;border-radius:3px;width:60px;margin:20px auto 0"></div>
+  </div>
+</div>
+
+<!-- Desktop Install Guide -->
+<div id="desktop-guide" class="hidden" style="position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:4000;background:#1a3c1a;color:#fff;padding:16px 20px;border-radius:14px;max-width:340px;box-shadow:0 8px 24px rgba(0,0,0,.3);font-size:13px;line-height:1.6">
+  <div style="font-weight:700;font-size:15px;margin-bottom:8px">&#128187; Install on Desktop</div>
+  <div>Look for the <strong>install icon &#10133;</strong> in your browser address bar and click it to install IHSAN as a desktop app.</div>
+  <div style="margin-top:8px;opacity:.7">Or bookmark this page to access it quickly.</div>
+</div>
 </body>
 </html>
