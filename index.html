@@ -388,18 +388,23 @@ function svS(){lsS('sett',S);}
 function setDate(){const el=document.getElementById('hdr-date');if(el)el.textContent=new Date().toLocaleDateString('en-NG',{weekday:'short',day:'numeric',month:'short',year:'numeric'});}
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();_pwa=e;showInstBar();});
 window.addEventListener('appinstalled',()=>{hideInstBar();toast('IHSAN App installed successfully!');});
-function showInstBar(){const isInst=window.matchMedia('(display-mode:standalone)').matches||navigator.standalone;if(isInst)return;const b=document.getElementById('inst-bar');if(b)b.style.display='flex';}
+function showInstBar(){const isInst=window.matchMedia('(display-mode:standalone)').matches||navigator.standalone;if(isInst){const b=document.getElementById('inst-bar');if(b)b.style.display='none';return;}const b=document.getElementById('inst-bar');if(b)b.style.display='flex';}
 function hideInstBar(){const b=document.getElementById('inst-bar');if(b)b.style.display='none';}
 async function doInstall(){const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);if(_pwa){try{await _pwa.prompt();const r=await _pwa.userChoice;_pwa=null;if(r.outcome==='accepted'){hideInstBar();toast('Installing...');}}catch(e){toast('Try: menu > Add to Home Screen');}}else if(isIOS){hideInstBar();const m=document.getElementById('ios-modal');if(m)m.style.display='flex';}else{toast('Open in Chrome browser for install option');}}
 document.addEventListener('DOMContentLoaded',()=>{
   S=gS();PIN=S.pin||'1234';
   monOnline();
-  // Show install bar on iOS automatically (no beforeinstallprompt on iOS)
-  const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
-  const isInst=window.matchMedia('(display-mode:standalone)').matches||navigator.standalone;
-  if(isIOS&&!isInst)showInstBar();
 });
-function selBiz(b){biz=b;document.getElementById('scr-sel').classList.add('hidden');document.getElementById('scr-pin').classList.remove('hidden');const ip=b==='pt';document.getElementById('plogo').textContent=ip?'&#129413;':'&#128094;';document.getElementById('ptitle').textContent=ip?'Poultry Management':'IHSAN Footwears';document.getElementById('psub').textContent=ip?'Flock - Eggs - Feed - Health':'& General Enterprises';ePIN='';dots();}
+// Show install bar - runs after full page load
+window.addEventListener('load',()=>{
+  const isInst=window.matchMedia('(display-mode:standalone)').matches||navigator.standalone;
+  if(isInst)return; // already installed, hide
+  const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isAndroid=/android/i.test(navigator.userAgent);
+  // Show on all mobile if not already installed
+  if(isIOS||isAndroid){showInstBar();}
+});
+function selBiz(b){biz=b;document.getElementById('scr-sel').classList.add('hidden');document.getElementById('scr-pin').classList.remove('hidden');const ip=b==='pt';document.getElementById('plogo').textContent=ip?'🐓':'👟';document.getElementById('ptitle').textContent=ip?'Poultry Management':'IHSAN Footwears';document.getElementById('psub').textContent=ip?'Flock - Eggs - Feed - Health':'& General Enterprises';ePIN='';dots();}
 function goSel(){stopRealtime();if(nTmr){clearInterval(nTmr);nTmr=null;}document.getElementById('app').classList.add('hidden');document.getElementById('scr-pin').classList.add('hidden');document.getElementById('scr-sel').classList.remove('hidden');ePIN='';}
 function pk(d){if(ePIN.length>=4)return;ePIN+=d+'';dots();if(ePIN.length===4)setTimeout(chkPin,130);}
 function pdel(){ePIN=ePIN.slice(0,-1);dots();document.getElementById('pin-err').textContent='';document.querySelectorAll('.dot').forEach(d=>d.classList.remove('err'));}
