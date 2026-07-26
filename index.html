@@ -388,10 +388,12 @@ document.addEventListener('DOMContentLoaded',function(){
   PIN=S.pin||'1234';
   window.addEventListener('online',async function(){document.getElementById('off-bar').classList.remove('show');setSy('sy','Reconnecting...');try{await loadAll();setSy('ok','Connected');rPage();}catch(e){setSy('er','Error');}});
   window.addEventListener('offline',function(){document.getElementById('off-bar').classList.add('show');setSy('er','Offline');});
-  const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
-  const isAndroid=/android/i.test(navigator.userAgent);
+  // Show install bar immediately on ANY mobile device not already installed
   const isInst=window.matchMedia('(display-mode:standalone)').matches||navigator.standalone;
-  if((isIOS||isAndroid)&&!isInst){showInstBar();}
+  if(!isInst){
+    const bar=document.getElementById('inst-bar');
+    if(bar)bar.style.display='flex';
+  }
 });
 
 function selBiz(b){
