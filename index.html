@@ -228,7 +228,7 @@ html,body{height:100%;font-family:system-ui,-apple-system,sans-serif;overflow:hi
 .toast-el{position:fixed;bottom:74px;left:50%;transform:translateX(-50%);background:#1a2e1a;color:#fff;padding:11px 20px;border-radius:50px;font-size:14px;font-weight:500;z-index:9000;white-space:nowrap;box-shadow:0 4px 18px rgba(0,0,0,.2);display:none}
 /* INSTALL BANNER */
 #inst-bar{position:fixed;bottom:0;left:0;right:0;z-index:5000;background:linear-gradient(135deg,#1a3c1a,#2d5a2d);color:#fff;padding:14px 14px 30px;display:none;align-items:center;gap:12px;box-shadow:0 -4px 20px rgba(0,0,0,.4)}
-#ios-guide{position:fixed;inset:0;z-index:6000;background:rgba(0,0,0,.65);display:none;align-items:flex-end;justify-content:center}
+#ios-guide,#android-guide{position:fixed;inset:0;z-index:6000;background:rgba(0,0,0,.65);display:none;align-items:flex-end;justify-content:center}
 </style>
 </head>
 <body>
@@ -255,6 +255,20 @@ html,body{height:100%;font-family:system-ui,-apple-system,sans-serif;overflow:hi
     <div style="display:flex;gap:12px;padding:13px;background:#f4f6f4;border-radius:12px;margin-bottom:10px;font-size:14px;color:#333;line-height:1.5;align-items:center"><span style="font-size:24px;flex-shrink:0">2&#65039;&#8364;</span><div>Scroll down and tap <strong>"Add to Home Screen"</strong> &#10133;</div></div>
     <div style="display:flex;gap:12px;padding:13px;background:#f4f6f4;border-radius:12px;margin-bottom:10px;font-size:14px;color:#333;line-height:1.5;align-items:center"><span style="font-size:24px;flex-shrink:0">3&#65039;&#8364;</span><div>Tap <strong>"Add"</strong> at the top right corner</div></div>
     <div style="display:flex;gap:12px;padding:13px;background:#e8f5e8;border-radius:12px;font-size:14px;color:#1a3c1a;font-weight:600;align-items:center"><span style="font-size:24px;flex-shrink:0">&#9989;</span><div>IHSAN App will appear on your home screen!</div></div>
+  </div>
+</div>
+
+<!-- ANDROID/DESKTOP INSTALL GUIDE -->
+<div id="android-guide" style="display:none;position:fixed;inset:0;z-index:6000;background:rgba(0,0,0,.65);align-items:flex-end;justify-content:center">
+  <div style="background:#fff;border-radius:22px 22px 0 0;padding:22px 20px 44px;width:100%;max-width:500px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+      <div style="font-size:17px;font-weight:700;color:#1a3c1a">Install IHSAN App</div>
+      <button onclick="document.getElementById('android-guide').style.display='none'" style="background:#eee;border:none;border-radius:50%;width:32px;height:32px;font-size:16px;cursor:pointer">&#10005;</button>
+    </div>
+    <div style="display:flex;gap:12px;padding:13px;background:#f4f6f4;border-radius:12px;margin-bottom:10px;font-size:14px;color:#333;line-height:1.5;align-items:center"><span style="font-size:24px;flex-shrink:0">1&#65039;&#8364;</span><div>Tap the <strong>3-dot menu</strong> &#8942; at the top right of Chrome</div></div>
+    <div style="display:flex;gap:12px;padding:13px;background:#f4f6f4;border-radius:12px;margin-bottom:10px;font-size:14px;color:#333;line-height:1.5;align-items:center"><span style="font-size:24px;flex-shrink:0">2&#65039;&#8364;</span><div>Tap <strong>"Add to Home screen"</strong> or <strong>"Install app"</strong></div></div>
+    <div style="display:flex;gap:12px;padding:13px;background:#f4f6f4;border-radius:12px;margin-bottom:10px;font-size:14px;color:#333;line-height:1.5;align-items:center"><span style="font-size:24px;flex-shrink:0">3&#65039;&#8364;</span><div>Tap <strong>"Install"</strong> or <strong>"Add"</strong> to confirm</div></div>
+    <div style="display:flex;gap:12px;padding:13px;background:#e8f5e8;border-radius:12px;font-size:14px;color:#1a3c1a;font-weight:600;align-items:center"><span style="font-size:24px;flex-shrink:0">&#9989;</span><div>IHSAN App icon will appear on your home screen!</div></div>
   </div>
 </div>
 
@@ -381,7 +395,26 @@ window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();_pwa=e;show
 window.addEventListener('appinstalled',()=>{hideInstBar();toast('IHSAN App installed!');});
 function showInstBar(){const isInst=window.matchMedia('(display-mode:standalone)').matches||navigator.standalone;if(isInst)return;document.getElementById('inst-bar').style.display='flex';}
 function hideInstBar(){document.getElementById('inst-bar').style.display='none';}
-async function doInstall(){const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);if(_pwa){await _pwa.prompt();const r=await _pwa.userChoice;_pwa=null;if(r.outcome==='accepted'){hideInstBar();toast('Installing...');}}else if(isIOS){hideInstBar();document.getElementById('ios-guide').style.display='flex';}else{toast('Open in Chrome then menu > Add to Home Screen');}}
+async function doInstall(){
+  const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isAndroid=/android/i.test(navigator.userAgent);
+  if(_pwa){
+    // Chrome Android native prompt
+    await _pwa.prompt();
+    const r=await _pwa.userChoice;
+    _pwa=null;
+    if(r.outcome==='accepted'){hideInstBar();toast('IHSAN App installed!');}
+  } else if(isIOS){
+    // iOS Safari - manual guide
+    document.getElementById('ios-guide').style.display='flex';
+  } else if(isAndroid){
+    // Android Chrome but prompt not ready yet - show Chrome guide
+    document.getElementById('android-guide').style.display='flex';
+  } else {
+    // Desktop
+    document.getElementById('android-guide').style.display='flex';
+  }
+}
 
 document.addEventListener('DOMContentLoaded',function(){
   S=lsG('sett',{pin:'1234',lowStock:5,bizName:'IHSAN Footwears & General Enterprises',owner:'',phone:'',address:''});
