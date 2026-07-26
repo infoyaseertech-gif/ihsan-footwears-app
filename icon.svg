@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="115" fill="#1a5c1a"/>
+  <rect width="512" height="512" rx="115" fill="url(#g)" opacity="0.3"/>
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="white" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="black" stop-opacity="0.1"/>
+    </linearGradient>
+  </defs>
+  <!-- Shoe outline - professional boot/oxford shape -->
+  <g transform="translate(60,130)">
+    <!-- Main shoe body -->
+    <path d="M30,160 Q20,100 50,60 Q80,20 140,10 Q200,0 240,15 Q300,30 350,80 Q380,110 375,155 L35,165 Q30,163 30,160 Z" fill="white"/>
+    <!-- Toe cap darkening -->
+    <path d="M250,15 Q310,32 358,82 Q383,112 378,158 L310,160 Q340,145 348,112 Q355,78 330,48 Q305,18 265,10 Z" fill="rgba(0,0,0,0.1)"/>
+    <!-- Shoe collar/top opening -->
+    <path d="M30,80 Q28,60 35,45 Q50,20 80,10 L140,10 Q100,15 75,40 Q52,62 50,90 Z" fill="rgba(255,255,255,0.6)"/>
+    <!-- Heel block -->
+    <rect x="18" y="125" width="60" height="40" rx="12" fill="white"/>
+    <!-- Sole -->
+    <rect x="15" y="155" width="368" height="22" rx="11" fill="rgba(0,0,0,0.25)"/>
+    <!-- Laces -->
+    <line x1="110" y1="22" x2="230" y2="14" stroke="rgba(0,0,0,0.2)" stroke-width="8" stroke-linecap="round"/>
+    <line x1="105" y1="45" x2="238" y2="36" stroke="rgba(0,0,0,0.2)" stroke-width="8" stroke-linecap="round"/>
+    <line x1="100" y1="68" x2="242" y2="59" stroke="rgba(0,0,0,0.2)" stroke-width="8" stroke-linecap="round"/>
+  </g>
+  <!-- IHSAN text -->
+  <text x="256" y="410" font-family="Arial Black,Arial,sans-serif" font-size="88" font-weight="900" fill="white" text-anchor="middle" letter-spacing="6">IHSAN</text>
+  <text x="256" y="460" font-family="Arial,sans-serif" font-size="30" font-weight="300" fill="rgba(255,255,255,0.55)" text-anchor="middle" letter-spacing="8">BUSINESS</text>
+</svg>
