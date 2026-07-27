@@ -230,6 +230,101 @@ html,body{height:100%;font-family:system-ui,-apple-system,sans-serif;overflow:hi
 /* INSTALL BANNER */
 #inst-bar{position:fixed;bottom:0;left:0;right:0;z-index:5000;background:linear-gradient(135deg,#1a3c1a,#2d5a2d);color:#fff;padding:14px 14px 30px;display:none;align-items:center;gap:12px;box-shadow:0 -4px 20px rgba(0,0,0,.4)}
 #ios-guide,#android-guide{position:fixed;inset:0;z-index:6000;background:rgba(0,0,0,.65);display:none;align-items:flex-end;justify-content:center}
+
+/* ═══ PREMIUM UI UPGRADES ═══ */
+:root{
+  --g:#1a5c1a;--gd:#0d3d0d;--gl:#e8f5e8;--gt:#1a5c1a;
+  --shadow:0 4px 20px rgba(0,0,0,.08);
+  --shadow-md:0 8px 32px rgba(0,0,0,.12);
+}
+html,body{background:#f0f4f0}
+/* Selector screen */
+.scr{background:linear-gradient(160deg,#1a5c1a 0%,#0d3d0d 50%,#0a2a0a 100%)}
+.sel-logo-box{width:100px;height:100px;border-radius:28px;box-shadow:0 8px 32px rgba(0,0,0,.4),0 0 0 4px rgba(255,255,255,.1)}
+.sel-logo-txt{font-size:10px;font-weight:900;letter-spacing:3px}
+.sel-title{font-size:24px;font-weight:800;letter-spacing:.5px}
+.sel-card{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:20px;backdrop-filter:blur(10px);transition:.2s}
+.sel-card:active{transform:scale(.96);background:rgba(255,255,255,.15)}
+.sel-ct{font-size:17px;font-weight:800;letter-spacing:.3px}
+.sel-cs{font-size:12px;opacity:.6;line-height:1.5}
+/* Header */
+.hdr{background:linear-gradient(135deg,#1a5c1a 0%,#0d3d0d 100%);box-shadow:0 4px 16px rgba(0,0,0,.3)}
+.hdr-back{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.15);border-radius:12px;width:38px;height:38px;font-size:18px;transition:.15s}
+.hdr-back:active{background:rgba(255,255,255,.25)}
+.hdr-title{font-size:16px;font-weight:800;letter-spacing:.5px}
+.hdr-bell{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:12px;width:38px;height:38px}
+/* Pages */
+.pgc{background:#f0f4f0}
+.pg{padding:16px}
+/* Stat cards */
+.stat-grid{gap:12px}
+.sc{border-radius:18px;padding:16px 14px;box-shadow:var(--shadow);border:none}
+.sc.g{background:linear-gradient(135deg,#e8f5e8,#d4edda)}
+.sc.a{background:linear-gradient(135deg,#fef3e2,#fde8c0)}
+.sc.b{background:linear-gradient(135deg,#e3f2fd,#bbdefb)}
+.sc.r{background:linear-gradient(135deg,#fdecea,#fcccc8)}
+.sc.bw{background:linear-gradient(135deg,#f5ede3,#e8d5c0)}
+.sc-val{font-size:20px;font-weight:800}
+.sc-lbl{font-size:11px;font-weight:600;opacity:.7;letter-spacing:.3px}
+/* Section headers */
+.sec-hd{font-size:11px;font-weight:800;letter-spacing:1px;color:#888;margin:16px 0 10px}
+/* Summary card */
+.sum-card{border-radius:18px;box-shadow:var(--shadow);border:none;overflow:hidden}
+.sum-row{padding:11px 16px;font-size:13px;border-bottom:1px solid #f5f5f5}
+.sum-row:last-child{border-bottom:none}
+/* Record cards */
+.rc{border-radius:16px;border:none;box-shadow:var(--shadow);padding:14px;margin-bottom:0;transition:.15s}
+.rc:active{transform:scale(.98)}
+/* FAB buttons */
+.fab{border-radius:12px;padding:10px 16px;font-size:13px;font-weight:700;letter-spacing:.3px;box-shadow:0 4px 12px rgba(0,0,0,.2)}
+/* Bottom nav */
+.bnav{background:#fff;border-top:none;box-shadow:0 -4px 20px rgba(0,0,0,.08);border-radius:20px 20px 0 0}
+.nb{font-size:10px;font-weight:700;letter-spacing:.3px}
+.nb.active{color:var(--g)}
+.nb .ni{font-size:24px}
+/* Modals */
+.modal{border-radius:28px 28px 0 0;box-shadow:0 -8px 40px rgba(0,0,0,.2)}
+.mhdr{padding:20px 20px 0;font-size:18px;font-weight:800}
+.mbody input:focus,.mbody select:focus{border-color:var(--g);box-shadow:0 0 0 3px rgba(26,92,26,.1)}
+.ms{border-radius:14px;font-weight:800;letter-spacing:.3px;box-shadow:0 4px 12px rgba(0,0,0,.2)}
+/* Stock cards */
+.stk-card{border-radius:18px;border:none;box-shadow:var(--shadow);margin-bottom:10px}
+/* Credit cards */
+.cr-card{border-radius:18px;border:none;box-shadow:var(--shadow);margin-bottom:10px}
+/* Contact cards */
+.ct-card{border-radius:18px;border:none;box-shadow:var(--shadow);margin-bottom:10px}
+/* Empty states */
+.empty{border-radius:18px;border:none;box-shadow:var(--shadow);padding:32px 16px}
+/* Toolbar */
+.sbox{border-radius:14px;border:none;background:#fff;box-shadow:var(--shadow);padding:11px 16px;font-size:14px}
+.sbox:focus{box-shadow:0 0 0 3px rgba(26,92,26,.15)}
+.ft{border-radius:10px;border:none;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.06);font-weight:600}
+.ft.active{background:var(--g);box-shadow:0 4px 12px rgba(26,92,26,.3)}
+/* Install banner */
+#inst-bar{border-radius:24px 24px 0 0;box-shadow:0 -8px 32px rgba(0,0,0,.3)}
+/* Toast */
+.toast-el{border-radius:16px;font-weight:600;letter-spacing:.3px;padding:12px 24px}
+/* Poultry */
+.p-hero{border-radius:20px;box-shadow:var(--shadow-md)}
+.ptab{border-radius:12px;border:none;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.06);font-weight:700}
+.ptab.active{box-shadow:0 4px 14px rgba(123,79,33,.3)}
+.flock-card{border-radius:18px;border:none;box-shadow:var(--shadow);margin-bottom:10px}
+.p-rec{border-radius:16px;border:none;box-shadow:var(--shadow);margin-bottom:10px}
+/* More sheet */
+.more-sheet{border-radius:28px 28px 0 0;box-shadow:0 -8px 40px rgba(0,0,0,.2)}
+.mi{border-radius:16px;border:none;box-shadow:0 2px 8px rgba(0,0,0,.06);padding:16px 8px;transition:.15s}
+.mi:active{transform:scale(.94)}
+/* Reports */
+.rpt-sec{border-radius:16px;border:none;box-shadow:var(--shadow)}
+.rpt-period{border-radius:16px;border:none;box-shadow:var(--shadow)}
+/* Settings */
+.set-grp{border-radius:18px;border:none;box-shadow:var(--shadow)}
+.set-btn{border-radius:14px;font-weight:800;box-shadow:0 4px 12px rgba(0,0,0,.15)}
+.cloud-ok{border-radius:18px;border:none;box-shadow:var(--shadow)}
+/* Pin screen */
+.pk{border-radius:16px;font-weight:600;transition:.1s}
+.pk:active{transform:scale(.88)}
+
 </style>
 </head>
 <body>
@@ -351,7 +446,12 @@ html,body{height:100%;font-family:system-ui,-apple-system,sans-serif;overflow:hi
 </div>
 
 <!-- SHARED MODALS -->
-<div class="mov" id="m-rcpt"><div class="modal"><div class="mhdr"><span>Receipt</span><button onclick="cM('m-rcpt')">&#10005;</button></div><div class="mbody" id="rcpt-body"></div><div class="mfoot"><button class="mc" onclick="cM('m-rcpt')">Close</button><button class="ms" onclick="shareRcpt()">&#128241; WhatsApp</button></div></div></div>
+<div class="mov" id="m-rcpt"><div class="modal" style="max-height:95vh"><div class="mhdr"><span>Receipt</span><button onclick="cM('m-rcpt')">&#10005;</button></div><div class="mbody" id="rcpt-body" style="padding:12px"></div><div class="mfoot" style="flex-wrap:wrap;gap:8px;padding:10px 14px 24px">
+<button class="mc" onclick="cM('m-rcpt')" style="flex:0 0 auto;padding:11px 14px">Close</button>
+<button class="ms" onclick="shareRcpt()" style="flex:1;background:#25D366;min-width:80px">&#128241; WhatsApp</button>
+<button class="ms" onclick="downloadRcptImg()" style="flex:1;background:#1565c0;min-width:80px">&#128247; Image</button>
+<button class="ms" onclick="downloadRcptPDF()" style="flex:1;background:#c0392b;min-width:80px">&#128196; PDF</button>
+</div></div></div>
 <div class="mov" id="m-crpay"><div class="modal"><div class="mhdr"><span>Record Payment</span><button onclick="cM('m-crpay')">&#10005;</button></div><div class="mbody"><p id="crpay-info" style="font-size:14px;color:var(--t2);background:var(--al);padding:10px 14px;border-radius:8px;margin:0"></p><label>Amount Paid &#8358; *</label><input type="number" id="crpay-amt" placeholder="0.00"/><label>Method</label><select id="crpay-mth"><option value="cash">Cash</option><option value="transfer">Transfer</option></select></div><div class="mfoot"><button class="mc" onclick="cM('m-crpay')">Cancel</button><button class="ms" onclick="saveCrPay()">&#10003; Record</button></div></div></div>
 <div class="notif-ov" id="notif-ov"><div class="notif-bg" onclick="hideNotif()"></div><div class="notif-sheet"><div class="notif-hdr"><span>Notifications</span><button onclick="hideNotif()">&#10005;</button></div><div id="notif-list"></div></div></div>
 <div class="toast-el" id="toast"></div>
@@ -585,8 +685,208 @@ function payChg(){document.getElementById('s-prt').style.display=document.getEle
 function sPrev(){const q=parseFloat(document.getElementById('s-qty').value)||1,p=parseFloat(document.getElementById('s-pri').value)||0,c=parseFloat(document.getElementById('s-cst').value)||0;const el=document.getElementById('s-prv');if(!p){el.style.display='none';return;}el.textContent='Total: '+N(q*p)+'  Profit: '+N((p-c)*q);el.style.display='block';}
 
 async function saveSale(){const itm=document.getElementById('s-itm').value.trim(),qty=parseFloat(document.getElementById('s-qty').value)||1,pri=parseFloat(document.getElementById('s-pri').value)||0,cst=parseFloat(document.getElementById('s-cst').value)||0,pay=document.getElementById('s-pay').value,cu=document.getElementById('s-cu').value.trim(),ph=document.getElementById('s-ph').value.trim(),nt=document.getElementById('s-nt').value.trim(),prt=pay==='part'?parseFloat(document.getElementById('s-prtv').value)||0:0;if(!itm)return toast('Enter item name');if(!pri)return toast('Enter selling price');const btn=document.getElementById('btn-sale');btn.disabled=true;btn.textContent='Saving...';try{const row={id:uid(),item:itm,qty,price:pri,cost:cst,total_cost:qty*cst,total:qty*pri,payment:pay,customer:cu,phone:ph,note:nt,part_paid:prt,stock_item_id:selId,created_at:new Date().toISOString()};const saved=await fP('sales',row);const si=selId?C.stock.find(x=>x.id===selId):null;if(si)await fU('stock',si.id,{qty:Math.max(0,(si.qty||0)-qty)});if(cu&&!C.customers.some(c=>c.name.toLowerCase()===cu.toLowerCase()))await fP('customers',{id:uid(),name:cu,phone:ph,address:'',note:'',created_at:new Date().toISOString()});if(pay==='credit')await fP('credits',{id:uid(),name:cu||'Unknown',phone:ph,item:itm,total:qty*pri,paid:0,balance:qty*pri,due:null,note:nt,payments:[],created_at:new Date().toISOString()});else if(pay==='part'&&(qty*pri-prt)>0)await fP('credits',{id:uid(),name:cu||'Unknown',phone:ph,item:itm,total:qty*pri,paid:prt,balance:qty*pri-prt,due:null,note:nt,payments:[],created_at:new Date().toISOString()});showRcpt({...row,id:saved?.id||row.id});['s-itm','s-pri','s-cst','s-cu','s-ph','s-nt','s-prtv'].forEach(id=>document.getElementById(id).value='');document.getElementById('s-qty').value='1';document.getElementById('s-pay').value='cash';document.getElementById('s-prt').style.display='none';document.getElementById('sel-inf').style.display='none';document.getElementById('s-prv').style.display='none';selId=null;cM('m-sale');toast('Sale saved');chkN();if(pg==='dash')rDash();if(pg==='sales')rSales(sF);}catch(ex){toast('Failed: '+ex.message);}finally{btn.disabled=false;btn.textContent='Save Sale';}}
-function showRcpt(s){const prt=s.part_paid||0;const bal=s.payment==='credit'?s.total:s.payment==='part'?(s.total-prt):0;document.getElementById('rcpt-body').innerHTML='<div class="receipt"><div class="r-hdr"><div class="r-biz">'+ex(S.bizName||'IHSAN Footwears')+'</div>'+(S.phone?'<div>'+ex(S.phone)+'</div>':'')+'<div style="font-size:11px;margin-top:4px">'+fD2(s.created_at)+' '+fT(s.created_at)+'</div></div><div class="r-row"><span>Item</span><span>'+ex(s.item)+'</span></div><div class="r-row"><span>Qty</span><span>'+s.qty+'</span></div><div class="r-row"><span>Price</span><span>'+N(s.price)+'</span></div><hr class="r-div"/><div class="r-row r-tot"><span>TOTAL</span><span>'+N(s.total)+'</span></div><div class="r-row"><span>Payment</span><span>'+s.payment.toUpperCase()+'</span></div>'+(s.payment==='part'?'<div class="r-row"><span>Paid</span><span>'+N(prt)+'</span></div>':'')+(bal>0?'<div class="r-row" style="color:#c0392b"><span><b>Balance</b></span><span><b>'+N(bal)+'</b></span></div>':'')+(s.customer?'<div class="r-row"><span>Customer</span><span>'+ex(s.customer)+'</span></div>':'')+'<hr class="r-div"/><div style="text-align:center;font-size:11px;margin-top:8px">Thank you!</div></div>';window._LS=s;oM('m-rcpt');}
-function shareRcpt(){const s=window._LS;if(!s)return;const prt=s.part_paid||0;const bal=s.payment==='credit'?s.total:s.payment==='part'?(s.total-prt):0;const msg='*'+(S.bizName||'IHSAN')+'*\nItem: '+s.item+' x'+s.qty+'\nTotal: '+N(s.total)+'\nPayment: '+s.payment.toUpperCase()+(bal>0?'\nBalance: '+N(bal):'')+'\nDate: '+fD2(s.created_at)+'\n\nThank you!';window.open('https://wa.me/'+(s.phone||'').replace(/\D/g,'')+'?text='+encodeURIComponent(msg),'_blank');}
+function showRcpt(s){
+  const prt=s.part_paid||0;
+  const bal=s.payment==='credit'?s.total:s.payment==='part'?(s.total-prt):0;
+  const rcptId='rcpt-'+Date.now();
+  window._LS=s;
+  window._RCPT_ID=rcptId;
+
+  // Professional logo SVG inline
+  const logoSVG=`<svg width="48" height="48" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+    <rect width="512" height="512" rx="100" fill="#1a5c1a"/>
+    <path d="M60,340 Q55,220 130,155 Q195,95 280,88 Q355,82 400,120 Q450,162 448,248 Q446,298 420,320 L70,325 Q60,322 60,340 Z" fill="white"/>
+    <path d="M400,120 Q450,163 448,250 Q446,300 420,322 L340,324 Q380,305 390,262 Q400,210 375,165 Q350,120 305,105 Z" fill="rgba(0,0,0,0.1)"/>
+    <rect x="50" y="285" width="90" height="55" rx="18" fill="white"/>
+    <rect x="45" y="315" width="425" height="38" rx="19" fill="rgba(0,0,0,0.2)"/>
+  </svg>`;
+
+  const html=`<div id="${rcptId}" style="font-family:'Courier New',monospace;background:#fff;border-radius:12px;overflow:hidden;border:1px solid #e0e0e0">
+    <!-- Header with logo -->
+    <div style="background:linear-gradient(135deg,#1a5c1a,#0d3d0d);padding:20px 16px;text-align:center">
+      ${logoSVG}
+      <div style="color:#fff;font-size:18px;font-weight:900;margin-top:8px;letter-spacing:2px;font-family:Arial,sans-serif">${ex(S.bizName||'IHSAN FOOTWEARS')}</div>
+      <div style="color:rgba(255,255,255,0.7);font-size:11px;margin-top:3px;font-family:Arial,sans-serif">& General Enterprises</div>
+      ${S.phone?`<div style="color:rgba(255,255,255,0.8);font-size:12px;margin-top:4px;font-family:Arial,sans-serif">&#128222; ${ex(S.phone)}</div>`:''}
+      ${S.address?`<div style="color:rgba(255,255,255,0.7);font-size:11px;margin-top:2px;font-family:Arial,sans-serif">&#128205; ${ex(S.address)}</div>`:''}
+    </div>
+    <!-- Receipt title -->
+    <div style="background:#f8f9fa;padding:8px;text-align:center;border-bottom:2px dashed #ddd">
+      <div style="font-size:12px;font-weight:700;color:#555;letter-spacing:3px;font-family:Arial,sans-serif">SALES RECEIPT</div>
+      <div style="font-size:11px;color:#888;margin-top:2px;font-family:Arial,sans-serif">Ref: #${s.id?s.id.slice(-6).toUpperCase():'------'}</div>
+    </div>
+    <!-- Details -->
+    <div style="padding:14px 16px">
+      <!-- Date & time -->
+      <div style="display:flex;justify-content:space-between;margin-bottom:12px;font-size:11px;color:#888;font-family:Arial,sans-serif">
+        <span>&#128197; ${fD2(s.created_at)}</span>
+        <span>&#128336; ${fT(s.created_at)}</span>
+      </div>
+      <!-- Divider -->
+      <div style="border-top:1px dashed #ddd;margin-bottom:12px"></div>
+      <!-- Item details -->
+      <div style="margin-bottom:12px">
+        <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;font-family:Arial,sans-serif">
+          <span style="color:#555">Item</span><span style="font-weight:600;color:#222">${ex(s.item)}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;font-family:Arial,sans-serif;border-top:1px solid #f0f0f0">
+          <span style="color:#555">Quantity</span><span style="font-weight:600;color:#222">${s.qty} unit${s.qty>1?'s':''}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;font-family:Arial,sans-serif;border-top:1px solid #f0f0f0">
+          <span style="color:#555">Unit Price</span><span style="font-weight:600;color:#222">${N(s.price)}</span>
+        </div>
+        ${s.customer?`<div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;font-family:Arial,sans-serif;border-top:1px solid #f0f0f0"><span style="color:#555">Customer</span><span style="font-weight:600;color:#222">${ex(s.customer)}</span></div>`:''}
+        ${s.phone?`<div style="display:flex;justify-content:space-between;padding:6px 0;font-size:13px;font-family:Arial,sans-serif;border-top:1px solid #f0f0f0"><span style="color:#555">Phone</span><span style="font-weight:600;color:#222">${ex(s.phone)}</span></div>`:''}
+      </div>
+      <!-- Total box -->
+      <div style="background:#1a5c1a;border-radius:10px;padding:14px;margin-bottom:12px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="color:rgba(255,255,255,0.8);font-size:13px;font-family:Arial,sans-serif">TOTAL AMOUNT</span>
+          <span style="color:#fff;font-size:22px;font-weight:900;font-family:Arial,sans-serif">${N(s.total)}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:12px;color:rgba(255,255,255,0.7);font-family:Arial,sans-serif">
+          <span>Payment: ${s.payment.toUpperCase()}</span>
+          ${s.payment==='part'?`<span>Paid: ${N(prt)}</span>`:''}
+        </div>
+      </div>
+      ${bal>0?`<div style="background:#fdecea;border:1.5px solid #c0392b;border-radius:8px;padding:10px 14px;margin-bottom:12px;display:flex;justify-content:space-between;font-family:Arial,sans-serif"><span style="color:#c0392b;font-size:13px;font-weight:600">&#9888; Balance Owed</span><span style="color:#c0392b;font-size:15px;font-weight:900">${N(bal)}</span></div>`:''}
+      ${s.note?`<div style="background:#f8f9fa;border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:12px;color:#666;font-family:Arial,sans-serif"><b>Note:</b> ${ex(s.note)}</div>`:''}
+      <!-- Footer -->
+      <div style="border-top:2px dashed #ddd;padding-top:12px;text-align:center">
+        <div style="font-size:13px;font-weight:700;color:#1a5c1a;font-family:Arial,sans-serif">Thank you for your business!</div>
+        <div style="font-size:11px;color:#aaa;margin-top:4px;font-family:Arial,sans-serif">YaseerTech &bull; IHSAN Business App</div>
+      </div>
+    </div>
+  </div>`;
+
+  document.getElementById('rcpt-body').innerHTML=html;
+  document.getElementById('m-rcpt').classList.add('show');
+}
+
+function shareRcpt(){
+  const s=window._LS;if(!s)return;
+  const prt=s.part_paid||0;
+  const bal=s.payment==='credit'?s.total:s.payment==='part'?(s.total-prt):0;
+  const msg='*'+ex(S.bizName||'IHSAN FOOTWEARS')+'*\n'
+    +'& General Enterprises\n'
+    +(S.phone?'\uD83D\uDCDE '+S.phone+'\n':'')
+    +'________________________________\n'
+    +'*SALES RECEIPT*\n'
+    +'________________________________\n'
+    +'Item: '+s.item+'\n'
+    +'Qty: '+s.qty+' unit'+(s.qty>1?'s':'')+'\n'
+    +'Price: '+N(s.price)+'\n'
+    +'________________________________\n'
+    +'*TOTAL: '+N(s.total)+'*\n'
+    +'Payment: '+s.payment.toUpperCase()+'\n'
+    +(s.payment==='part'?'Paid: '+N(prt)+'\n':'')
+    +(bal>0?'*Balance: '+N(bal)+'*\n':'')
+    +(s.customer?'Customer: '+s.customer+'\n':'')
+    +'________________________________\n'
+    +'Date: '+fD2(s.created_at)+' '+fT(s.created_at)+'\n'
+    +'Thank you! \uD83D\uDE4F\n'
+    +'Powered by YaseerTech';
+  window.open('https://wa.me/'+(s.phone||'').replace(/\D/g,'')+'?text='+encodeURIComponent(msg),'_blank');
+}
+
+async function downloadRcptImg(){
+  const el=document.getElementById(window._RCPT_ID);
+  if(!el){toast('Receipt not found');return;}
+  try{
+    // Use html2canvas via CDN loaded dynamically
+    if(!window.html2canvas){
+      await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+    }
+    toast('Generating image...');
+    const canvas=await html2canvas(el,{scale:2,backgroundColor:'#fff',useCORS:true});
+    const a=document.createElement('a');
+    a.download='IHSAN-Receipt-'+Date.now()+'.png';
+    a.href=canvas.toDataURL('image/png');
+    a.click();
+    toast('Image downloaded!');
+  }catch(e){toast('Error: '+e.message);}
+}
+
+function downloadRcptPDF(){
+  const s=window._LS;if(!s)return;
+  const prt=s.part_paid||0;
+  const bal=s.payment==='credit'?s.total:s.payment==='part'?(s.total-prt):0;
+  const w=window.open('','_blank');
+  if(!w)return toast('Allow popups for PDF');
+  w.document.write(`<!DOCTYPE html><html><head><title>IHSAN Receipt</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Courier New',monospace;background:#f5f5f5;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+    .card{background:#fff;width:340px;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.15)}
+    .hdr{background:linear-gradient(135deg,#1a5c1a,#0d3d0d);padding:22px 16px;text-align:center;color:#fff}
+    .biz{font-size:20px;font-weight:900;letter-spacing:2px;font-family:Arial,sans-serif;margin-top:8px}
+    .sub{font-size:11px;opacity:.7;margin-top:2px;font-family:Arial,sans-serif}
+    .contact{font-size:12px;opacity:.8;margin-top:4px;font-family:Arial,sans-serif}
+    .title-bar{background:#f8f9fa;padding:9px;text-align:center;border-bottom:2px dashed #ddd}
+    .title-bar span{font-size:12px;font-weight:700;color:#555;letter-spacing:3px;font-family:Arial,sans-serif}
+    .ref{font-size:11px;color:#888;font-family:Arial,sans-serif;margin-top:2px}
+    .body{padding:16px}
+    .meta{display:flex;justify-content:space-between;font-size:11px;color:#888;margin-bottom:10px;font-family:Arial,sans-serif}
+    .divider{border-top:1px dashed #ddd;margin:10px 0}
+    .row{display:flex;justify-content:space-between;padding:6px 0;font-size:13px;border-top:1px solid #f0f0f0;font-family:Arial,sans-serif}
+    .row span:first-child{color:#555} .row span:last-child{font-weight:600;color:#222}
+    .total-box{background:#1a5c1a;border-radius:10px;padding:14px;margin:12px 0}
+    .total-lbl{color:rgba(255,255,255,.8);font-size:12px;font-family:Arial,sans-serif}
+    .total-amt{color:#fff;font-size:24px;font-weight:900;font-family:Arial,sans-serif}
+    .total-pay{color:rgba(255,255,255,.7);font-size:12px;margin-top:6px;font-family:Arial,sans-serif}
+    .bal-box{background:#fdecea;border:1.5px solid #c0392b;border-radius:8px;padding:10px;margin-bottom:10px;display:flex;justify-content:space-between}
+    .bal-lbl{color:#c0392b;font-size:13px;font-weight:600;font-family:Arial,sans-serif}
+    .bal-amt{color:#c0392b;font-size:15px;font-weight:900;font-family:Arial,sans-serif}
+    .footer{border-top:2px dashed #ddd;padding-top:12px;text-align:center}
+    .thank{font-size:13px;font-weight:700;color:#1a5c1a;font-family:Arial,sans-serif}
+    .powered{font-size:11px;color:#aaa;margin-top:4px;font-family:Arial,sans-serif}
+    @media print{body{background:#fff}@page{margin:0}}
+  </style>
+  </head><body>
+  <div class="card">
+    <div class="hdr">
+      <svg width="44" height="44" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><rect width="512" height="512" rx="100" fill="rgba(255,255,255,0.2)"/><path d="M60,340 Q55,220 130,155 Q195,95 280,88 Q355,82 400,120 Q450,162 448,248 Q446,298 420,320 L70,325 Z" fill="white"/><rect x="50" y="285" width="90" height="55" rx="18" fill="white"/><rect x="45" y="315" width="425" height="38" rx="19" fill="rgba(255,255,255,0.4)"/></svg>
+      <div class="biz">${ex(S.bizName||'IHSAN FOOTWEARS')}</div>
+      <div class="sub">&amp; General Enterprises</div>
+      ${S.phone?`<div class="contact">&#128222; ${ex(S.phone)}</div>`:''}
+      ${S.address?`<div class="contact">&#128205; ${ex(S.address)}</div>`:''}
+    </div>
+    <div class="title-bar"><span>SALES RECEIPT</span><div class="ref">Ref: #${s.id?s.id.slice(-6).toUpperCase():'------'}</div></div>
+    <div class="body">
+      <div class="meta"><span>&#128197; ${fD2(s.created_at)}</span><span>&#128336; ${fT(s.created_at)}</span></div>
+      <div class="divider"></div>
+      <div class="row"><span>Item</span><span>${ex(s.item)}</span></div>
+      <div class="row"><span>Quantity</span><span>${s.qty} unit${s.qty>1?'s':''}</span></div>
+      <div class="row"><span>Unit Price</span><span>${N(s.price)}</span></div>
+      ${s.customer?`<div class="row"><span>Customer</span><span>${ex(s.customer)}</span></div>`:''}
+      ${s.phone?`<div class="row"><span>Phone</span><span>${ex(s.phone)}</span></div>`:''}
+      ${s.note?`<div class="row"><span>Note</span><span>${ex(s.note)}</span></div>`:''}
+      <div class="total-box">
+        <div class="total-lbl">TOTAL AMOUNT</div>
+        <div class="total-amt">${N(s.total)}</div>
+        <div class="total-pay">Payment: ${s.payment.toUpperCase()}${s.payment==='part'?' &bull; Paid: '+N(prt):''}</div>
+      </div>
+      ${bal>0?`<div class="bal-box"><span class="bal-lbl">&#9888; Balance Owed</span><span class="bal-amt">${N(bal)}</span></div>`:''}
+      <div class="footer">
+        <div class="thank">Thank you for your business!</div>
+        <div class="powered">YaseerTech &bull; IHSAN Business App</div>
+      </div>
+    </div>
+  </div>
+  <script>window.onload=function(){window.print();}</script>
+  </body></html>`);
+  w.document.close();
+}
+
+function loadScript(src){
+  return new Promise((res,rej)=>{
+    const s=document.createElement('script');
+    s.src=src;s.onload=res;s.onerror=rej;
+    document.head.appendChild(s);
+  });
+}
+
+
 function sf(p,el){sF=p;document.querySelectorAll('#stabs .ft').forEach(b=>b.classList.remove('active'));el.classList.add('active');rSales(p);}
 function rSales(p){const f=bP(C.sales,p);const tot=f.reduce((a,s)=>a+(s.payment==='credit'?0:s.payment==='part'?(s.part_paid||0):s.total),0);document.getElementById('sale-tot').textContent='Total: '+N(tot)+' | '+f.length+' sale'+(f.length!==1?'s':'');const el=document.getElementById('sale-list');el.innerHTML=f.length?f.map(s=>sCard(s,true)).join(''):'<div class="empty"><div class="ei">&#128717;</div><p>No sales yet</p></div>';}
 function sCard(s,acts){const clr=s.payment==='cash'?'g':s.payment==='transfer'?'b':'a';const paid=s.payment==='credit'?0:s.payment==='part'?(s.part_paid||0):s.total;const si=s.stock_item_id?C.stock.find(x=>x.id===s.stock_item_id):null;return '<div class="rc">'+(si?.image?'<img src="'+si.image+'" class="thumb"/>':"<div class='ri "+clr+"'>&#128094;</div>")+'<div class="rb"><div class="rtitle">'+ex(s.item)+'</div><div class="rmeta">Qty:'+s.qty+' '+s.payment.toUpperCase()+(s.customer?' &bull; '+ex(s.customer):'')+'</div>'+(acts?'<div class="ract"><button class="btn g" onclick=\'showRcpt('+JSON.stringify(s).replace(/'/g,"&#39;")+')\'>Receipt</button><button class="btn r" onclick="delSale(\''+s.id+'\')">Delete</button></div>':'')+'</div><div class="rright"><div class="ramt '+clr+'">'+N(paid)+'</div><div class="rtime">'+fT(s.created_at)+'</div></div></div>';}
