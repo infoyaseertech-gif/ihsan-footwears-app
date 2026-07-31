@@ -1,4 +1,4 @@
-const V = 'ihsan-v3';
+const V = 'ihsan-v4';
 self.addEventListener('install', e => { self.skipWaiting(); });
 self.addEventListener('activate', e => {
   e.waitUntil(

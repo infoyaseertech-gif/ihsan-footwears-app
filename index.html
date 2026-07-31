@@ -391,7 +391,6 @@ button,input,select,textarea{font-family:var(--font)}
       </svg>
       <div class="sel-logo-txt">IHSAN</div>
     </div>
-    </div>
     <div class="sel-title">IHSAN Business App</div>
     <div class="sel-sub">YaseerTech &bull; Select business to manage</div>
     <div class="sel-card" onclick="selBiz('fw')">
@@ -1038,6 +1037,17 @@ function rPSales(){const tot=P.psales.reduce((a,s)=>a+(s.total||0),0);const s=do
 async function savePExp(){const ds=document.getElementById('pe-ds').value.trim(),ct=document.getElementById('pe-ct').value,am=parseFloat(document.getElementById('pe-am').value)||0,fi=document.getElementById('pe-fl').value,nt=document.getElementById('pe-nt').value.trim();if(!ds)return toast('Description required');if(!am)return toast('Amount required');const flock=P.flocks.find(f=>f.id===fi);try{await pP('pexpenses',{id:uid(),description:ds,cat:ct,amount:am,flock_id:fi||null,flock_name:flock?.name||'General',note:nt,created_at:new Date().toISOString()});['pe-ds','pe-am','pe-nt'].forEach(id=>document.getElementById(id).value='');cM('m-pexp');toast('Expense saved');rPExp();}catch(ex){toast('Failed: '+ex.message);}}
 function rPExp(){const tot=P.pexpenses.reduce((a,e)=>a+(e.amount||0),0);const s=document.getElementById('pexp-sum');if(s)s.textContent='Total: '+N(tot)+' &middot; '+P.pexpenses.length+' records';const el=document.getElementById('pexp-list');el.innerHTML=P.pexpenses.length?P.pexpenses.map(e=>'<div class="p-rec"><div class="p-rec-ico" style="background:var(--rl)">&#128197;</div><div style="flex:1;min-width:0"><div class="rtitle">'+ex(e.description)+'</div><div class="rmeta">'+e.cat+' &middot; '+(ex(e.flock_name)||'General')+(e.note?' &middot; '+ex(e.note):'')+'</div></div><div class="rright"><div class="ramt r">'+N(e.amount)+'</div><div class="rtime">'+fD2(e.created_at)+'</div><button class="btn r" style="margin-top:4px" onclick="delPR(\'pexpenses\',\''+e.id+'\',rPExp)">Del</button></div></div>').join(''):'<div class="empty"><div class="ei">&#128197;</div><p>No expenses yet</p></div>';}
 async function delPR(t,id,cb){if(!confirm('Delete?'))return;try{await pD(t,id);toast('Deleted');cb();rPS();}catch(ex){toast('Failed: '+ex.message);}}
+
+// ── SERVICE WORKER (auto-updates, forces refresh on new deploy) ──
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+  let _swRefreshed=false;
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{
+    if(_swRefreshed)return;
+    _swRefreshed=true;
+    window.location.reload();
+  });
+}
 </script>
 </body>
 </html>
