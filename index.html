@@ -10,6 +10,9 @@
 <link rel="manifest" href="manifest.json"/>
 <link rel="apple-touch-icon" href="icon-192.png"/>
 <link rel="icon" href="icon-192.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;font-family:system-ui,-apple-system,sans-serif;overflow:hidden;background:#1a3c1a}
@@ -234,10 +237,15 @@ html,body{height:100%;font-family:system-ui,-apple-system,sans-serif;overflow:hi
 /* ═══ PREMIUM UI UPGRADES ═══ */
 :root{
   --g:#1a5c1a;--gd:#0d3d0d;--gl:#e8f5e8;--gt:#1a5c1a;
+  --accent:#d4860e;
   --shadow:0 4px 20px rgba(0,0,0,.08);
   --shadow-md:0 8px 32px rgba(0,0,0,.12);
+  --font:'Plus Jakarta Sans',system-ui,-apple-system,sans-serif;
 }
-html,body{background:#f0f4f0}
+html,body{background:#f0f4f0;font-family:var(--font)}
+.hdr-title,.sel-title,.sc-val,.rtitle,.cr-name,.ct-name,.sname,.mhdr,.p-hero-title,.ramt,.rpt-tot,.set-lbl,.fab,.ms,.pin-title{font-family:var(--font)}
+::selection{background:rgba(26,92,26,.2)}
+button,input,select,textarea{font-family:var(--font)}
 /* Selector screen */
 .scr{background:linear-gradient(160deg,#1a5c1a 0%,#0d3d0d 50%,#0a2a0a 100%)}
 .sel-logo-box{width:100px;height:100px;border-radius:28px;box-shadow:0 8px 32px rgba(0,0,0,.4),0 0 0 4px rgba(255,255,255,.1)}
@@ -705,8 +713,9 @@ function showRcpt(s){
     <!-- Header with logo -->
     <div style="background:linear-gradient(135deg,#1a5c1a,#0d3d0d);padding:20px 16px;text-align:center">
       ${logoSVG}
-      <div style="color:#fff;font-size:18px;font-weight:900;margin-top:8px;letter-spacing:2px;font-family:Arial,sans-serif">${ex(S.bizName||'IHSAN FOOTWEARS')}</div>
+      <div style="color:#fff;font-size:18px;font-weight:900;margin-top:8px;letter-spacing:2px;font-family:'Plus Jakarta Sans',Arial,sans-serif">${ex(S.bizName||'IHSAN FOOTWEARS')}</div>
       <div style="color:rgba(255,255,255,0.7);font-size:11px;margin-top:3px;font-family:Arial,sans-serif">& General Enterprises</div>
+      ${S.owner?`<div style="color:rgba(255,255,255,0.75);font-size:11px;margin-top:4px;font-family:Arial,sans-serif">Prop: ${ex(S.owner)}</div>`:''}
       ${S.phone?`<div style="color:rgba(255,255,255,0.8);font-size:12px;margin-top:4px;font-family:Arial,sans-serif">&#128222; ${ex(S.phone)}</div>`:''}
       ${S.address?`<div style="color:rgba(255,255,255,0.7);font-size:11px;margin-top:2px;font-family:Arial,sans-serif">&#128205; ${ex(S.address)}</div>`:''}
     </div>
@@ -763,13 +772,14 @@ function showRcpt(s){
   document.getElementById('m-rcpt').classList.add('show');
 }
 
-function shareRcpt(){
-  const s=window._LS;if(!s)return;
+function rcptMsg(s){
   const prt=s.part_paid||0;
   const bal=s.payment==='credit'?s.total:s.payment==='part'?(s.total-prt):0;
-  const msg='*'+ex(S.bizName||'IHSAN FOOTWEARS')+'*\n'
+  return '*'+ex(S.bizName||'IHSAN FOOTWEARS')+'*\n'
     +'& General Enterprises\n'
+    +(S.owner?'Prop: '+S.owner+'\n':'')
     +(S.phone?'\uD83D\uDCDE '+S.phone+'\n':'')
+    +(S.address?'\uD83D\uDCCD '+S.address+'\n':'')
     +'________________________________\n'
     +'*SALES RECEIPT*\n'
     +'________________________________\n'
@@ -786,7 +796,30 @@ function shareRcpt(){
     +'Date: '+fD2(s.created_at)+' '+fT(s.created_at)+'\n'
     +'Thank you! \uD83D\uDE4F\n'
     +'Powered by YaseerTech';
-  window.open('https://wa.me/'+(s.phone||'').replace(/\D/g,'')+'?text='+encodeURIComponent(msg),'_blank');
+}
+function waTextFallback(s){
+  window.open('https://wa.me/'+(s.phone||'').replace(/\D/g,'')+'?text='+encodeURIComponent(rcptMsg(s)),'_blank');
+}
+async function shareRcpt(){
+  const s=window._LS;if(!s)return;
+  // Try sharing the actual receipt image (opens native share sheet incl. WhatsApp)
+  try{
+    const el=document.getElementById(window._RCPT_ID);
+    if(el && navigator.share){
+      if(!window.html2canvas) await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+      toast('Preparing receipt...');
+      const canvas=await html2canvas(el,{scale:2,backgroundColor:'#fff',useCORS:true});
+      const blob=await new Promise(res=>canvas.toBlob(res,'image/png'));
+      if(blob){
+        const file=new File([blob],'IHSAN-Receipt.png',{type:'image/png'});
+        if(navigator.canShare && navigator.canShare({files:[file]})){
+          await navigator.share({files:[file],title:'Receipt',text:rcptMsg(s)});
+          return;
+        }
+      }
+    }
+  }catch(e){ /* user cancelled or unsupported — fall through to text link */ }
+  waTextFallback(s);
 }
 
 async function downloadRcptImg(){
