@@ -32,7 +32,7 @@ html,body{height:100%;font-family:system-ui,-apple-system,sans-serif;overflow:hi
 .sel-logo-txt{font-size:9px;font-weight:900;color:#1a3c1a;letter-spacing:2px;margin-top:2px}
 .sel-title{font-size:21px;font-weight:700;color:#fff;margin-bottom:4px}
 .sel-sub{font-size:13px;color:rgba(255,255,255,.5);margin-bottom:26px}
-.sel-card{background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.2);border-radius:18px;padding:18px;cursor:pointer;display:flex;align-items:center;gap:14px;margin-bottom:12px;text-align:left;transition:.15s}
+.sel-card{background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.2);border-radius:18px;padding:18px;cursor:pointer;display:flex;align-items:center;gap:14px;margin-bottom:12px;text-align:left;transition:.15s;width:100%;font:inherit;color:inherit;appearance:none;-webkit-appearance:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 .sel-card:active{transform:scale(.97);background:rgba(255,255,255,.2)}
 .sel-ico{width:52px;height:52px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
 .fw-ico{background:rgba(59,122,59,.5)} .pt-ico{background:rgba(123,79,33,.5)}
@@ -393,16 +393,16 @@ button,input,select,textarea{font-family:var(--font)}
     </div>
     <div class="sel-title">IHSAN Business App</div>
     <div class="sel-sub">YaseerTech &bull; Select business to manage</div>
-    <div class="sel-card" onclick="selBiz('fw')">
+    <button type="button" class="sel-card" id="sel-fw" onclick="selBiz('fw')">
       <div class="sel-ico fw-ico">&#128094;</div>
       <div style="flex:1"><div class="sel-ct">IHSAN Footwears</div><div class="sel-cs">Sales &middot; Stock &middot; Credit &middot; Expenses &middot; Reports</div></div>
       <span style="font-size:22px;color:rgba(255,255,255,.35)">&#8250;</span>
-    </div>
-    <div class="sel-card" onclick="selBiz('pt')">
+    </button>
+    <button type="button" class="sel-card" id="sel-pt" onclick="selBiz('pt')">
       <div class="sel-ico pt-ico">&#129413;</div>
       <div style="flex:1"><div class="sel-ct">Poultry Management</div><div class="sel-cs">Flocks &middot; Eggs &middot; Feed &middot; Health &middot; Sales</div></div>
       <span style="font-size:22px;color:rgba(255,255,255,.35)">&#8250;</span>
-    </div>
+    </button>
     <div style="margin-top:18px;font-size:11px;color:rgba(255,255,255,.2);text-align:center">IHSAN Footwears &amp; General Enterprises</div>
   </div>
 </div>
@@ -565,13 +565,25 @@ document.addEventListener('DOMContentLoaded',function(){
 });
 
 function selBiz(b){
-  biz=b;
-  document.getElementById('scr-sel').style.display='none';
-  document.getElementById('scr-pin').style.display='flex';
-  if(b==='pt'){document.getElementById('pico').textContent='\uD83D\uDC14';document.getElementById('ptitle').textContent='Poultry Management';document.getElementById('psub').textContent='Flock \u00b7 Eggs \u00b7 Feed \u00b7 Health';}
-  else{document.getElementById('pico').textContent='\uD83D\uDC5F';document.getElementById('ptitle').textContent='IHSAN Footwears';document.getElementById('psub').textContent='& General Enterprises';}
-  ePIN='';dots();
+  try{
+    biz=b;
+    document.getElementById('scr-sel').style.display='none';
+    document.getElementById('scr-pin').style.display='flex';
+    if(b==='pt'){document.getElementById('pico').textContent='\uD83D\uDC14';document.getElementById('ptitle').textContent='Poultry Management';document.getElementById('psub').textContent='Flock \u00b7 Eggs \u00b7 Feed \u00b7 Health';}
+    else{document.getElementById('pico').textContent='\uD83D\uDC5F';document.getElementById('ptitle').textContent='IHSAN Footwears';document.getElementById('psub').textContent='& General Enterprises';}
+    ePIN='';dots();
+  }catch(ex){
+    const d=document.createElement('div');
+    d.textContent='Tap Error: '+ex.message;
+    d.style.cssText='position:fixed;top:0;left:0;right:0;z-index:99999;background:#c0392b;color:#fff;font-size:12px;padding:10px;text-align:center;word-break:break-word;font-family:monospace';
+    document.body.appendChild(d);
+  }
 }
+document.addEventListener('DOMContentLoaded',function(){
+  const bfw=document.getElementById('sel-fw'),bpt=document.getElementById('sel-pt');
+  if(bfw)bfw.addEventListener('click',function(){selBiz('fw');});
+  if(bpt)bpt.addEventListener('click',function(){selBiz('pt');});
+});
 function goSel(){stopRT();if(nTmr){clearInterval(nTmr);nTmr=null;}document.getElementById('app').style.display='none';document.getElementById('scr-pin').style.display='none';document.getElementById('scr-sel').style.display='flex';ePIN='';}
 function pk(d){if(ePIN.length>=4)return;ePIN+=d+'';dots();if(ePIN.length===4)setTimeout(chkPin,130);}
 function pdel(){ePIN=ePIN.slice(0,-1);dots();document.getElementById('pin-err').textContent='';document.querySelectorAll('.dot').forEach(d=>d.classList.remove('err'));}
