@@ -464,6 +464,24 @@ button,input,select,textarea{font-family:var(--font)}
 <div class="toast-el" id="toast"></div>
 <script>
 'use strict';
+window.addEventListener('error',function(e){
+  try{
+    var m='App Error: '+(e.message||'Unknown')+' (line '+(e.lineno||'?')+')';
+    var d=document.createElement('div');
+    d.textContent=m;
+    d.style.cssText='position:fixed;top:0;left:0;right:0;z-index:99999;background:#c0392b;color:#fff;font-size:12px;padding:10px;text-align:center;word-break:break-word;font-family:monospace';
+    document.body.appendChild(d);
+  }catch(_){}
+});
+window.addEventListener('unhandledrejection',function(e){
+  try{
+    var m='Promise Error: '+(e.reason&&e.reason.message?e.reason.message:e.reason);
+    var d=document.createElement('div');
+    d.textContent=m;
+    d.style.cssText='position:fixed;top:0;left:0;right:0;z-index:99999;background:#c0392b;color:#fff;font-size:12px;padding:10px;text-align:center;word-break:break-word;font-family:monospace';
+    document.body.appendChild(d);
+  }catch(_){}
+});
 const SBU='https://pelkootzjmcppuljgbqs.supabase.co',SBK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBlbGtvb3R6am1jcHB1bGpnYnFzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4MDY3NDEsImV4cCI6MjA5NTM4Mjc0MX0.rjuqM25Tx0pQNm-vZ9VdxkePimuUqYapU9bwmUhx2fw';
 const SBH={apikey:SBK,Authorization:'Bearer '+SBK,'Content-Type':'application/json',Prefer:'return=representation'};
 let PIN='1234',ePIN='',biz=null,pg='',crT=null,rptD=null,selId=null,pImg=null,sF='today',eF='today',pTab='flocks',nTmr=null,rtTmr=null,_pwa=null;
